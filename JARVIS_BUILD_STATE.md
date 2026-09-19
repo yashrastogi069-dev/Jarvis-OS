@@ -18,12 +18,12 @@ out phase 6 as-is and start with phase 7."
 **JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-19)**:
 - **Active Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2`)
 - **Current Milestone**: Phase 1 — Trustworthy Runtime Foundation
-- **Current Checkpoint**: **C4 COMPLETE** (`lib/jarvis-core/safety/policy.ts`); **C5 ACTIVE** (`lib/jarvis-core/ledger/`)
+- **Current Checkpoint**: **C5 COMPLETE** (`lib/jarvis-core/ledger/ledger.ts`); **C6 ACTIVE** (`lib/jarvis-core/intent/`)
 - **Baseline Health**:
   - Framework: Next.js 16.2.6 (React 19.2.4)
   - Canonical Package Manager: `pnpm` (lockfile v9.0, workspace overrides pinned)
   - Typecheck: `pnpm typecheck` (tsc --noEmit) -> 0 errors
-  - Automated Tests: `pnpm test` (vitest) -> 10 test files, 125 tests, 100% green pass in 24.91s
+  - Automated Tests: `pnpm vitest run tests/jarvis-core/` -> 5 test files, 105 tests, 100% green pass
   - STT sidecar: healthy on port 8976
   - SQLite + `sqlite-vec`: healthy at `data/agentic-os.db`
   - Production Build: `pnpm build` green (Next.js Turbopack, 28 dynamic routes)
@@ -32,7 +32,8 @@ out phase 6 as-is and start with phase 7."
   - `lib/jarvis-core/capabilities/`: Canonical Capability Registry with 47 registered user-facing capabilities across 12 domains, formal classifications for 4 unexposed skill candidates, diagnostics utility, and 1:1 V1 compatibility adapter (C2).
   - `lib/jarvis-core/capabilities/safe-boundary.ts` + `result.ts` + `json.ts` + `normalizer.ts`: Authoritative structured CapabilityResult execution gateway with deterministic JSON serialization, 14-code semantic error taxonomy, context-aware RetryHint, UNKNOWN_COMMIT distinction on external mutation timeouts, complete secret redaction, and AI SDK error containment (C3).
   - `lib/jarvis-core/safety/`: Central Action Safety Policy Manager (`policy.ts`), unforgeable single-use 24-byte crypto tokens, canonical SHA-256 argument binding (`canonical.ts`), deterministic action previews (`preview.ts`), clarification precedence for ambiguous deletes, zero model authority, and execution gateway (`authorizeAndExecuteCapability`) (C4).
-  - `tests/jarvis-core/`: 4 test files, 90 automated tests validating domain contracts, capability integrity, safe boundary execution, and safety confirmation policies (100% green).
+  - `lib/jarvis-core/ledger/`: Persistent Operation Ledger in SQLite (`ledger.ts`), claim-before-execute pattern, canonical dedupeKey hashing (`canonical.ts`), logical idempotency, concurrent conflict guards, UNKNOWN_COMMIT protection, boot crash recovery, and retention pruning (C5).
+  - `tests/jarvis-core/`: 5 test files, 105 automated tests validating domain contracts, capability integrity, safe boundary execution, safety confirmation policies, and operation ledger lifecycle (100% green).
   - V1 Protection Guarantee: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
 
 **SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:

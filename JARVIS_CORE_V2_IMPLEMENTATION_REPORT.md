@@ -544,5 +544,32 @@ Checkpoint C4 establishes the central runtime action authorization policy and sa
 
 *End of Checkpoint C4 Report.*
 
+---
+
+## Checkpoint C5 Report — Persistent Operation Ledger & Logical Idempotency
+
+### 1. Executive Summary
+Checkpoint C5 implements the persistent runtime-owned Operation Ledger in SQLite (`lib/jarvis-core/ledger/`). It solves three critical reliability vulnerabilities identified during audit:
+1. **Logical Deduplication**: Mutations compute a deterministic `dedupeKey` from canonical argument hashes. Repeated invocations of idempotent operations within the idempotency window return cached results without re-executing handlers.
+2. **Concurrent Execution Lock**: Simultaneous invocations of non-idempotent operations yield `CONFLICT`, preventing accidental duplicate records or redundant API dispatches.
+3. **UNKNOWN_COMMIT Protection**: Unacknowledged connector timeouts on external mutations are marked `UNKNOWN_COMMIT` and strictly block automated replays.
+4. **Crash Recovery**: Orphaned `RUNNING`/`PENDING` records are safely transitioned on boot to `UNKNOWN_COMMIT` (for external mutations) or `FAILED_RETRYABLE` (for local mutations).
+
+### 2. Implementation Ledger
+- `lib/jarvis-core/ledger/types.ts`: `OperationRecord`, `OperationStatus`, `DedupeKey`, `OperationId`, `OperationClaimResult` discriminated union (`CLAIMED`, `CACHED`, `CONFLICT`, `UNKNOWN_COMMIT`, `FAILED_FINAL`).
+- `lib/jarvis-core/ledger/canonical.ts`: `computeDedupeKey()` and `hashCanonicalInput()` with key ordering invariance.
+- `lib/jarvis-core/ledger/ledger.ts`: `OperationLedger` engine with atomic SQLite transactions, claim-before-execute, completion, failure mapping, boot crash recovery, and retention pruning.
+- `lib/jarvis-core/ledger/index.ts`: canonical module exports.
+- `tests/jarvis-core/operation-ledger.test.ts`: 15 comprehensive automated unit tests in isolated in-memory SQLite.
+
+### 3. Verification Evidence
+- `pnpm typecheck` (`tsc --noEmit`): **0 errors** (code 0).
+- `vitest run tests/jarvis-core/operation-ledger.test.ts`: **15 tests passed (100% green)** in 29ms.
+- `vitest run tests/jarvis-core/`: **5 test files, 105 tests passed (100% green)** in 6.19s.
+- `pnpm build`: **Turbopack build succeeded in 17.6s, TypeScript finished in 24.2s, all 28 API routes generated**.
+
+*End of Checkpoint C5 Report.*
+
+
 
 

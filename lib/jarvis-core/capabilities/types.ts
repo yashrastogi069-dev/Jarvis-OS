@@ -23,6 +23,7 @@ import type {
   IdempotencyClass,
   JsonObject,
 } from "../types"
+export type { IdempotencyClass }
 import type { CapabilityExecutionContext } from "./result"
 
 // ============================================================================

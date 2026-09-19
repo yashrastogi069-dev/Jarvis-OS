@@ -212,11 +212,54 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - V1 runtime in `lib/` remains 100% functional and untouched.
 
 ### Commit & Push
-- **Commit**: Pending C4 git commit (`feat(core-v2): add central action safety policy`)
+- **Commit**: `1c46622` (*"feat(core-v2): add central action safety policy"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
+
+### Next
+- Checkpoint C5: Persistent Operation Ledger (`lib/jarvis-core/ledger/`). (COMPLETE)
+
+---
+
+## [2026-09-19] Checkpoint C5 — Persistent Operation Ledger & Logical Idempotency
+- **Status**: COMPLETE
+- **Corpus / Baseline**: SQLite-backed mutation tracking across all 47 capabilities.
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/ledger/types.ts`:
+  - `OperationStatus` (`PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED_RETRYABLE`, `FAILED_FINAL`, `UNKNOWN_COMMIT`).
+  - Branded `OperationId` and `DedupeKey` types.
+  - `OperationRecord`, `OperationClaimResult` discriminated union (`CLAIMED`, `CACHED`, `CONFLICT`, `UNKNOWN_COMMIT`, `FAILED_FINAL`), and options interfaces.
+- Created `lib/jarvis-core/ledger/canonical.ts`:
+  - `computeDedupeKey()`: deterministic SHA-256 digest scoped by capabilityId, actionClass, idempotencyClass, actor, and canonical input JSON.
+  - `hashCanonicalInput()`: stable payload SHA-256 hash.
+- Created `lib/jarvis-core/ledger/ledger.ts`:
+  - `OperationLedger` class managing the `operations` table and indexes (`idx_operations_dedupe_key`, `idx_operations_status`, `idx_operations_created_at`).
+  - `claimOperation()`: atomic SQLite transaction implementing the claim-before-execute pattern, logical idempotency (cached returns for idempotent mutations within window), concurrent execution locking (`CONFLICT`), and unverified mutation protection (`UNKNOWN_COMMIT`).
+  - `completeOperation()`: records `SUCCEEDED` status, completion timestamp, and sanitized result payload.
+  - `failOperation()`: records `FAILED_RETRYABLE`, `FAILED_FINAL`, or `UNKNOWN_COMMIT` with sanitized error messages.
+  - `recoverCrashedOperations()`: boot recovery routine transitioning abandoned `RUNNING`/`PENDING` records to `UNKNOWN_COMMIT` (for external connectors) or `FAILED_RETRYABLE` (for local mutations).
+  - `pruneOldOperations()`: cleans up historical operations older than retention threshold while preserving active and recent audit trails.
+- Created `lib/jarvis-core/ledger/index.ts`: canonical module exports.
+- Created `tests/jarvis-core/operation-ledger.test.ts`:
+  - 15 automated unit tests in isolated in-memory SQLite verifying schema initialization, claim/complete lifecycle, idempotent replay, concurrent conflict guards, unknown commit blocking, failure categorization, key stability, crash recovery, quest linkage, secret sanitization, and retention pruning.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/operation-ledger.test.ts`: PASS (15 tests in 29ms)
+- `vitest run tests/jarvis-core/`: PASS (5 test files, 105 tests, 100% green)
+- `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
+### Review
+- Atomic SQLite transactions prevent race conditions during concurrent claims.
+- UNKNOWN_COMMIT permanently blocks automated retries until explicit resolution.
+- V1 runtime in `lib/` remains 100% functional and untouched.
+
+### Commit & Push
+- **Commit**: Pending C5 git commit (`feat(core-v2): add persistent operation ledger`)
 - **Push**: `origin/jarvis-core-v2`
 
 ### Next
-- Checkpoint C5: Persistent Operation Ledger (`lib/jarvis-core/ledger/`). (ACTIVE)
+- Checkpoint C6: Intent Analysis & Ambiguity System (`lib/jarvis-core/intent/`). (ACTIVE)
 
 
 

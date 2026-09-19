@@ -69,19 +69,35 @@
 
 ---
 
-## Queued Roadmap: Checkpoints C5 through C23
+### Checkpoint C5 Specification (COMPLETE)
+- **Objective**: Persistent Operation Ledger in SQLite with claim-before-execute pattern, dedupeKey generation, logical idempotency, concurrent execution conflict prevention, UNKNOWN_COMMIT preservation, crash recovery, and retention pruning.
+- **Dependencies**: C1 (`types.ts`), C2 (`capabilities/`), C3 (`json.ts`, `normalizer.ts`), C4 (`canonical.ts`).
+- **Files Created / Modified**:
+  - `lib/jarvis-core/ledger/types.ts` (OperationRecord, OperationStatus, DedupeKey, OperationId, OperationClaimResult)
+  - `lib/jarvis-core/ledger/canonical.ts` (computeDedupeKey, hashCanonicalInput)
+  - `lib/jarvis-core/ledger/ledger.ts` (OperationLedger, claimOperation, completeOperation, failOperation, recoverCrashedOperations, pruneOldOperations)
+  - `lib/jarvis-core/ledger/index.ts` (module exports)
+  - `tests/jarvis-core/operation-ledger.test.ts` (15 automated unit tests, 100% green)
+- **Tests & Verification**:
+  - `pnpm typecheck` (`tsc --noEmit`) -> 0 errors
+  - `vitest run tests/jarvis-core/operation-ledger.test.ts` -> 15 passed (100% green)
+  - `vitest run tests/jarvis-core/` -> 5 test files, 105 passed (100% green)
+  - `pnpm build` -> Next.js Turbopack build succeeded, 28 routes generated
+- **Status**: COMPLETE.
+
+---
+
+## Queued Roadmap: Checkpoints C6 through C23
 
 ### Phase 1: Core Substrate & Capability Registry (Checkpoints C2 – C5)
 - [x] **C1: Jarvis Core V2 Domain Types & Runtime Interfaces (COMPLETE)**
 - [x] **C2: Canonical Capability Registry & Classification (COMPLETE)**
 - [x] **C3: Structured Capability Result & Safe Execution Boundary (COMPLETE)**
 - [x] **C4: Central Action & Confirmation Policy (COMPLETE)**
-- [ ] **C5: Persistent Operation Ledger (ACTIVE)**
-  - Path: `lib/jarvis-core/ledger/`
-  - SQLite-backed mutation tracking with idempotency keys (`dedupeKey`), execution status, claim-before-execute pattern, crash/restart recovery, and payload deduplication.
+- [x] **C5: Persistent Operation Ledger (COMPLETE)**
 
 ### Phase 2: Intent, Routing & Quest Engine (Checkpoints C6 – C8)
-- [ ] **C6: Intent Analysis & Ambiguity System**
+- [ ] **C6: Intent Analysis & Ambiguity System (ACTIVE)**
   - Path: `lib/jarvis-core/intent/`
   - Deterministic classification: direct answer vs single tool vs multi-step goal vs clarification request.
 - [ ] **C7: Capability Router & Shadow Evaluation (Strategy E Primary Candidate)**

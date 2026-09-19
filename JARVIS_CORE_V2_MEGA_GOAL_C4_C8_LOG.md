@@ -14,9 +14,9 @@
 | Checkpoint | Focus Area | Status | Deliverables / Verification | Commit Hash |
 | :--- | :--- | :--- | :--- | :--- |
 | **Preflight** | Governance Reconciliation | **COMPLETE** | Reconciled `ACTIVE_PLAN.md`, `MASTER_PLAN_V2.md`, `CHECKPOINT_LOG.md`, `KNOWN_ISSUES.md`, `lessons.md`. | Pending C4 |
-| **C4** | Central Action Safety & Confirmation Policy | **COMPLETE** | `lib/jarvis-core/safety/policy.ts`, deterministic decision union, unforgeable tokens, argument binding, preview generators, test suite (25 tests). | Pending C4 commit |
-| **C5** | Persistent Operation Ledger & Idempotency | **ACTIVE** | SQLite operations table, `dedupeKey` calculation, claim-before-execute, restart persistence, local/external mutation handling. | TBD |
-| **C6** | Intent Analysis & Ambiguity System | **QUEUED** | Fast-path classifier (CHAT/READ/ACTION/QUEST), clarification requirements, fixed ambiguity corpus (≥95% accuracy). | TBD |
+| **C4** | Central Action Safety & Confirmation Policy | **COMPLETE** | `lib/jarvis-core/safety/policy.ts`, deterministic decision union, unforgeable tokens, argument binding, preview generators, test suite (25 tests). | `1c46622` |
+| **C5** | Persistent Operation Ledger & Idempotency | **COMPLETE** | SQLite operations table, `dedupeKey` calculation, claim-before-execute, restart persistence, local/external mutation handling. | Pending C5 commit |
+| **C6** | Intent Analysis & Ambiguity System | **ACTIVE** | Fast-path classifier (CHAT/READ/ACTION/QUEST), clarification requirements, fixed ambiguity corpus (≥95% accuracy). | TBD |
 | **C7** | Capability Router & Shadow Evaluation | **QUEUED** | Layered confidence router, Strategy E shadow evaluation against 227-corpus (≥99.5% recall, 100% regression recall, fail-open). | TBD |
 | **C8** | Persisted Quest Engine | **QUEUED** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage. | TBD |
 | **Integration** | Cross-Checkpoint Integration Gate | **QUEUED** | 7 end-to-end headless scenarios verifying full stack without planner. | TBD |
@@ -69,4 +69,31 @@
   - `pnpm test`: 10 test files, 125 passed (100% green)
   - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
 - **Architectural Decision Record**: Logged ADR-008 in `tasks/DECISIONS.md`.
+
+### Checkpoint C5: Persistent Operation Ledger & Logical Idempotency
+- **Date**: 2026-09-19
+- **Status**: COMPLETE
+- **Objective**: Implement runtime-owned persistent Operation Ledger in SQLite with claim-before-execute pattern, dedupeKey generation, logical idempotency, concurrent conflict guards, and UNKNOWN_COMMIT protection.
+- **Architectural Invariants Verified**:
+  1. *Runtime-Owned Ledger*: Operations table in SQLite (`operations`) tracks every mutating capability invocation.
+  2. *Claim-Before-Execute*: Atomic SQLite transaction claims operations before executing handlers, returning `CLAIMED`, `CACHED`, `CONFLICT`, or `UNKNOWN_COMMIT`.
+  3. *Logical Idempotency*: Duplicate calls to idempotent operations within window return cached `resultPayload` without re-executing handlers.
+  4. *Concurrent Conflict Guard*: Simultaneous invocations of non-idempotent operations yield `CONFLICT`, preventing duplicate external side effects.
+  5. *UNKNOWN_COMMIT Safety*: Operations with unverified outcomes (e.g. connector timeouts) remain `UNKNOWN_COMMIT` and block automated replays.
+  6. *Boot Crash Recovery*: Recovers abandoned `RUNNING`/`PENDING` records on boot to `UNKNOWN_COMMIT` (for external mutations) or `FAILED_RETRYABLE` (for local mutations).
+  7. *Canonical Key Ordering*: Key order in JSON objects does not affect the generated `dedupeKey`.
+  8. *Secret Sanitization*: Secrets in input/result payloads are redacted before persistent SQLite storage.
+  9. *Retention Pruning*: Safely prunes completed operations older than threshold while preserving active and recent records.
+- **Files Created**:
+  - `lib/jarvis-core/ledger/types.ts`
+  - `lib/jarvis-core/ledger/canonical.ts`
+  - `lib/jarvis-core/ledger/ledger.ts`
+  - `lib/jarvis-core/ledger/index.ts`
+  - `tests/jarvis-core/operation-ledger.test.ts`
+- **Verification Evidence**:
+  - `tsc --noEmit`: 0 errors
+  - `vitest run tests/jarvis-core/operation-ledger.test.ts`: 15 passed / 15 tests (100% green)
+  - `vitest run tests/jarvis-core/`: 5 test files, 105 passed (100% green)
+  - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
 
