@@ -259,3 +259,5 @@ export { executeCapabilitySafely } from "./safe-boundary"
 export { normalizeError, sanitizeSecrets } from "./normalizer"
 export { toJsonValue, isJsonObject } from "./json"
 export * from "./result"
+export type { CapabilityDefinition, CapabilityDomain } from "./types"
+

@@ -151,6 +151,8 @@ iteration. Add a new entry after ANY correction from Yash.
     executed irreversible SQLite deletion on call 1 with zero confirmation.
     All delete and overwrite tools (`deleteTask`, `createNote`, `sendTelegram`)
     must require confirmation parameters.
+    *C4 refinement*: Confirmation parity remains mandatory, but Jarvis Core V2 must not trust model/tool-supplied `confirmed: true` values as authorization. Confirmation is centrally enforced by trusted runtime authorization bound to the exact validated action arguments.
+
 
 21. **Mid-stream tool chunk committing disables provider failover.**
     In `lib/agent.ts`, committing on the first tool lifecycle chunk permanently

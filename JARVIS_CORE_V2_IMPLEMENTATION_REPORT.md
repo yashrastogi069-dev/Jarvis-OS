@@ -516,4 +516,33 @@ The following systems are explicitly deferred and were NOT implemented in C3:
 
 *End of Checkpoint C3 Report.*
 
+---
+
+## Checkpoint C4 Report — Central Action & Confirmation Policy
+
+### 1. Executive Summary
+Checkpoint C4 establishes the central runtime action authorization policy and safe confirmation boundary in `lib/jarvis-core/safety/`. It guarantees that:
+1. **Zero Model Authority**: Neither the AI model nor prompt instructions can authorize an action. Arguments such as `{ confirmed: true }` carry zero authority.
+2. **Cryptographic Token Binding**: Authorization is mediated strictly by server-issued, unforgeable 24-byte cryptographic tokens bound to the exact canonical SHA-256 hash of validated capability arguments.
+3. **Clarification Precedence**: Ambiguous destructive targets (e.g. deleting a task without an ID) trigger `REQUIRE_CLARIFICATION` rather than blind confirmation.
+4. **Deterministic Previews**: Pure, non-LLM preview generator formats entity summaries, parameters, and reversibility warnings with bounded string length.
+5. **Execution Gateway Boundary**: `authorizeAndExecuteCapability` ensures unconfirmed or blocked capability handlers NEVER execute.
+
+### 2. Implementation Ledger
+- `lib/jarvis-core/safety/types.ts`: `PolicyDecision` discriminated union (`ALLOW`, `REQUIRE_CONFIRMATION`, `REQUIRE_CLARIFICATION`, `BLOCK`), `ConfirmationToken`, `ActionPreview`, `ActionAuthorizationContext`, `AuthorizedExecutionResult<T>`.
+- `lib/jarvis-core/safety/canonical.ts`: `canonicalizeJson()` deterministic key sorter and `hashCanonicalArgs()` SHA-256 digest.
+- `lib/jarvis-core/safety/preview.ts`: `generateActionPreview()` deterministic preview engine covering all destructive and external capability domains.
+- `lib/jarvis-core/safety/policy.ts`: `ActionPolicyManager` singleton managing policy evaluation, token issuance, single-use consumption, tampering detection, and `authorizeAndExecuteCapability()` gateway.
+- `lib/jarvis-core/safety/index.ts`: canonical module exports.
+- `tests/jarvis-core/safety-policy.test.ts`: 25 comprehensive automated unit tests covering all C4 requirements.
+
+### 3. Verification Evidence
+- `pnpm typecheck` (`tsc --noEmit`): **0 errors** (code 0).
+- `vitest run tests/jarvis-core/safety-policy.test.ts`: **25 tests passed (100% green)** in 36ms.
+- `pnpm test` (full repository suite): **10 test files, 125 tests passed (100% green)** in 24.91s.
+- `pnpm build`: **Turbopack build succeeded in 17.7s, TypeScript finished in 27.4s, all 28 API routes generated**.
+
+*End of Checkpoint C4 Report.*
+
+
 

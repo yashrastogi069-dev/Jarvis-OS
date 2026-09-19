@@ -52,12 +52,12 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         title: "Test Success",
         description: "Test capability",
         inputSchema: z.object({ value: z.string() }),
-        handler: async ({ value }) => ({ echo: value, count: 42 }),
+        handler: async ({ value }: { value: string }) => ({ echo: value, count: 42 }),
         actionClass: "READ_ONLY",
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: false,
       }
@@ -89,7 +89,7 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: false,
       }
@@ -224,12 +224,12 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         requiredField: z.string().min(3),
         count: z.number().int().positive(),
       }),
-      handler: async (input) => input,
+      handler: async (input: { requiredField: string; count: number }) => input,
       actionClass: "READ_ONLY",
       confirmation: { defaultPolicy: "NONE" },
       idempotency: { idempotencyClass: "READ_ONLY" },
       requirements: {},
-      availability: { staticState: "ALWAYS" },
+      availability: { staticState: "AVAILABLE" },
       routing: {},
       userFacing: false,
     }
@@ -280,7 +280,7 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: false,
       }
@@ -302,7 +302,7 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
   // ==========================================================================
   describe("Deterministic JSON Serialization (toJsonValue)", () => {
     it("converts BigInt to string", () => {
-      const output = toJsonValue({ id: 1234567890123456789n })
+      const output = toJsonValue({ id: BigInt("1234567890123456789") })
       expect(output).toEqual({ id: "1234567890123456789" })
     })
 
@@ -358,7 +358,7 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: false,
       }
@@ -438,7 +438,7 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: false,
       }
@@ -553,7 +553,7 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: true,
       }
@@ -592,12 +592,12 @@ describe("JARVIS CORE V2 — Structured Capability Result Boundary (C3)", () => 
         title: "Fast Capability",
         description: "In-memory benchmark capability",
         inputSchema: z.object({ x: z.number() }),
-        handler: async ({ x }) => ({ result: x * 2 }),
+        handler: async ({ x }: { x: number }) => ({ result: x * 2 }),
         actionClass: "READ_ONLY",
         confirmation: { defaultPolicy: "NONE" },
         idempotency: { idempotencyClass: "READ_ONLY" },
         requirements: {},
-        availability: { staticState: "ALWAYS" },
+        availability: { staticState: "AVAILABLE" },
         routing: {},
         userFacing: false,
       }

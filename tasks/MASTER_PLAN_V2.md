@@ -1,5 +1,17 @@
 # JARVIS — Master Forward Plan (v2)
 
+> **HISTORICAL / LEGACY PRODUCT ROADMAP**
+>
+> This document preserves the pre-Jarvis-Core-V2 product roadmap.
+>
+> It is not the active Core V2 engineering execution plan.
+>
+> The active Core V2 execution authority is `tasks/ACTIVE_PLAN.md`.
+>
+> The active Core V2 branch is `jarvis-core-v2`.
+>
+> Where this file conflicts with current Core V2 governance documents or repository source, the current Core V2 documents/source are authoritative.
+
 Author: Fable (synthesis of four Fable planning passes, 2026-07-12).
 Supersedes the Phase 4-9 sections of `tasks/PLAN.md` (v1). Phases 0-3 are
 DONE; this document is the authoritative plan for everything that remains.

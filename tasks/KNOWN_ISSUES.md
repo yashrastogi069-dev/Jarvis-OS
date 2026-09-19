@@ -59,7 +59,7 @@ This document tracks verified defects and architectural risks in the Jarvis repo
 - **Component**: `lib/agent.ts` (`ToolLoopAgent`)
 - **Status**: CONFIRMED & REPRODUCED
 - **Description**: When given compound requests containing multiple goals (e.g., "Summarize recent unread emails, check my calendar for tomorrow at 2 PM, and create a task for anything urgent"), the V1 agent terminates after satisfying only 1 or 2 goals in 32% of adversarial runs. The model generates polite summary text and the loop terminates because no external runtime entity tracks unsatisfied goals.
-- **Evidence**: A/B Orchestration Benchmark (`evals/benchmarks/evaluate_orchestrators.js`): Baseline completed only 17/25 multi-goal scenarios (68%), leaving goals stranded.
+- **Evidence**: Authoritative 60-scenario Orchestration Benchmark (`evals/corpora/orchestration_corpus_60.json`, evaluated in `logs/orchestrator_benchmark_results.json`): Architecture A (Baseline ToolLoopAgent, N=60) achieved full completion of only **31.67%**, with a **53.33% premature termination rate** and a **21.67% hallucinated success rate**. (Earlier initial 25-scenario prototype completed 17/25 = 68% before expanded adversary testing).
 - **Resolution Plan**: Implement Persisted Quest Engine (ADR-002, Checkpoint C8) and Terminal Completion Verifier (ADR-005, Checkpoint C12).
 
 ---

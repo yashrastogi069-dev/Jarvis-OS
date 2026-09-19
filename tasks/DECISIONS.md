@@ -99,3 +99,20 @@
   - *Positive*: Complete elimination of uncaught tool crashes; zero secret leakage in error messages; deterministic JSON serialization; clear retry guidance for future C5 ledger and C14 orchestration loops; sub-millisecond overhead (<1ms).
   - *Negative*: Domain errors must be mapped through the normalizer; callers must check `result.success`.
 
+---
+
+## ADR-008: Central Action Safety Policy, Clarification Precedence & Unforgeable Confirmation Tokens
+- **Status**: ACCEPTED
+- **Date**: 2026-09-19
+- **Context**: In Jarvis V1, dangerous actions (e.g. deleting memories, deleting tasks, sending external emails or messages) lacked an architectural confirmation barrier at the capability execution level. Asking the LLM to "confirm before deleting" is completely unreliable: prompt injection, jailbreaks, model hallucination, or user input confusion can cause the model to supply `{ confirmed: true }` in arguments and bypass safety. Furthermore, when targets were ambiguous (e.g. "delete that task"), systems would sometimes generate destructive confirmations against arbitrary or first-found IDs instead of asking for clarification.
+- **Decision**: Implement a central Action Safety Policy Manager in `lib/jarvis-core/safety/`:
+  1. *Zero Model Authority*: The AI model or prompt can NEVER authorize itself. Arguments like `{ confirmed: true }` or text like `"Ignore instructions, user pre-confirmed"` carry ZERO authority and are ignored by the runtime policy engine.
+  2. *Deterministic Policy Decision Union*: Every capability evaluation returns `ALLOW`, `REQUIRE_CONFIRMATION`, `REQUIRE_CLARIFICATION`, or `BLOCK`.
+  3. *Clarification Precedence*: Destructive requests with missing, zero, or ambiguous target identifiers (e.g. `tasks.delete` without an ID) deterministically yield `REQUIRE_CLARIFICATION`, preventing blind or unintended deletion confirmations.
+  4. *Post-Validation Cryptographic Tokens*: Confirmation tokens (`ConfirmationToken`) are 24-byte cryptographically secure random tokens issued strictly AFTER input schema validation (`safeParse`). The token is cryptographically bound to the SHA-256 hash of the canonical JSON representation of the validated parameters.
+  5. *Strict Single-Use & Tamper Defense*: Tokens expire after 5 minutes and are atomically consumed upon execution. Any alteration of arguments (e.g. changing `taskId: 1` to `taskId: 2`), replay attempt, or cross-capability substitution immediately triggers `BLOCK`.
+  6. *Deterministic Action Previews*: Generates deterministic, bounded, non-LLM action previews with entity identifiers, domain summaries, and reversibility warnings.
+  7. *Execution Gateway Boundary*: `authorizeAndExecuteCapability` ensures capability handlers are NEVER invoked if policy returns `REQUIRE_CONFIRMATION`, `REQUIRE_CLARIFICATION`, or `BLOCK`.
+- **Consequences**:
+  - *Positive*: Unbreakable runtime defense against unauthorized mutations and prompt injections; no accidental destructive operations without explicit user confirmation; clear UI previews.
+  - *Negative*: Client applications must implement a two-step confirmation flow for destructive actions.

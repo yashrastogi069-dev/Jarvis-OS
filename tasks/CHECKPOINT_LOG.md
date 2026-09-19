@@ -92,7 +92,7 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
   - `local.ts`: 18 local capabilities (6 tasks, 4 memory, 3 skills, 1 feed, 3 wake words, 1 preferences).
   - `research.ts`: 2 research capabilities (webSearch, fetchPage).
   - `connectors.ts`: 27 connector capabilities (6 GitHub, 10 Google, 5 Apple, 2 Telegram, 4 Obsidian).
-  - `unregistered.ts`: 4 formally classified candidates (`deploySkillToGithub` as NOT_READY/D-011, `deleteSkill` as INTERNAL_ENGINE/D-012, `proposeRefinement` as INTERNAL_ENGINE/D-013, `discoverSkillCandidates` as BACKGROUND/D-005).
+  - `unregistered.ts`: 4 formally classified candidates (`deploySkillToGithub` as NOT_READY/D-011, `deleteSkill` as INTERNAL_ENGINE/D-012, `proposeRefinement` as INTERNAL_ENGINE/D-013, `discoverSkillCandidates` as BACKGROUND/D-014).
   - `index.ts`: canonical aggregator for all 47 definitions.
 - Created `lib/jarvis-core/capabilities/registry.ts`: `CapabilityRegistry` class and singleton `capabilityRegistry` with query methods, domain filtering, ActionClass filtering, integrity validation, `toAiSdkTool` adapter, and `getV1CompatibilityTools()` adapter.
 - Created `lib/jarvis-core/capabilities/diagnostics.ts`: developer inspection utility reporting capability counts, domain distribution, read-only vs mutation counts, confirmation/idempotency breakdowns, and static auth requirements with zero secret leakage.
@@ -114,8 +114,8 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - Items D-011 (`deploySkillToGithub`), D-012 (`deleteSkill`), D-013 (`proposeRefinement`), D-014 (`discoverSkillCandidates`) logged in `tasks/DEFERRED.md`.
 
 ### Commit & Push
-- **Commit**: `3713e40` (*"feat(core-v2): add canonical capability registry"*)
-- **Push**: `origin/jarvis-core-v2` (pending remote sync)
+- **Commit**: `69c4346` (*"feat(core-v2): add canonical capability registry"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
 
 ### Next
 - Checkpoint C3: Structured ToolResult Boundary (`lib/jarvis-core/capabilities/result.ts`, `safe-boundary.ts`). (COMPLETE)
@@ -166,10 +166,57 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - Overhead benchmark confirms sub-millisecond execution (<1ms/call) through boundary.
 
 ### Commit & Push
-- **Commit**: (pending)
+- **Commit**: `9f150c1` (*"feat(core-v2): add structured capability result boundary"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
+
+### Next
+- Checkpoint C4: Central Action & Confirmation Policy (`lib/jarvis-core/safety/policy.ts`). (COMPLETE)
+
+---
+
+## [2026-09-19] Checkpoint C4 — Central Action & Confirmation Policy
+- **Status**: COMPLETE
+- **Corpus / Baseline**: All 47 registered capabilities across 12 domains; destructive/external actions guarded.
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/safety/types.ts`:
+  - `PolicyDecision` discriminated union (`ALLOW`, `REQUIRE_CONFIRMATION`, `REQUIRE_CLARIFICATION`, `BLOCK`).
+  - Branded `ConfirmationToken` type.
+  - `ActionPreview` contract specifying `capabilityId`, `targetDomain`, `summary`, structured `details`, and `warning`.
+  - `ActionAuthorizationContext` and `AuthorizedExecutionResult<T>` interfaces.
+- Created `lib/jarvis-core/safety/canonical.ts`:
+  - Deterministic `canonicalizeJson()` sorting keys recursively, preserving array indices, stripping `undefined`.
+  - SHA-256 `hashCanonicalArgs()` producing stable cryptographic hashes across any object key ordering.
+- Created `lib/jarvis-core/safety/preview.ts`:
+  - Pure deterministic preview generator for tasks, memory, wake words, email, telegram, GitHub, Google/Apple calendar, Obsidian, and skills.
+  - Hard string truncation (max 150-200 chars) ensuring zero prompt bloat or secret leakage.
+- Created `lib/jarvis-core/safety/policy.ts`:
+  - `ActionPolicyManager` managing policy matrix, clarification pre-checks, cryptographic token generation (24-byte crypto random, 5-minute TTL, single-use consumption).
+  - Clarification precedence: missing or zero target IDs on destructive actions (`tasks.delete`, `memory.delete`) deterministically return `REQUIRE_CLARIFICATION` rather than blind confirmation.
+  - Zero model authority: arguments like `{ confirmed: true }` or injected text are ignored by the runtime policy engine.
+  - `authorizeAndExecuteCapability()` execution gateway guaranteeing capability handlers NEVER run when unconfirmed or blocked.
+- Created `lib/jarvis-core/safety/index.ts`: canonical module exports.
+- Created `tests/jarvis-core/safety-policy.test.ts`:
+  - 25 automated unit tests covering autonomous ALLOW, confirmation enforcement on all destructive/external capabilities, clarification precedence, model forgery defense, prompt injection immunity, token validation/tampering/replay/expiry/revocation, canonical key ordering, preview fidelity, handler execution boundary isolation, and invalid schema handling.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/safety-policy.test.ts`: PASS (25 tests in 36ms)
+- `pnpm test` (full repository suite): PASS (10 test files, 125 tests, 100% green)
+- `pnpm build`: PASS (Next.js 16.2.6 Turbopack in 17.7s, TypeScript in 27.4s, 28 dynamic API routes)
+
+### Review
+- Zero model/prompt authority over action authorization.
+- Cryptographic binding between token and exact canonical argument hash.
+- Unconfirmed destructive handlers NEVER execute.
+- V1 runtime in `lib/` remains 100% functional and untouched.
+
+### Commit & Push
+- **Commit**: Pending C4 git commit (`feat(core-v2): add central action safety policy`)
 - **Push**: `origin/jarvis-core-v2`
 
 ### Next
-- Checkpoint C4: Central Action & Confirmation Policy (`lib/jarvis-core/safety/policy.ts`).
+- Checkpoint C5: Persistent Operation Ledger (`lib/jarvis-core/ledger/`). (ACTIVE)
+
 
 

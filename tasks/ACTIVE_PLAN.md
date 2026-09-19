@@ -1,7 +1,7 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
 ## Current Milestone: Milestone 0 — Repository Truth, Substrate Hardening & Core Architecture Baseline
-## Current Checkpoint: C4 — Central Action & Confirmation Policy (QUEUED)
+## Current Checkpoint: C4 — Central Action & Confirmation Policy (ACTIVE)
 
 ---
 
@@ -50,28 +50,44 @@
   - `pnpm build` -> Next.js Turbopack build succeeded, 28 routes generated
 - **Status**: COMPLETE.
 
+### Checkpoint C4 Specification (COMPLETE)
+- **Objective**: Central Action Safety Policy & Confirmation Gateway ensuring unforgeable, cryptographically bound tokens, deterministic previews, clarification precedence for ambiguous deletions, and zero model authority.
+- **Dependencies**: C1 (`types.ts`), C2 (`capabilities/`), C3 (`safe-boundary.ts`).
+- **Files Created / Modified**:
+  - `lib/jarvis-core/safety/types.ts` (PolicyDecision union, ConfirmationToken, ActionPreview, ActionAuthorizationContext, AuthorizedExecutionResult)
+  - `lib/jarvis-core/safety/canonical.ts` (canonicalizeJson, hashCanonicalArgs)
+  - `lib/jarvis-core/safety/preview.ts` (generateActionPreview with deterministic entity previews, domain summaries, warnings)
+  - `lib/jarvis-core/safety/policy.ts` (ActionPolicyManager, evaluatePolicy, issueConfirmation, validateAndConsumeToken, authorizeAndExecuteCapability)
+  - `lib/jarvis-core/safety/index.ts` (module exports)
+  - `tests/jarvis-core/safety-policy.test.ts` (25 automated unit tests, 100% green)
+- **Tests & Verification**:
+  - `pnpm typecheck` (`tsc --noEmit`) -> 0 errors
+  - `vitest run tests/jarvis-core/safety-policy.test.ts` -> 25 passed (100% green)
+  - `pnpm test` (full repository test suite) -> 10 test files, 125 passed (100% green)
+  - `pnpm build` -> Next.js Turbopack build succeeded, 28 routes generated
+- **Status**: COMPLETE.
+
 ---
 
-## Queued Roadmap: Checkpoints C4 through C23
+## Queued Roadmap: Checkpoints C5 through C23
 
 ### Phase 1: Core Substrate & Capability Registry (Checkpoints C2 – C5)
 - [x] **C1: Jarvis Core V2 Domain Types & Runtime Interfaces (COMPLETE)**
 - [x] **C2: Canonical Capability Registry & Classification (COMPLETE)**
 - [x] **C3: Structured Capability Result & Safe Execution Boundary (COMPLETE)**
-- [ ] **C4: Central Action & Confirmation Policy (QUEUED)**
-  - Path: `lib/jarvis-core/safety/policy.ts`
-  - Runtime-enforced gate for dangerous operations (`deleteTask`, external sends, irreversible mutations) with confirmed tokens.
-- [ ] **C5: Persistent Operation Ledger**
+- [x] **C4: Central Action & Confirmation Policy (COMPLETE)**
+- [ ] **C5: Persistent Operation Ledger (ACTIVE)**
   - Path: `lib/jarvis-core/ledger/`
-  - SQLite-backed mutation tracking with idempotency keys (`dedupeKey`), execution status, and payload deduplication.
+  - SQLite-backed mutation tracking with idempotency keys (`dedupeKey`), execution status, claim-before-execute pattern, crash/restart recovery, and payload deduplication.
 
 ### Phase 2: Intent, Routing & Quest Engine (Checkpoints C6 – C8)
 - [ ] **C6: Intent Analysis & Ambiguity System**
   - Path: `lib/jarvis-core/intent/`
   - Deterministic classification: direct answer vs single tool vs multi-step goal vs clarification request.
-- [ ] **C7: Capability Router & Pruning (Strategy E Primary Candidate)**
+- [ ] **C7: Capability Router & Shadow Evaluation (Strategy E Primary Candidate)**
   - Path: `lib/jarvis-core/routing/`
-  - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; requires ≥99% capability recall, fail-open fallback on low confidence, with ≤12 tools as heuristic target rather than absolute invariant.
+  - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; requires ≥99.5% required-capability recall on the fixed evaluation corpus, 100% recall on known regression prompts, shadow mode first, fail-open fallback on low confidence, with ≤12 tools as heuristic target rather than absolute invariant.
+
 - [ ] **C8: Persisted Quest Engine**
   - Path: `lib/jarvis-core/quest/`
   - SQLite table `quests` tracking root goals, active subgoals, status, dependencies, and execution history across sessions.

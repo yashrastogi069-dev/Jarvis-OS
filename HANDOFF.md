@@ -1,14 +1,16 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, and C3** of the **JARVIS CORE V2 MASTER PROTOCOL**.
+Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, and C4** of the **JARVIS CORE V2 MASTER PROTOCOL**.
 - **Active Git Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2` on `https://github.com/yashrastogi069-dev/Jarvis-OS.git`)
 - **Master Plan**: `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23)
-- **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-007)
+- **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008)
 - **Known Issues Ledger**: `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
 - **Living Implementation Report**: `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md`
+- **End-to-End Execution Log**: `JARVIS_CORE_V2_MEGA_GOAL_C4_C8_LOG.md`
 - **Foundation Types**: `lib/jarvis-core/types.ts` & `tests/jarvis-core/types.test.ts` (14/14 tests green)
 - **Capability Registry**: `lib/jarvis-core/capabilities/` & `tests/jarvis-core/capabilities.test.ts` (12/12 tests green)
 - **Safe Execution Boundary**: `lib/jarvis-core/capabilities/safe-boundary.ts` & `tests/jarvis-core/result-boundary.test.ts` (39/39 tests green)
+- **Central Action Safety Policy**: `lib/jarvis-core/safety/` & `tests/jarvis-core/safety-policy.test.ts` (25/25 tests green)
 - **Standing Rules**: `CLAUDE.md` and `tasks/lessons.md`.
 
 **Project:** a local-first personal AI operating system — "Jarvis." SQLite +
@@ -17,7 +19,7 @@ Ollama for embeddings, an MCP server so Claude Code can watch/operate the OS,
 and a from-scratch redesign into a real Iron-Man-style HUD: an open 3D stage
 with an interactive Arc Reactor and a color-driving neural network.
 
-**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoint **C3 is COMPLETE**; next immediate step is Checkpoint **C4** (Central Action & Confirmation Policy in `lib/jarvis-core/safety/policy.ts`). Do NOT begin C4 until explicitly instructed.
+**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoint **C4 is COMPLETE**; next immediate step is Checkpoint **C5** (Persistent Operation Ledger in `lib/jarvis-core/ledger/`). Execution proceeds autonomously through the Mega Goal (C4–C8).
 
 
 ---
