@@ -136,3 +136,14 @@ This document tracks valuable engineering proposals that are non-essential for t
 - **Earliest revisit**: Checkpoint C17.
 - **Trigger/evidence required**: Skill evaluation testbed established.
 - **Status**: DEFERRED
+
+---
+
+## D-014 — discoverSkillCandidates Autonomous Background Discovery Routine
+- **Description**: Exposing `discoverSkillCandidates` as an automated background routine or conversational agent tool.
+- **Why deferred**: Heavy background batch routine scanning up to 200 requests in SQLite, consuming substantial LLM tokens with 3-10s latency. Intended for explicit UI triggering in the Skill Factory dashboard or scheduled maintenance jobs, not inline user chat turns.
+- **Dependency**: Phase 7 / Skill Factory background jobs.
+- **Earliest revisit**: Phase 7.
+- **Trigger/evidence required**: Scheduled background daemon architecture established.
+- **Status**: DEFERRED
+

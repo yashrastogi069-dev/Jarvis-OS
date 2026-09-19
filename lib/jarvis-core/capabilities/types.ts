@@ -23,6 +23,7 @@ import type {
   IdempotencyClass,
   JsonObject,
 } from "../types"
+import type { CapabilityExecutionContext } from "./result"
 
 // ============================================================================
 // 1. DOMAIN VOCABULARY
@@ -149,7 +150,7 @@ export interface CapabilityDefinition<TInput = any, TOutput = any> {
   readonly title: string
   readonly description: string
   readonly inputSchema: z.ZodType<TInput>
-  readonly handler: (input: TInput, context?: JsonObject) => Promise<TOutput>
+  readonly handler: (input: TInput, context?: CapabilityExecutionContext | any) => Promise<TOutput>
   readonly actionClass: ActionClass
   readonly confirmation: CapabilityConfirmationMetadata
   readonly idempotency: CapabilityIdempotencyMetadata

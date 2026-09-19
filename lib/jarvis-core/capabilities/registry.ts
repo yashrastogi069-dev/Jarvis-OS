@@ -17,7 +17,7 @@
  */
 
 import { tool, type Tool } from "ai"
-import type { CapabilityId, ActionClass } from "../types"
+import type { CapabilityId, ActionClass, JsonValue } from "../types"
 import type {
   CapabilityDefinition,
   CapabilityDomain,
@@ -25,6 +25,8 @@ import type {
 } from "./types"
 import { ALL_CAPABILITY_DOMAINS } from "./types"
 import { ALL_CAPABILITIES } from "./definitions"
+import type { CapabilityResult, CapabilityExecutionContext } from "./result"
+import { executeCapabilitySafely } from "./safe-boundary"
 
 export class CapabilityRegistry {
   private readonly capabilitiesById = new Map<string, CapabilityDefinition>()
@@ -177,13 +179,38 @@ export class CapabilityRegistry {
 
   /**
    * Adapter: Convert a single CapabilityDefinition to a Vercel AI SDK Tool.
+   * Execution passes through the safe capability boundary, normalizing any operational
+   * error into a safe descriptive payload without throwing uncaught exceptions.
    */
   public toAiSdkTool(capability: CapabilityDefinition): Tool {
     return tool({
       description: capability.description,
       inputSchema: capability.inputSchema,
-      execute: (args) => capability.handler(args),
+      execute: async (args) => {
+        const result = await executeCapabilitySafely(capability, args)
+        if (result.success) {
+          return result.data
+        }
+        return {
+          error: result.error.message,
+          code: result.error.code,
+          retryHint: result.error.retryHint,
+          fixAction: result.error.fixAction,
+          details: result.error.details,
+        }
+      },
     })
+  }
+
+  /**
+   * Execute a registered capability through the safe execution boundary.
+   */
+  public executeSafely<T extends JsonValue = JsonValue>(
+    capabilityOrId: CapabilityDefinition | CapabilityId | string,
+    rawInput: unknown,
+    context?: CapabilityExecutionContext,
+  ): Promise<CapabilityResult<T>> {
+    return executeCapabilitySafely<T>(capabilityOrId, rawInput, context)
   }
 
   /**
@@ -221,3 +248,14 @@ export const listCapabilities = (options?: {
 }
 export const validateCapabilityRegistry = () => capabilityRegistry.validateRegistry()
 export const getV1CompatibilityTools = () => capabilityRegistry.getV1CompatibilityTools()
+export const executeSafely = (
+  capabilityOrId: CapabilityDefinition | CapabilityId | string,
+  rawInput: unknown,
+  context?: CapabilityExecutionContext,
+) => capabilityRegistry.executeSafely(capabilityOrId, rawInput, context)
+
+// Re-export boundary utilities
+export { executeCapabilitySafely } from "./safe-boundary"
+export { normalizeError, sanitizeSecrets } from "./normalizer"
+export { toJsonValue, isJsonObject } from "./json"
+export * from "./result"

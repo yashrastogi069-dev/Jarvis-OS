@@ -18,19 +18,20 @@ out phase 6 as-is and start with phase 7."
 **JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-19)**:
 - **Active Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2`)
 - **Current Milestone**: Milestone 0 — Repository Truth & Baseline Reconciliation
-- **Current Checkpoint**: **C2 COMPLETE** (`lib/jarvis-core/capabilities/`); **C3 QUEUED**
+- **Current Checkpoint**: **C3 COMPLETE** (`lib/jarvis-core/capabilities/safe-boundary.ts`); **C4 QUEUED**
 - **Baseline Health**:
   - Framework: Next.js 16.2.6 (React 19.2.4)
   - Canonical Package Manager: `pnpm` (lockfile v9.0, workspace overrides pinned)
   - Typecheck: `pnpm typecheck` (tsc --noEmit) -> 0 errors
-  - Automated Tests: `pnpm test` (vitest) -> 8 test files, 61 tests, 100% green pass in 26.07s
+  - Automated Tests: `pnpm test` (vitest) -> 9 test files, 100 tests, 100% green pass in 26.03s
   - STT sidecar: healthy on port 8976
   - SQLite + `sqlite-vec`: healthy at `data/agentic-os.db`
   - Production Build: `pnpm build` green (Next.js Turbopack, 28 dynamic routes)
 - **Core V2 Architecture Baseline Established**:
   - `lib/jarvis-core/types.ts`: Foundation domain types, lifecycles, and component interfaces with zero framework coupling (C1).
   - `lib/jarvis-core/capabilities/`: Canonical Capability Registry with 47 registered user-facing capabilities across 12 domains, formal classifications for 4 unexposed skill candidates, diagnostics utility, and 1:1 V1 compatibility adapter (C2).
-  - `tests/jarvis-core/capabilities.test.ts`: 12 automated tests validating integrity, unique IDs, domain coverage, action classes, network isolation, and V1 compatibility.
+  - `lib/jarvis-core/capabilities/safe-boundary.ts` + `result.ts` + `json.ts` + `normalizer.ts`: Authoritative structured CapabilityResult execution gateway with deterministic JSON serialization, 14-code semantic error taxonomy, context-aware RetryHint, UNKNOWN_COMMIT distinction on external mutation timeouts, complete secret redaction, and AI SDK error containment (C3).
+  - `tests/jarvis-core/`: 3 test files, 65 automated tests validating domain contracts, capability integrity, and safe boundary execution across all 47 capabilities (100% green).
   - V1 Protection Guarantee: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
 
 **SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:

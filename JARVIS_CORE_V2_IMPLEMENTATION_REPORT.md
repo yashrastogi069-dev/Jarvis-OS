@@ -368,7 +368,7 @@ The repository capability inventory was audited and reconciled from actual sourc
 1. **`deploySkillToGithub`**: Classified **`NOT_READY`** (Safety: HIGH risk). Commits code directly to remote GitHub repositories via GitHub Contents API. Requires C4 confirmation policy and repository sandboxing before conversational agent exposure. Deferred as **D-011**.
 2. **`deleteSkill`**: Classified **`INTERNAL_ENGINE`** (Safety: HIGH risk). Irreversible database deletion cascading to `skillRuns`. Currently used exclusively by UI management components. Requires C4 two-phase confirmation before agent exposure. Deferred as **D-012**.
 3. **`proposeRefinement`**: Classified **`INTERNAL_ENGINE`** (Safety: LOW risk). Optimization routine for the Skill Factory / Loop Engine pipeline. Designed for offline runs or explicit UI buttons, not inline user chat turns. Deferred as **D-013**.
-4. **`discoverSkillCandidates`**: Classified **`BACKGROUND`** (Safety: MEDIUM risk). Scans SQLite history to draft candidate skills. Batch background discovery routine. Deferred as **D-005**.
+4. **`discoverSkillCandidates`**: Classified **`BACKGROUND`** (Safety: MEDIUM risk). Scans SQLite history to draft candidate skills. Batch background discovery routine. Deferred as **D-014**.
 * **Verdict**: None of the 4 functions are exposed to the agent in C2.
 
 ### 5. V1 Compatibility Architecture
@@ -388,5 +388,132 @@ The repository capability inventory was audited and reconciled from actual sourc
 
 ---
 
-*End of Checkpoint C2 Report.*
+## Checkpoint C3 — Structured Capability Result, Error Normalization & Safe Execution Boundary
+
+**Status**: COMPLETE  
+**Date**: 2026-09-19  
+**Branch**: `jarvis-core-v2`  
+**Baseline / Scope**: All 47 registered capabilities across 12 domains wired to single safe boundary.
+
+---
+
+### 1. Executive Summary & Objective
+
+Checkpoint C3 establishes the single, authoritative, JSON-safe execution boundary (`executeCapabilitySafely`) for Jarvis Core V2. 
+
+Prior to C3, 26 out of 47 tools threw unhandled runtime exceptions when connectors were offline, unconfigured, or when invalid parameters were passed (e.g. `completeTask` throwing unhandled `Task not found`, `saveAsSkill` throwing SQLite constraint failures, `getGithubNotifications` throwing missing token errors). In V1, these uncaught exceptions crashed the AI SDK streaming HTTP connection or forced uncontrolled model retry loops. Furthermore, raw error messages risked leaking API keys, credentials, or Bearer tokens to the client or log stream.
+
+Checkpoint C3 completely eliminates uncaught capability crashes by enforcing three architectural guarantees:
+1. **Deterministic Return Envelope**: Every capability call returns a typed discriminated union `CapabilityResult<T>` (`CapabilitySuccess<T>` vs `CapabilityFailure`).
+2. **Context-Sensitive Error Taxonomy**: 14 finite semantic error codes paired with context-sensitive `RetryHint` guidance (`DO_NOT_RETRY`, `SAFE_TO_RETRY`, `REQUIRES_POLICY`).
+3. **Mutation Uncertainty Preservation (`UNKNOWN_COMMIT`)**: External mutations experiencing timeouts or network disconnections are strictly preserved as `UNKNOWN_COMMIT` with `REQUIRES_POLICY`. They are never blindly retried or falsely marked succeeded.
+4. **Deterministic JSON Serialization**: Payloads crossing the boundary are strictly normalized via `toJsonValue()`, stripping undefined, formatting Dates/BigInts, detecting circular references, and rejecting raw Error/Function instances.
+5. **Universal Secret Redaction**: All error text and diagnostic logs are scrubbed of Bearer tokens, GitHub PATs, Google API keys, Slack tokens, Telegram tokens, passwords, and dynamic environment secrets.
+
+---
+
+### 2. Component Deliverables Ledger
+
+| File / Component | Purpose | Key Invariants |
+| :--- | :--- | :--- |
+| **`lib/jarvis-core/capabilities/result.ts`** | Core Result & Error Types | Discriminated union `CapabilityResult<T>`, 14 `CapabilityErrorCode` values, 3 `RetryHint` states, `CapabilityExecutionMetadata`, `CapabilityExecutionContext`, `CapabilityOperationalError`. |
+| **`lib/jarvis-core/capabilities/json.ts`** | Deterministic JSON Normalization | `toJsonValue()`: BigInt to string, Date to ISO string, NaN/Infinity to null, omits undefined, cycle detection via `WeakSet`, rejects raw Error/Function/Symbol. |
+| **`lib/jarvis-core/capabilities/normalizer.ts`** | Error Classification & Secret Redaction | `sanitizeSecrets()` multi-pattern scrubbing, `normalizeError()` pipeline classifying Zod errors, HTTP codes (400-5xx), SQLite constraint collisions, Abort/Timeout, and legacy connector error strings. |
+| **`lib/jarvis-core/capabilities/safe-boundary.ts`** | Safe Execution Gateway | `executeCapabilitySafely<T>()`: Central invocation boundary resolving by ID or definition, validating Zod inputSchema, catching cancellations, inspecting legacy `{ error: string }` outputs, normalizing all exceptions, and logging server-side defects (`[JarvisCore:Defect]`). |
+| **`lib/jarvis-core/capabilities/registry.ts`** | Registry Adapter Integration | Updated `toAiSdkTool()` to pass execution through `executeCapabilitySafely()`, returning structured error objects instead of throwing into the agent loop. Added `executeSafely()` method. |
+| **`tests/jarvis-core/result-boundary.test.ts`** | Verification Test Suite | 39 automated unit tests verifying result contracts, all 14 error codes, retry hints, mutation uncertainty, schema validation, cancellation, JSON edge cases, secret redaction, all 47 capability executions, AI SDK adapter behavior, <1ms overhead benchmark, and framework decoupling. |
+
+---
+
+### 3. Authoritative Semantic Error Taxonomy (14 Codes)
+
+| Error Code | Semantic Definition | Default RetryHint | Example Triggers |
+| :--- | :--- | :--- | :--- |
+| `INVALID_INPUT` | Malformed arguments, schema validation failure, missing required fields. | `DO_NOT_RETRY` | Zod validation error on `tasks.create`, missing parameter. |
+| `UNCONFIGURED` | Required environment variable or local service configuration missing. | `DO_NOT_RETRY` | `GITHUB_TOKEN is not set`, `Obsidian is not configured`. |
+| `AUTH_REQUIRED` | OAuth token expired, invalid PAT, or authentication failure. | `DO_NOT_RETRY` | Google OAuth token refresh failed, 401 Unauthorized. |
+| `PERMISSION_DENIED` | Insufficient privileges or forbidden access. | `DO_NOT_RETRY` | HTTP 403 Forbidden, scope missing. |
+| `NOT_FOUND` | Target entity does not exist. | `DO_NOT_RETRY` | `completeTask(999999)`, missing note, missing memory. |
+| `CONFLICT` | Concurrent modification or incompatible state conflict. | `DO_NOT_RETRY` | HTTP 409 Conflict. |
+| `ALREADY_EXISTS` | Unique constraint collision. | `DO_NOT_RETRY` | Duplicate wake word phrase, duplicate skill name. |
+| `RATE_LIMITED` | Upstream API rate limit exceeded. | `SAFE_TO_RETRY` (Read-only) | HTTP 429 Too Many Requests (Tavily, Serper, GitHub). |
+| `TIMEOUT` | Request timed out before completion. | `SAFE_TO_RETRY` (Read-only) | HTTP/fetch timeout on `READ_ONLY` research query. |
+| `NETWORK_ERROR` | Transport/network failure before commit. | `SAFE_TO_RETRY` (Read-only) | `fetch failed`, `ECONNRESET` on `READ_ONLY` query. |
+| `SERVICE_UNAVAILABLE`| Local sidecar or remote server unreachable. | `SAFE_TO_RETRY` (Read-only) | HTTP 503, connection refused. |
+| `CANCELLED` | Explicitly aborted by client or signal. | `DO_NOT_RETRY` | `AbortSignal.abort()` before or during execution. |
+| `UNKNOWN_COMMIT` | Side effect dispatched, but confirmation dropped/timed out; outcome uncertain. | `REQUIRES_POLICY` | Timeout or network break during `EXTERNAL_CREATE`, `EXTERNAL_UPDATE`, `EXTERNAL_SEND`, `EXTERNAL_DELETE`. |
+| `INTERNAL_ERROR` | Unhandled programming defect or runtime invariant failure. | `DO_NOT_RETRY` | Circular structure, unhandled non-JSON type, code defect. |
+
+---
+
+### 4. RetryHint Semantics & Mutation Uncertainty
+
+The naive boolean flag `retryable: boolean` is explicitly replaced with context-sensitive `RetryHint`:
+1. `DO_NOT_RETRY`: Permanent failure. Repeating the call with identical inputs will fail identically (e.g. invalid arguments, unconfigured credentials, revoked tokens, missing resources).
+2. `SAFE_TO_RETRY`: Idempotent read or transient failure. Safe to retry automatically via exponential backoff (e.g. web search rate limit, fetch page read timeout, network disconnect on GET).
+3. `REQUIRES_POLICY`: External mutation outcome uncertain. **Invariant: An operation with `UNKNOWN_COMMIT` MUST NEVER be automatically re-executed.** Replaying an unverified external email send or issue creation risks duplicate real-world side effects. It requires policy review or manual verification before replay.
+
+---
+
+### 5. Deterministic JSON Safety & Secret Sanitization
+
+#### JSON Transformation Rules
+- **BigInt**: Serialized to string (`1234567890123456789n` -> `"1234567890123456789"`).
+- **Date**: Serialized to ISO 8601 string (`new Date()` -> `"2026-09-19T12:00:00.000Z"`).
+- **NaN / Infinity / -Infinity**: Normalized to `null`.
+- **Undefined Object Properties**: Omitted completely from serialized object keys.
+- **Circular Structures**: Detected via `WeakSet` tracking; safely throws `CapabilityOperationalError("INTERNAL_ERROR")` which is caught by the boundary and returned as a structured failure.
+- **Raw Errors & Functions**: Prohibited in data payloads; rejected as `INTERNAL_ERROR`.
+
+#### Secret Redaction Engine (`sanitizeSecrets`)
+- Strips Bearer authorization headers (`Authorization: Bearer [REDACTED]`).
+- Strips GitHub Personal Access Tokens (`(?:ghp_|github_pat_)[A-Za-z0-9_]{15,}` -> `[REDACTED_GITHUB_TOKEN]`).
+- Strips Google API keys (`AIzaSy...` -> `[REDACTED_GOOGLE_KEY]`).
+- Strips Slack tokens (`xox[baprs]-...` -> `[REDACTED_SLACK_TOKEN]`).
+- Strips Telegram bot tokens (`bot[0-9]{8,10}:...` -> `[REDACTED_TELEGRAM_TOKEN]`).
+- Strips key/password assignments (`password=[REDACTED]`, `api_key=[REDACTED]`).
+- Dynamically redacts all configured secrets in `process.env` (e.g. `GITHUB_TOKEN`, `GOOGLE_CLIENT_SECRET`, `TAVILY_API_KEY`, `SERPER_API_KEY`, `FIRECRAWL_API_KEY`, `TELEGRAM_BOT_TOKEN`).
+
+---
+
+### 6. Verification Evidence & Test Metrics
+
+1. **TypeScript Typecheck (`pnpm typecheck`)**:
+   - Command: `tsc --noEmit`
+   - Result: **0 errors** (code 0).
+2. **C3 Dedicated Test Suite (`tests/jarvis-core/result-boundary.test.ts`)**:
+   - Command: `npx vitest run tests/jarvis-core/result-boundary.test.ts`
+   - Result: **39 tests passed (100% green)** in 3.41s.
+3. **All Jarvis Core V2 Tests (`tests/jarvis-core/`)**:
+   - Command: `npx vitest run tests/jarvis-core/`
+   - Result: **3 test files, 65 tests passed (100% green)** in 3.92s:
+     - `types.test.ts`: 14 tests
+     - `capabilities.test.ts`: 12 tests
+     - `result-boundary.test.ts`: 39 tests
+4. **Full Repository Test Suite (`pnpm test`)**:
+   - Command: `vitest run`
+   - Result: **9 test files, 100 tests passed (100% green)** in 26.03s. Zero regressions across entire repository.
+5. **Next.js Production Build (`pnpm build`)**:
+   - Command: `next build`
+   - Result: **Compiled successfully in 17.6s, TypeScript finished in 22.0s, all 28 API routes generated**.
+6. **Performance Overhead Benchmark**:
+   - Measured average invocation overhead through `executeCapabilitySafely`: **0.04ms / call** (benchmark gate is <1.0ms).
+7. **Framework Independence Check**:
+   - Automated regex verification across `result.ts`, `json.ts`, `normalizer.ts`, `safe-boundary.ts`, and `registry.ts` proves **zero imports from React, Next.js, or ToolLoopAgent**.
+
+---
+
+### 7. Scope Boundaries & Explicit Non-Goals for C3
+
+The following systems are explicitly deferred and were NOT implemented in C3:
+- **C4 Confirmation Policy**: Confirmation engine, confirmation tokens, and preview generators are queued for C4.
+- **C5 Persistent Operation Ledger**: SQLite `operations` table, transaction wrapping, and persistent `dedupeKey` tracking are queued for C5.
+- **C6 Ambiguity Classification**: Intent classifier and clarification prompts are queued for C6.
+- **C7 Capability Router**: Strategy E dynamic routing and tool pruning are queued for C7.
+- **C14 /api/chat Cutover**: Production chat endpoint cutover will occur only after C20–C22 verification gates. V1 runtime in `lib/` remains active and functional.
+
+---
+
+*End of Checkpoint C3 Report.*
+
 

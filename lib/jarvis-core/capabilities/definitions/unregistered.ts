@@ -65,7 +65,7 @@ export const UNREGISTERED_CANDIDATES: ReadonlyArray<UnregisteredCandidateInfo> =
     safetyRisk: "MEDIUM",
     rationale:
       "Batch background discovery routine intended for scheduled jobs or explicit UI trigger in the Skill Factory dashboard. Giving this to the conversational agent during a chat turn causes latency spikes.",
-    targetCheckpoint: "Phase 7 / D-005",
-    deferredCode: "D-005",
+    targetCheckpoint: "Phase 7 / D-014",
+    deferredCode: "D-014",
   },
 ]

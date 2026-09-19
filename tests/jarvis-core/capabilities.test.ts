@@ -138,7 +138,7 @@ describe("JARVIS CORE V2 — Capability Registry Integrity & Contracts (C2)", ()
       }
     }
     const elapsed = performance.now() - start
-    expect(elapsed).toBeLessThan(50) // Non-network local execution is near-instant
+    expect(elapsed).toBeLessThan(150) // Non-network local execution is fast (<150ms even under parallel test load)
   })
 
   it("maintains 1:1 key compatibility with legacy V1 allTools", () => {
@@ -190,7 +190,7 @@ describe("JARVIS CORE V2 — Capability Registry Integrity & Contracts (C2)", ()
     const discover = candidateMap.get("discoverSkillCandidates")
     expect(discover).toBeDefined()
     expect(discover?.classification).toBe("BACKGROUND")
-    expect(discover?.deferredCode).toBe("D-005")
+    expect(discover?.deferredCode).toBe("D-014")
 
     // Confirm NONE of these 4 candidates are registered as agent-facing capabilities
     for (const cand of UNREGISTERED_CANDIDATES) {

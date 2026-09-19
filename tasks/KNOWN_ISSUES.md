@@ -6,13 +6,14 @@ This document tracks verified defects and architectural risks in the Jarvis repo
 
 ### ISSUE-001: Unprotected `deleteTask` Exception Crash on Retry / Missing ID
 - **Severity**: HIGH
-- **Component**: `lib/tasks.ts`, `lib/agent.ts` (`taskTools`)
-- **Status**: CONFIRMED & REPRODUCED
+- **Component**: `lib/tasks.ts`, `lib/agent.ts` (`taskTools`), `lib/jarvis-core/capabilities/safe-boundary.ts`
+- **Status**: CONTAINED IN C3 SAFE BOUNDARY (Confirmation pending in C4, Loop cutover in C14)
 - **Description**: Calling `deleteTask` with a non-existent or previously deleted task ID triggers `requireTask(id)`, which throws `new Error(\`Task \${id} not found\`)`. In the current `ToolLoopAgent`, this unhandled exception crashes the execution loop. Furthermore, `deleteTask` possesses ZERO confirmation protection, allowing the model to permanently destroy tasks on a single turn without user consent.
 - **Evidence**: `tests/idempotency_audit.test.ts` line 124, `tests/tool_contracts_audit.test.ts` line 185.
-- **Resolution Plan**:
-  1. Wrap in `ToolResult<T>` boundary (Checkpoint C3) returning `{ success: false, error: "Task not found", recoverable: true }`.
-  2. Register in Central Action Policy (Checkpoint C4) requiring confirmation before hard deletion.
+- **Resolution Status**:
+  1. [x] **Contained in C3**: Safe capability execution boundary (`executeCapabilitySafely`) normalizes missing task errors into `{ success: false, error: { code: "NOT_FOUND", retryHint: "DO_NOT_RETRY" } }` rather than throwing uncaught exceptions. Verified in `tests/jarvis-core/result-boundary.test.ts`.
+  2. [ ] **Pending C4**: Register in Central Action Policy requiring user confirmation before hard deletion.
+  3. [ ] **Pending C14**: Connect V2 runtime loop to `/api/chat`.
 
 ---
 

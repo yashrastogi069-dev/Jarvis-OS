@@ -111,12 +111,65 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - All 4 unexposed skill candidates formally classified with safety rationale and tracked in deferral register.
 
 ### Deferred
-- Items D-011 (`deploySkillToGithub`), D-012 (`deleteSkill`), D-013 (`proposeRefinement`) logged in `tasks/DEFERRED.md`.
+- Items D-011 (`deploySkillToGithub`), D-012 (`deleteSkill`), D-013 (`proposeRefinement`), D-014 (`discoverSkillCandidates`) logged in `tasks/DEFERRED.md`.
 
 ### Commit & Push
 - **Commit**: `3713e40` (*"feat(core-v2): add canonical capability registry"*)
 - **Push**: `origin/jarvis-core-v2` (pending remote sync)
 
 ### Next
-- Checkpoint C3: Structured ToolResult Boundary (`lib/jarvis-core/capabilities/result-boundary.ts`).
+- Checkpoint C3: Structured ToolResult Boundary (`lib/jarvis-core/capabilities/result.ts`, `safe-boundary.ts`). (COMPLETE)
+
+---
+
+## [2026-09-19] Checkpoint C3 — Structured Capability Result, Error Normalization & Safe Execution Boundary
+- **Status**: COMPLETE
+- **Corpus / Baseline**: 47 registered capabilities across 12 domains; all 47 verified through boundary.
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/capabilities/result.ts`:
+  - `CapabilityResult<T>` discriminated union (`CapabilitySuccess<T>` vs `CapabilityFailure`).
+  - Strict 14-code semantic error taxonomy (`INVALID_INPUT`, `UNCONFIGURED`, `AUTH_REQUIRED`, `PERMISSION_DENIED`, `NOT_FOUND`, `CONFLICT`, `ALREADY_EXISTS`, `RATE_LIMITED`, `TIMEOUT`, `NETWORK_ERROR`, `SERVICE_UNAVAILABLE`, `CANCELLED`, `UNKNOWN_COMMIT`, `INTERNAL_ERROR`).
+  - Context-aware `RetryHint` vocabulary (`DO_NOT_RETRY`, `SAFE_TO_RETRY`, `REQUIRES_POLICY`).
+  - Branded execution metadata (`CapabilityExecutionMetadata` with `traceId`, `capabilityId`, `durationMs`, `attempt`).
+  - `CapabilityOperationalError` helper class for domain-level typed failure emission.
+- Created `lib/jarvis-core/capabilities/json.ts`:
+  - `toJsonValue()` deterministic serializer: converts `BigInt` to string, `Date` to ISO string, `NaN`/`Infinity` to null, omits `undefined` properties.
+  - Cycle detection using `WeakSet` throwing typed `INTERNAL_ERROR`.
+  - Rejection of raw `Error` instances, functions, and symbols in data payloads.
+- Created `lib/jarvis-core/capabilities/normalizer.ts`:
+  - Comprehensive `sanitizeSecrets()` utility redacting Bearer tokens, GitHub PATs (`ghp_`), Google API keys (`AIzaSy`), Slack tokens (`xoxb-`), Telegram tokens (`bot...`), passwords, and dynamic `process.env` secrets.
+  - Semantic `normalizeError()` pipeline classifying Zod validation errors, HTTP status codes (400, 401, 403, 404, 409, 429, 5xx), SQLite constraint collisions, timeouts/aborts, and connector failure strings.
+  - Invariant preservation: uncertain external mutations with timeouts or network failures are mapped strictly to `UNKNOWN_COMMIT` with `REQUIRES_POLICY`.
+- Created `lib/jarvis-core/capabilities/safe-boundary.ts`:
+  - `executeCapabilitySafely<T>()` single-gateway execution boundary.
+  - Safe input validation against `inputSchema.safeParse()`.
+  - AbortSignal cancellation checks returning `CANCELLED`.
+  - Legacy output inspection converting `{ error: string }` returns (e.g. `webSearch`, `fetchPage`) to structured `CapabilityFailure`.
+  - Catches all thrown exceptions, formats via `normalizeError`, and logs server-side defects (`[JarvisCore:Defect]`) with sanitized stacks.
+- Updated `lib/jarvis-core/capabilities/registry.ts`:
+  - `toAiSdkTool()` adapter executes capabilities through `executeCapabilitySafely()`, returning structured error representations rather than throwing unhandled exceptions into the AI SDK agent loop.
+  - Added `executeSafely()` method on `CapabilityRegistry` and global convenience export.
+- Created `tests/jarvis-core/result-boundary.test.ts`:
+  - 39 automated vitest unit tests verifying discriminated unions, all 14 error codes, schema validation, cancellation, JSON serialization, secret redaction, mutation uncertainty, legacy error normalization, domain failures, all 47 capability invocations, AI SDK adapter behavior, <1ms overhead benchmark, and framework decoupling.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/`: PASS (3 test files, 65 tests, 100% green)
+- `pnpm test` (full repository suite): PASS (9 test files, 100 tests, 100% green)
+- `pnpm build`: PASS (Next.js 16.2.6 Turbopack in 17.6s, TypeScript in 22.0s, 28 dynamic API routes)
+
+### Review
+- Zero uncaught exceptions escape capability execution.
+- V1 runtime in `lib/` remains 100% untouched and functional.
+- Zero coupling to React, Next.js, or ToolLoopAgent in core boundary files.
+- Overhead benchmark confirms sub-millisecond execution (<1ms/call) through boundary.
+
+### Commit & Push
+- **Commit**: (pending)
+- **Push**: `origin/jarvis-core-v2`
+
+### Next
+- Checkpoint C4: Central Action & Confirmation Policy (`lib/jarvis-core/safety/policy.ts`).
+
 

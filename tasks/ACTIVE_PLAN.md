@@ -1,7 +1,7 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
 ## Current Milestone: Milestone 0 — Repository Truth, Substrate Hardening & Core Architecture Baseline
-## Current Checkpoint: C2 — Canonical Capability Registry & Classification (COMPLETE)
+## Current Checkpoint: C4 — Central Action & Confirmation Policy (QUEUED)
 
 ---
 
@@ -29,27 +29,36 @@
   - `lib/jarvis-core/capabilities/registry.ts`
   - `lib/jarvis-core/capabilities/diagnostics.ts`
   - `tests/jarvis-core/capabilities.test.ts`
-- **Verification Evidence**:
-  - `pnpm typecheck` (`tsc --noEmit`): 0 errors
-  - `vitest run tests/jarvis-core/capabilities.test.ts`: 12/12 tests passing in 41ms
-  - `pnpm test`: 8 test files, 61 tests, 100% green pass in 26.07s
-  - `pnpm build`: Next.js 16.2.6 Turbopack build 100% green (28 routes)
 - **Status**: COMPLETE.
-- **Next Checkpoint**: C3 — Structured ToolResult Boundary (QUEUED — Awaiting User Directive).
 
 ---
 
-## Queued Roadmap: Checkpoints C3 through C23
+### Checkpoint C3 Specification (COMPLETE)
+- **Objective**: Ensure every Jarvis Core V2 capability crosses one deterministic, typed, JSON-safe execution boundary so expected operational failures become structured data instead of thrown exceptions, while unexpected programming defects remain observable and cannot disappear silently.
+- **Dependencies**: C1 (`lib/jarvis-core/types.ts`), C2 (`lib/jarvis-core/capabilities/`).
+- **Files Created / Modified**:
+  - `lib/jarvis-core/capabilities/result.ts` (CapabilityResult, CapabilitySuccess, CapabilityFailure, CapabilityError, 14 error codes, 3 retry hints, operational error class)
+  - `lib/jarvis-core/capabilities/json.ts` (Deterministic JSON normalization, sanitization, BigInt/Date conversion, circular detection, Error rejection)
+  - `lib/jarvis-core/capabilities/normalizer.ts` (Error normalizer: HTTP status codes, SQLite codes, Zod errors, Abort/Timeout, UNKNOWN_COMMIT distinction, complete secret redaction)
+  - `lib/jarvis-core/capabilities/safe-boundary.ts` (executeCapabilitySafely central boundary)
+  - `lib/jarvis-core/capabilities/registry.ts` (wired executeCapabilitySafely into toAiSdkTool and registry exports)
+  - `tests/jarvis-core/result-boundary.test.ts` (39 comprehensive test cases, 100% green)
+- **Tests & Verification**:
+  - `pnpm typecheck` (tsc --noEmit) -> 0 errors
+  - `vitest run tests/jarvis-core/` -> 3 test files, 65 tests passed (100% green)
+  - `pnpm test` -> 9 test files, 100 tests passed (100% green)
+  - `pnpm build` -> Next.js Turbopack build succeeded, 28 routes generated
+- **Status**: COMPLETE.
+
+---
+
+## Queued Roadmap: Checkpoints C4 through C23
 
 ### Phase 1: Core Substrate & Capability Registry (Checkpoints C2 – C5)
 - [x] **C1: Jarvis Core V2 Domain Types & Runtime Interfaces (COMPLETE)**
 - [x] **C2: Canonical Capability Registry & Classification (COMPLETE)**
-  - Path: `lib/jarvis-core/capabilities/`
-  - Single registry for 47 registered tools across 12 domains; formal classification of 4 unexposed skill candidates (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`). 1:1 V1 compatibility verified.
-- [ ] **C3: Structured ToolResult Boundary (QUEUED)**
-  - Path: `lib/jarvis-core/capabilities/result-boundary.ts`
-  - Catches all exceptions, formats standardized `{ success, data, error, metadata, retryable }` envelopes, prevents raw stack crashes.
-- [ ] **C4: Central Action & Confirmation Policy**
+- [x] **C3: Structured Capability Result & Safe Execution Boundary (COMPLETE)**
+- [ ] **C4: Central Action & Confirmation Policy (QUEUED)**
   - Path: `lib/jarvis-core/safety/policy.ts`
   - Runtime-enforced gate for dangerous operations (`deleteTask`, external sends, irreversible mutations) with confirmed tokens.
 - [ ] **C5: Persistent Operation Ledger**

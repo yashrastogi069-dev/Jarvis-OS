@@ -80,3 +80,22 @@
 - **Consequences**:
   - *Positive*: Single authoritative source of truth; zero network calls on import; 100% backward compatibility with V1 `allTools`; compile-time and runtime integrity validation.
   - *Negative*: Metadata must be kept synchronized if new connector capabilities are added.
+
+---
+
+## ADR-007: Structured Capability Result, Error Normalization & Safe Execution Boundary
+- **Status**: ACCEPTED
+- **Date**: 2026-09-19
+- **Context**: In Jarvis V1, 26 out of 47 tools threw unhandled runtime exceptions when connectors were unconfigured or invalid parameters were passed (e.g. `completeTask` throws `Task not found`, `saveAsSkill` throws SQLite unique constraint error, `getGithubNotifications` throws missing token error). When an unhandled error was thrown into the Vercel AI SDK tool loop, it either crashed the streaming HTTP response or forced an uncontrolled model retry. Furthermore, raw error messages risked leaking API keys, credentials, or Bearer tokens.
+- **Decision**: Implement a single deterministic execution gateway (`executeCapabilitySafely`) in `lib/jarvis-core/capabilities/safe-boundary.ts`:
+  1. *Typed Discriminated Union*: Every capability returns `CapabilityResult<T>`, strictly discriminated by `success: boolean` into `CapabilitySuccess<T>` and `CapabilityFailure`.
+  2. *Deterministic JSON Normalization*: Data payloads are serialized via `toJsonValue()`, converting `BigInt` to string, `Date` to ISO string, `NaN`/`Infinity` to null, detecting circular structures (WeakSet), and rejecting raw Error/Function instances.
+  3. *Finite Semantic Error Taxonomy*: Standardized 14-code vocabulary (`INVALID_INPUT`, `UNCONFIGURED`, `AUTH_REQUIRED`, `PERMISSION_DENIED`, `NOT_FOUND`, `CONFLICT`, `ALREADY_EXISTS`, `RATE_LIMITED`, `TIMEOUT`, `NETWORK_ERROR`, `SERVICE_UNAVAILABLE`, `CANCELLED`, `UNKNOWN_COMMIT`, `INTERNAL_ERROR`).
+  4. *Context-Aware Retry Hints*: Strict `RetryHint` vocabulary (`DO_NOT_RETRY`, `SAFE_TO_RETRY`, `REQUIRES_POLICY`). Read-only actions can safely retry transient transport errors; uncertain external mutations require policy evaluation before replay.
+  5. *Preservation of Mutation Uncertainty (`UNKNOWN_COMMIT`)*: Any timeout, network break, or 5xx server response occurring during external mutations (`EXTERNAL_CREATE`, `EXTERNAL_UPDATE`, `EXTERNAL_SEND`, `EXTERNAL_DELETE`) is classified as `UNKNOWN_COMMIT` with `REQUIRES_POLICY`. It is NEVER marked `SAFE_TO_RETRY` or falsely marked succeeded.
+  6. *Secret Redaction*: Central `sanitizeSecrets()` utility automatically redacts Bearer tokens, GitHub PATs, Google keys, Slack/Telegram tokens, passwords, and process environment variables from all error text and diagnostic logs.
+  7. *AI SDK Adapter Containment*: `CapabilityRegistry.toAiSdkTool()` wraps handlers in `executeCapabilitySafely()`, returning structured error objects instead of throwing into the agent loop.
+- **Consequences**:
+  - *Positive*: Complete elimination of uncaught tool crashes; zero secret leakage in error messages; deterministic JSON serialization; clear retry guidance for future C5 ledger and C14 orchestration loops; sub-millisecond overhead (<1ms).
+  - *Negative*: Domain errors must be mapped through the normalizer; callers must check `result.success`.
+
