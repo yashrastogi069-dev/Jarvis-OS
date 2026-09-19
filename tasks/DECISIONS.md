@@ -63,4 +63,20 @@
   4. *Completion Verifier*: Ensures all planned subgoals are completed before delegating to the Finalizer.
 - **Consequences**:
   - *Positive*: Total execution safety; no unhandled tool exceptions crashing the agent stream; predictable latency; parallel step execution where dependencies permit.
-  - *Negative*: Adds planner step latency for complex goals; simple one-turn requests must bypass the DAG planner via a Fast Path (ADR-006).
+  - *Negative*: Adds planner step latency for complex goals; simple one-turn requests must bypass the DAG planner via a Fast Path.
+
+---
+
+## ADR-006: Canonical Capability Registry & V1 Tool Decoupling
+- **Status**: ACCEPTED
+- **Date**: 2026-09-19
+- **Context**: In Jarvis V1, tool definitions were coupled directly to the Vercel AI SDK `tool()` wrapper and scattered across `lib/agent.ts`, `lib/research.ts`, and individual connector files. Tool hints in system prompts frequently drifted from real tool names. Four functions in `lib/skills.ts` were implemented but unregistered.
+- **Decision**: Introduce a single authoritative `CapabilityRegistry` in `lib/jarvis-core/capabilities/` with:
+  1. *Stable Namespaced IDs*: Hierarchical identifiers (e.g. `tasks.create`, `google.mail.message.send`, `obsidian.notes.search`) mapped to legacy tool names (`createTask`, `sendGmail`, `searchNotes`).
+  2. *Finite Domain Vocabulary*: Exactly 12 operational domains (`tasks`, `memory`, `research`, `skills`, `feed`, `wake_words`, `preferences`, `github`, `google`, `apple`, `telegram`, `obsidian`) + `system`.
+  3. *Static Metadata Only*: Explicit `ActionClass`, confirmation policy expectations, idempotency classes, and static auth requirements. Does NOT enforce C3 ToolResult boundaries, C4 policy gating, or C5 ledger writes prematurely.
+  4. *Decoupled Adapters*: `toAiSdkTool` and `getV1CompatibilityTools()` provide adapters for Vercel AI SDK consumption without coupling core capability definitions to `ToolLoopAgent`.
+  5. *Unregistered Skill Functions*: Formally classified `deploySkillToGithub` (NOT_READY, D-011), `deleteSkill` (INTERNAL_ENGINE, D-012), `proposeRefinement` (INTERNAL_ENGINE, D-013), and `discoverSkillCandidates` (BACKGROUND, D-005). None are exposed as conversational agent tools until C4/C17.
+- **Consequences**:
+  - *Positive*: Single authoritative source of truth; zero network calls on import; 100% backward compatibility with V1 `allTools`; compile-time and runtime integrity validation.
+  - *Negative*: Metadata must be kept synchronized if new connector capabilities are added.

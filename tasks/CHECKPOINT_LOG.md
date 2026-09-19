@@ -78,4 +78,45 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - **Push**: `origin/jarvis-core-v2` (verified: YES)
 
 ### Next
-- Checkpoint C2: Canonical Capability Registry & Classification (`lib/jarvis-core/capabilities/`).
+- Checkpoint C2: Canonical Capability Registry & Classification (`lib/jarvis-core/capabilities/`) (COMPLETE).
+
+---
+
+## [2026-09-19] Checkpoint C2 — Canonical Capability Registry & Classification
+- **Status**: COMPLETE
+- **Corpus / Baseline**: 47 registered tools across 12 domains; 4 unexposed candidate skill functions in `lib/skills.ts`.
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/capabilities/types.ts`: typed domain vocabulary (12 domains), metadata interfaces (`CapabilityConfirmationMetadata`, `CapabilityIdempotencyMetadata`, `CapabilityRequirements`, `CapabilityAvailabilityMetadata`, `CapabilityRoutingMetadata`), `CapabilityDefinition`, `UnregisteredCandidateInfo`, `RegistryValidationResult`. Zero framework/ToolLoopAgent coupling.
+- Created `lib/jarvis-core/capabilities/definitions/`:
+  - `local.ts`: 18 local capabilities (6 tasks, 4 memory, 3 skills, 1 feed, 3 wake words, 1 preferences).
+  - `research.ts`: 2 research capabilities (webSearch, fetchPage).
+  - `connectors.ts`: 27 connector capabilities (6 GitHub, 10 Google, 5 Apple, 2 Telegram, 4 Obsidian).
+  - `unregistered.ts`: 4 formally classified candidates (`deploySkillToGithub` as NOT_READY/D-011, `deleteSkill` as INTERNAL_ENGINE/D-012, `proposeRefinement` as INTERNAL_ENGINE/D-013, `discoverSkillCandidates` as BACKGROUND/D-005).
+  - `index.ts`: canonical aggregator for all 47 definitions.
+- Created `lib/jarvis-core/capabilities/registry.ts`: `CapabilityRegistry` class and singleton `capabilityRegistry` with query methods, domain filtering, ActionClass filtering, integrity validation, `toAiSdkTool` adapter, and `getV1CompatibilityTools()` adapter.
+- Created `lib/jarvis-core/capabilities/diagnostics.ts`: developer inspection utility reporting capability counts, domain distribution, read-only vs mutation counts, confirmation/idempotency breakdowns, and static auth requirements with zero secret leakage.
+- Created `tests/jarvis-core/capabilities.test.ts`: 12 automated unit tests validating registry integrity, 47 unique capabilities, 12 domains, action classes, valid Zod schemas, executable handlers, network isolation, 1:1 V1 compatibility with `allTools`, candidate classifications, and framework decoupling.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/capabilities.test.ts`: PASS (12 tests in 41ms)
+- `pnpm test` (full suite): PASS (8 test files, 61 tests, 100% green pass in 26.07s)
+- `pnpm build`: PASS (Next.js 16.2.6 Turbopack in 18.2s, TypeScript in 22.3s, 28 dynamic API routes)
+
+### Review
+- Zero network calls on import or enumeration.
+- Zero coupling to `ToolLoopAgent` in core capability types.
+- V1 runtime in `lib/` remains 100% functional and compatible.
+- All 4 unexposed skill candidates formally classified with safety rationale and tracked in deferral register.
+
+### Deferred
+- Items D-011 (`deploySkillToGithub`), D-012 (`deleteSkill`), D-013 (`proposeRefinement`) logged in `tasks/DEFERRED.md`.
+
+### Commit & Push
+- **Commit**: `3713e40` (*"feat(core-v2): add canonical capability registry"*)
+- **Push**: `origin/jarvis-core-v2` (pending remote sync)
+
+### Next
+- Checkpoint C3: Structured ToolResult Boundary (`lib/jarvis-core/capabilities/result-boundary.ts`).
+

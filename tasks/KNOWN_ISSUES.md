@@ -17,11 +17,16 @@ This document tracks verified defects and architectural risks in the Jarvis repo
 ---
 
 ### ISSUE-002: Four Skills Capabilities Unregistered in `allTools`
-- **Severity**: MEDIUM
-- **Component**: `lib/skills.ts`, `lib/agent.ts`
-- **Status**: CONFIRMED & REPRODUCED
-- **Description**: The skill management functions `deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, and `discoverSkillCandidates` are fully implemented in `lib/skills.ts` with valid schemas and execution logic. However, they were completely omitted from `skillsTools` in `lib/agent.ts` and thus never exposed to the agent.
-- **Resolution Plan**: In Checkpoint C2, each of the four unexposed skill capabilities (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`) will be formally classified under one of: `USER_FACING`, `INTERNAL_ENGINE`, `BACKGROUND`, `NOT_READY`, or `DEPRECATED`. Only capabilities classified as `USER_FACING` that pass explicit safety and contract verification will be exposed as agent-accessible tools; internal or background functions will remain isolated.
+- **Severity**: LOW (Architecturally Reconciled)
+- **Component**: `lib/skills.ts`, `lib/jarvis-core/capabilities/definitions/unregistered.ts`
+- **Status**: RESOLVED / CLASSIFIED IN C2
+- **Description**: The skill management functions `deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, and `discoverSkillCandidates` were implemented in `lib/skills.ts` but omitted from `skillsTools` in `lib/agent.ts`.
+- **Resolution**: Formally classified in Checkpoint C2 (`lib/jarvis-core/capabilities/definitions/unregistered.ts`):
+  1. `deploySkillToGithub`: Classified `NOT_READY` (requires C4 confirmation & repository sandbox; tracked as D-011).
+  2. `deleteSkill`: Classified `INTERNAL_ENGINE` (UI component helper; requires C4 2-phase confirmation before agent exposure; tracked as D-012).
+  3. `proposeRefinement`: Classified `INTERNAL_ENGINE` (Loop Engine optimization routine; not an inline agent tool; tracked as D-013).
+  4. `discoverSkillCandidates`: Classified `BACKGROUND` (batch discovery routine; tracked as D-005).
+  None are exposed to the agent in C2. None pollute the 47 user-facing capabilities.
 
 ---
 

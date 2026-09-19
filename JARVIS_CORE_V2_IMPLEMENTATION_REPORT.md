@@ -309,4 +309,84 @@ Representative instances of `Turn`, `Quest`, `Plan`, `PlanStep`, `TraceContext`,
 
 ---
 
-*End of Checkpoint C1 & C1 Amendment Report.*
+## Checkpoint C2 — Canonical Capability Registry & Classification
+
+**Date**: 2026-09-19  
+**Status**: COMPLETE (Accepted)  
+**Corpus / Baseline**: 47 registered tools across 12 domains; 4 unexposed candidate skill functions in `lib/skills.ts`.
+
+### 1. Inventory Reconciliation & Domain Model
+The repository capability inventory was audited and reconciled from actual source:
+* Total Registered Capabilities: **47 user-facing capabilities**.
+* Domain Vocabulary: **12 canonical domains** based on actual source and routing corpus (`evals/corpora/routing_corpus_227.json`):
+  1. **tasks** (6 tools): `tasks.create`, `tasks.list`, `tasks.complete`, `tasks.snooze`, `tasks.update`, `tasks.delete`
+  2. **memory** (4 tools): `memory.save`, `memory.recall`, `memory.list`, `memory.delete`
+  3. **research** (2 tools): `research.search` (`webSearch`), `research.fetch` (`fetchPage`)
+  4. **skills** (3 tools): `skills.save` (`saveAsSkill`), `skills.list` (`listSkills`), `skills.run` (`runSkill`)
+  5. **feed** (1 tool): `feed.get` (`getUpdatesFeed`)
+  6. **wake_words** (3 tools): `wake_words.add`, `wake_words.list`, `wake_words.remove`
+  7. **preferences** (1 tool): `preferences.set` (`setPreference`)
+  8. **github** (6 tools): `github.notifications.list`, `github.prs.list`, `github.issues.list`, `github.commits.list`, `github.issue.create`, `github.issue.comment`
+  9. **google** (10 tools): `google.calendar.events.list`, `google.calendar.events.search`, `google.calendar.event.create`, `google.calendar.event.update`, `google.calendar.event.delete`, `google.mail.messages.list`, `google.mail.messages.search`, `google.mail.message.read`, `google.mail.message.send`, `google.mail.message.reply`
+  10. **apple** (5 tools): `apple.calendar.events.list`, `apple.calendar.events.search`, `apple.calendar.event.create`, `apple.calendar.event.update`, `apple.calendar.event.delete`
+  11. **telegram** (2 tools): `telegram.message.send`, `telegram.messages.get`
+  12. **obsidian** (4 tools): `obsidian.notes.search`, `obsidian.note.read`, `obsidian.note.append`, `obsidian.note.create`
+
+### 2. Registry Architecture (`lib/jarvis-core/capabilities/`)
+* **`types.ts`**: Pure domain capability definitions and metadata interfaces:
+  - Framework independent: ZERO imports from `ai`, `react`, or `next`.
+  - Reuses C1 foundation vocabulary (`CapabilityId`, `ActionClass`, `IdempotencyClass`, `CapabilityAvailability`, `JsonObject`).
+  - Metadata covers confirmation policies, idempotency risks, static requirements, non-blocking local availability checks, and routing hints.
+* **`definitions/`**:
+  - `local.ts`: 18 local capabilities (Tasks, Memory, Skills, Feed, Wake Words, Preferences).
+  - `research.ts`: 2 research capabilities (webSearch, fetchPage).
+  - `connectors.ts`: 27 connector capabilities (GitHub, Google, Apple, Telegram, Obsidian).
+  - `unregistered.ts`: 4 formally classified unexposed candidates with rationale.
+  - `index.ts`: canonical aggregator for `ALL_CAPABILITIES`.
+* **`registry.ts`**:
+  - Class `CapabilityRegistry` and singleton `capabilityRegistry`.
+  - Fast indexed lookups by `CapabilityId` and `legacyToolName`.
+  - Filtering by `domain` and `actionClass`.
+  - Runtime integrity validator `validateRegistry()` checking for unique IDs, legacy aliases, handlers, schemas, and contradictory metadata.
+  - Decoupled adapters: `toAiSdkTool` and `getV1CompatibilityTools()`.
+* **`diagnostics.ts`**:
+  - Developer diagnostic utility answering all architectural inspection queries with zero secret leakage.
+
+### 3. Action-Class & Mutation Distribution
+* **Read-Only Capabilities**: **22 tools** (`ActionClass: "READ_ONLY"`, `IdempotencyClass: "READ_ONLY"`).
+* **Mutating Capabilities**: **25 tools**:
+  - `LOCAL_CREATE`: 4 tools (`tasks.create`, `memory.save`, `skills.save`, `wake_words.add`)
+  - `LOCAL_UPDATE`: 4 tools (`tasks.complete`, `tasks.snooze`, `tasks.update`, `preferences.set`)
+  - `LOCAL_DELETE`: 3 tools (`tasks.delete`, `memory.delete`, `wake_words.remove`)
+  - `EXTERNAL_CREATE`: 4 tools (`github.issue.create`, `google.calendar.event.create`, `apple.calendar.event.create`, `obsidian.note.create`)
+  - `EXTERNAL_UPDATE`: 3 tools (`google.calendar.event.update`, `apple.calendar.event.update`, `obsidian.note.append`)
+  - `EXTERNAL_SEND`: 4 tools (`github.issue.comment`, `google.mail.message.send`, `google.mail.message.reply`, `telegram.message.send`)
+  - `EXTERNAL_DELETE`: 2 tools (`google.calendar.event.delete`, `apple.calendar.event.delete`)
+  - `SYSTEM_ACTION`: 1 tool (`skills.run`)
+
+### 4. Classification of the Four Unregistered Skill Functions
+1. **`deploySkillToGithub`**: Classified **`NOT_READY`** (Safety: HIGH risk). Commits code directly to remote GitHub repositories via GitHub Contents API. Requires C4 confirmation policy and repository sandboxing before conversational agent exposure. Deferred as **D-011**.
+2. **`deleteSkill`**: Classified **`INTERNAL_ENGINE`** (Safety: HIGH risk). Irreversible database deletion cascading to `skillRuns`. Currently used exclusively by UI management components. Requires C4 two-phase confirmation before agent exposure. Deferred as **D-012**.
+3. **`proposeRefinement`**: Classified **`INTERNAL_ENGINE`** (Safety: LOW risk). Optimization routine for the Skill Factory / Loop Engine pipeline. Designed for offline runs or explicit UI buttons, not inline user chat turns. Deferred as **D-013**.
+4. **`discoverSkillCandidates`**: Classified **`BACKGROUND`** (Safety: MEDIUM risk). Scans SQLite history to draft candidate skills. Batch background discovery routine. Deferred as **D-005**.
+* **Verdict**: None of the 4 functions are exposed to the agent in C2.
+
+### 5. V1 Compatibility Architecture
+* V1 runtime (`lib/agent.ts`, `allTools`, `ToolLoopAgent`) remains 100% functional and untouched.
+* `capabilityRegistry.getV1CompatibilityTools()` generates an exact drop-in tool dictionary matching all 47 keys of `allTools`.
+* Automated tests verify 1:1 key parity and that each tool exposes valid `description`, `inputSchema`, and `execute` functions.
+
+### 6. Verification & Test Evidence
+1. **TypeScript Typecheck (`pnpm typecheck`)**:
+   - Result: **0 errors** (`tsc --noEmit` exited with code 0).
+2. **C2 Dedicated Test Suite (`tests/jarvis-core/capabilities.test.ts`)**:
+   - Result: **12 tests passed in 41ms** (integrity, unique IDs, domains, action classes, schemas, handlers, network isolation, 1:1 V1 compatibility, candidate classifications, and framework decoupling).
+3. **Full Vitest Suite (`pnpm test`)**:
+   - Result: **8 test files, 61 tests, 100% green pass in 26.07s**.
+4. **Next.js Production Build (`pnpm build`)**:
+   - Result: **Turbopack compiled in 18.2s, TypeScript verification in 22.3s, 28 dynamic API routes generated cleanly**.
+
+---
+
+*End of Checkpoint C2 Report.*
+

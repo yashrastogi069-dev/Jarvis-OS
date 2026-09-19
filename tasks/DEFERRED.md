@@ -106,3 +106,33 @@ This document tracks valuable engineering proposals that are non-essential for t
 - **Earliest revisit**: Phase 5 token discipline review.
 - **Trigger/evidence required**: Step outputs consistently exceeding 8,000 tokens on multi-step workflows.
 - **Status**: DEFERRED
+
+---
+
+## D-011 — deploySkillToGithub Conversational Tool Exposure
+- **Description**: Exposing `deploySkillToGithub` from `lib/skills.ts` as an agent-accessible tool.
+- **Why deferred**: Pushes file changes directly to external GitHub repositories via GitHub Contents API. Requires strict repository permission sandboxing and human confirmation policy (C4) before exposure to LLM conversational turns.
+- **Dependency**: C4 (Confirmation Policy) & C17 (Skills capability migration).
+- **Earliest revisit**: Checkpoint C17.
+- **Trigger/evidence required**: C4 confirmation policy engine operational and tested on external mutations.
+- **Status**: DEFERRED
+
+---
+
+## D-012 — deleteSkill Conversational Tool Exposure
+- **Description**: Exposing `deleteSkill` from `lib/skills.ts` as an agent-accessible tool.
+- **Why deferred**: Irreversible local database deletion cascading to `skillRuns`. Currently used only by UI management components. Must be gated by a two-phase confirmation protocol (identical to `deleteMemory`) before LLM agent exposure.
+- **Dependency**: C4 (Confirmation Policy) & C17 (Skills capability migration).
+- **Earliest revisit**: Checkpoint C17.
+- **Trigger/evidence required**: Two-phase preview/approval mechanism implemented for skill deletion.
+- **Status**: DEFERRED
+
+---
+
+## D-013 — proposeRefinement Autonomous Optimization Loop
+- **Description**: Exposing `proposeRefinement` as an autonomous tool or background cron for automated skill rewriting.
+- **Why deferred**: Internal routine of the Skill Factory / Loop Engine optimization pipeline. Designed to be triggered by developer/user UI actions or offline optimization passes, not inline user chat turns.
+- **Dependency**: C17 (Skills & Loop Engine).
+- **Earliest revisit**: Checkpoint C17.
+- **Trigger/evidence required**: Skill evaluation testbed established.
+- **Status**: DEFERRED

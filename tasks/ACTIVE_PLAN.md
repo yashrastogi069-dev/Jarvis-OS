@@ -1,40 +1,52 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
 ## Current Milestone: Milestone 0 — Repository Truth, Substrate Hardening & Core Architecture Baseline
-## Current Checkpoint: C1 — Foundation Domain Types & Runtime Contracts (COMPLETE)
+## Current Checkpoint: C2 — Canonical Capability Registry & Classification (COMPLETE)
 
 ---
 
 ### Checkpoint C0 Specification (COMPLETE)
 - **Objective**: Single source of truth reconciliation, baseline verification, and governance file initialization.
-- **Status**: COMPLETE (C0 Amendment executed; Next.js 16.2.6 & pnpm confirmed; orchestration benchmark reconciled; capability inventory categorized; ADRs 001–005 recorded).
+- **Status**: COMPLETE.
 
 ---
 
 ### Checkpoint C1 Specification (COMPLETE)
 - **Objective**: Establish the smallest stable, transport-independent type system and component boundaries (`lib/jarvis-core/types.ts`) without premature implementation of C2–C5.
-- **Files Created/Modified**:
-  - `lib/jarvis-core/types.ts` (Domain types, lifecycles, and component interfaces)
-  - `tests/jarvis-core/types.test.ts` (13 unit tests for identities, lifecycles, serialization, framework independence)
-- **Tests & Builds Executed**:
-  - `pnpm typecheck` (`tsc --noEmit`): 0 errors
-  - `vitest run tests/jarvis-core/types.test.ts`: 13 passed in 15ms
-  - `pnpm test` (full suite): 7 test files, 48 tests, 100% green pass in 19.64s
-  - `pnpm build` (production build): Next.js 16.2.6 Turbopack (34.5s), TypeScript (28.4s), 28 routes green
-- **Acceptance Criteria**: ALL 20 ACCEPTANCE GATES SATISFIED.
-- **Status**: COMPLETE.
-- **Next Checkpoint**: C2 — Canonical Capability Registry & Classification (QUEUED — Awaiting User Directive).
+- **Status**: COMPLETE (C1 & C1 Amendment committed and pushed).
 
 ---
 
-## Queued Roadmap: Checkpoints C2 through C23
+### Checkpoint C2 Specification (COMPLETE)
+- **Objective**: Create one authoritative, typed representation of everything Jarvis can perform in `lib/jarvis-core/capabilities/`, while preserving V1 behavior and avoiding premature migration of later systems.
+- **Files Created**:
+  - `lib/jarvis-core/capabilities/types.ts`
+  - `lib/jarvis-core/capabilities/definitions/local.ts`
+  - `lib/jarvis-core/capabilities/definitions/research.ts`
+  - `lib/jarvis-core/capabilities/definitions/connectors.ts`
+  - `lib/jarvis-core/capabilities/definitions/unregistered.ts`
+  - `lib/jarvis-core/capabilities/definitions/index.ts`
+  - `lib/jarvis-core/capabilities/registry.ts`
+  - `lib/jarvis-core/capabilities/diagnostics.ts`
+  - `tests/jarvis-core/capabilities.test.ts`
+- **Verification Evidence**:
+  - `pnpm typecheck` (`tsc --noEmit`): 0 errors
+  - `vitest run tests/jarvis-core/capabilities.test.ts`: 12/12 tests passing in 41ms
+  - `pnpm test`: 8 test files, 61 tests, 100% green pass in 26.07s
+  - `pnpm build`: Next.js 16.2.6 Turbopack build 100% green (28 routes)
+- **Status**: COMPLETE.
+- **Next Checkpoint**: C3 — Structured ToolResult Boundary (QUEUED — Awaiting User Directive).
+
+---
+
+## Queued Roadmap: Checkpoints C3 through C23
 
 ### Phase 1: Core Substrate & Capability Registry (Checkpoints C2 – C5)
 - [x] **C1: Jarvis Core V2 Domain Types & Runtime Interfaces (COMPLETE)**
-- [ ] **C2: Canonical Capability Registry & Classification (QUEUED)**
+- [x] **C2: Canonical Capability Registry & Classification (COMPLETE)**
   - Path: `lib/jarvis-core/capabilities/`
-  - Single registry for 47 registered tools; formal classification of 4 unexposed skill candidates (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`) as `USER_FACING`, `INTERNAL_ENGINE`, `BACKGROUND`, `NOT_READY`, or `DEPRECATED`. Only verified `USER_FACING` tools become agent-accessible.
-- [ ] **C3: Structured ToolResult Boundary**
+  - Single registry for 47 registered tools across 12 domains; formal classification of 4 unexposed skill candidates (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`). 1:1 V1 compatibility verified.
+- [ ] **C3: Structured ToolResult Boundary (QUEUED)**
   - Path: `lib/jarvis-core/capabilities/result-boundary.ts`
   - Catches all exceptions, formats standardized `{ success, data, error, metadata, retryable }` envelopes, prevents raw stack crashes.
 - [ ] **C4: Central Action & Confirmation Policy**
