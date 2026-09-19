@@ -1,7 +1,8 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
 ## Current Milestone: Milestone 0 — Repository Truth, Substrate Hardening & Core Architecture Baseline
-## Current Checkpoint: C4 — Central Action & Confirmation Policy (ACTIVE)
+## Current Checkpoint: Mega Goal C4–C8 (COMPLETE — C4, C5, C6, C7, C8 & Cross-Checkpoint Integration Gate Verified)
+## Next Up: C9 — Structured DAG Planner
 
 ---
 

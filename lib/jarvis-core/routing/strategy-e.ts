@@ -121,7 +121,7 @@ export function classifyStrategyE(
     lower.includes("vault") ||
     lower.includes("note") ||
     lower.includes("github") ||
-    lower.includes("pr") ||
+    /\bprs?\b/i.test(lower) ||
     lower.includes("issue") ||
     lower.includes("telegram") ||
     lower.includes("wake word") ||
@@ -241,13 +241,13 @@ export function classifyStrategyE(
   if (
     lower.includes("github") ||
     lower.includes("pull request") ||
-    lower.includes(" pr") ||
+    /\bprs?\b/i.test(lower) ||
     lower.includes("issue") ||
     lower.includes("commits") ||
     lower.includes("notifications") ||
     lower.includes("bug report") ||
     lower.includes("owner/repo") ||
-    lower.includes("repo")
+    /\brepos?\b/i.test(lower)
   ) {
     matchedDomains.add("github")
   }

@@ -1,6 +1,6 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, C6, C7, and C8** of the **JARVIS CORE V2 MASTER PROTOCOL**.
+Status as of **2026-09-20**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, C6, C7, and C8** plus the **Cross-Checkpoint Integration Gate** of the **JARVIS CORE V2 MASTER PROTOCOL**.
 - **Active Git Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2` on `https://github.com/yashrastogi069-dev/Jarvis-OS.git`)
 - **Master Plan**: `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23)
 - **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008)
@@ -15,6 +15,8 @@ Status as of **2026-09-19**. Authoritative state of the codebase following Check
 - **Intent Analysis & Ambiguity System**: `lib/jarvis-core/intent/` & `tests/jarvis-core/intent-analysis.test.ts` (13/13 tests green)
 - **Capability Router & Shadow Evaluation**: `lib/jarvis-core/routing/` & `tests/jarvis-core/capability-router.test.ts` (23/23 tests green)
 - **Persisted Quest Engine**: `lib/jarvis-core/quest/` & `tests/jarvis-core/quest-engine.test.ts` (13/13 tests green)
+- **Cross-Checkpoint Integration Gate**: `tests/jarvis-core/integration-c4-c8.test.ts` (9/9 tests green)
+- **Total Suite Health**: 9 test files, 163/163 passed (100% green); `pnpm typecheck` 0 errors; `pnpm build` clean.
 - **Standing Rules**: `CLAUDE.md` and `tasks/lessons.md`.
 
 **Project:** a local-first personal AI operating system — "Jarvis." SQLite +
@@ -23,7 +25,7 @@ Ollama for embeddings, an MCP server so Claude Code can watch/operate the OS,
 and a from-scratch redesign into a real Iron-Man-style HUD: an open 3D stage
 with an interactive Arc Reactor and a color-driving neural network.
 
-**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoints **C0 through C8 are COMPLETE**; next immediate step is the **Cross-Checkpoint Integration Gate** (7 headless scenarios). Execution proceeds autonomously through the Mega Goal.
+**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoints **C0 through C8 and the Cross-Checkpoint Integration Gate are COMPLETE**. All trustworthy runtime foundations (Safety, Ledger, Intent, Routing, Quest Engine) are verified in place. Next checkpoint on the roadmap is **C9: Structured DAG Planner**.
 
 
 ---

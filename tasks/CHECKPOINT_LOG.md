@@ -393,14 +393,31 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - V1 runtime in `lib/` remains 100% functional and untouched.
 
 ### Commit & Push
-- **Commit**: Pending
-- **Push**: Pending
+- **Commit**: `3fe2cdc` (*"feat(core-v2): complete Checkpoint C8 persisted quest engine"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
+
+---
+
+## [2026-09-20] Cross-Checkpoint Integration Gate (C4–C8)
+- **Status**: COMPLETE
+- **Corpus / Baseline**: 7 canonical scenarios without planner + 2 crash/restart recovery invariant validations.
+
+### Scenarios & Invariant Verification
+1. **Scenario 1 (Pure Conversation)**: "Hello Jarvis, good morning! Hope you are having a productive day." -> Tagged `CHAT`, 0 tools routed, 0 operations claimed in ledger, 0 quests created in SQLite, direct chat response.
+2. **Scenario 2 (Simple Read)**: "What tasks do I have scheduled for today?" -> Tagged `READ`, routed to `tasks` domain (`listTasks`), policy evaluates `ALLOW`, executed via safe boundary without ledger mutation or quest creation.
+3. **Scenario 3 (Single Mutation)**: "Create a task called 'Deploy release v2'" -> Tagged `ACTION`, routed to `tasks` (`createTask`), policy evaluates `ALLOW`, ledger claims operation, executes through safe boundary, ledger records `SUCCEEDED`.
+4. **Scenario 4 (Destructive Without Token)**: "Delete task #42" -> Tagged `ACTION`, routed to `tasks.delete`, central policy intercepts with `REQUIRE_CONFIRMATION`, unforgeable cryptographic token issued with preview and warning, execution boundary intercepts without calling handler, zero ledger mutation.
+5. **Scenario 5 (Destructive With Token)**: "Delete task #55" -> Valid confirmation token presented, policy allows execution, handler executed, ledger claims and records success, re-submitting consumed token is strictly `BLOCKED` (replay attack prevented).
+6. **Scenario 6 (Ambiguous Destructive Request)**: "Delete that task" -> Ambiguity detector flags `AMBIGUOUS_TARGET` with `needsClarification: true`, policy returns `REQUIRE_CLARIFICATION`, zero confirmation tokens generated, execution boundary blocks before calling handler.
+7. **Scenario 7 (Multi-Step Goal Prompt)**: "Search my emails for flight confirmation and then append the itinerary to my Obsidian vault notes" -> Tagged `QUEST`, router exposes `google` and `obsidian` domains (`searchGmail`, `appendNote`), quest engine creates persistent quest and DAG steps in SQLite, executed sequentially through operation ledger with dependency validation, quest auto-completes to `SUCCEEDED` in SQLite.
+8. **Recovery 1 (Orphaned Ledger Operations on Boot)**: External mutation recovered from `RUNNING` to `UNKNOWN_COMMIT`; local mutation recovered to `FAILED_RETRYABLE`; replay of unconfirmed external mutation is blocked.
+9. **Recovery 2 (Orphaned Quests on Boot)**: Orphaned `RUNNING` quest transitioned to `SUSPENDED` with crash note; orphaned `RUNNING` steps transitioned to `PENDING` with `CRASH_RECOVERED` error code; quest cleanly resumes on supervisor instruction.
+
+### Verification
+- `vitest run tests/jarvis-core/integration-c4-c8.test.ts`: PASS (9 tests, 100% green)
+- `vitest run tests/jarvis-core/`: PASS (9 test files, 163 tests, 100% green)
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `pnpm build`: PASS (Turbopack production build clean, 28 dynamic API routes)
 
 ### Next
-- Cross-Checkpoint Integration Gate (7 headless end-to-end scenarios without planner).
-
-
-
-
-
-
+- Checkpoint C9: Structured DAG Planner (`lib/jarvis-core/planner/`).

@@ -160,9 +160,27 @@
   - `tsc --noEmit`: 0 errors
   - `vitest run tests/jarvis-core/quest-engine.test.ts`: 13 passed / 13 tests (100% green)
   - `vitest run tests/jarvis-core/`: 8 test files, 154 passed (100% green)
-  - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
-
-
-
-
+  - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.### Parts 20 & 21: Cross-Checkpoint Integration Gate & Crash Recovery
+- **Date**: 2026-09-20
+- **Status**: COMPLETE
+- **Objective**: Full end-to-end headless integration verification of the complete C4–C8 trustworthy runtime stack across all 7 canonical scenarios and 2 crash/restart recovery invariant validations.
+- **Scenarios Verified**:
+  1. *Scenario 1 (Pure Conversation)*: "Hello Jarvis, good morning! Hope you are having a productive day." -> Tagged `CHAT`, 0 tools routed, 0 operations claimed in ledger, 0 quests created in SQLite, direct chat response.
+  2. *Scenario 2 (Simple Read)*: "What tasks do I have scheduled for today?" -> Tagged `READ`, routed to `tasks` domain, policy evaluates `ALLOW`, executed via safe boundary without ledger mutation or quest creation.
+  3. *Scenario 3 (Single Mutation)*: "Create a task called 'Deploy release v2'" -> Tagged `ACTION`, routed to `tasks`, policy evaluates `ALLOW`, ledger claims operation, executes through safe boundary, ledger records `SUCCEEDED`.
+  4. *Scenario 4 (Destructive Without Token)*: "Delete task #42" -> Tagged `ACTION`, routed to `tasks.delete`, central policy intercepts with `REQUIRE_CONFIRMATION`, unforgeable cryptographic token issued with preview and warning, execution boundary intercepts without calling handler, zero ledger mutation.
+  5. *Scenario 5 (Destructive With Token)*: "Delete task #55" -> Valid confirmation token presented, policy allows execution, handler executed, ledger claims and records success, re-submitting consumed token is strictly `BLOCKED` (replay attack prevented).
+  6. *Scenario 6 (Ambiguous Destructive Request)*: "Delete that task" -> Ambiguity detector flags `AMBIGUOUS_TARGET` with `needsClarification: true`, policy returns `REQUIRE_CLARIFICATION`, zero confirmation tokens generated, execution boundary blocks before calling handler.
+  7. *Scenario 7 (Multi-Step Goal Prompt)*: "Search my emails for flight confirmation and then append the itinerary to my Obsidian vault notes" -> Tagged `QUEST`, router exposes `google` and `obsidian` domains, quest engine creates persistent quest and DAG steps in SQLite, executed sequentially through operation ledger with dependency validation, quest auto-completes to `SUCCEEDED` in SQLite.
+  8. *Recovery 1 (Orphaned Ledger Operations on Boot)*: External mutation recovered from `RUNNING` to `UNKNOWN_COMMIT`; local mutation recovered to `FAILED_RETRYABLE`; replay of unconfirmed external mutation is blocked.
+  9. *Recovery 2 (Orphaned Quests on Boot)*: Orphaned `RUNNING` quest transitioned to `SUSPENDED` with crash note; orphaned `RUNNING` steps transitioned to `PENDING` with `CRASH_RECOVERED` error code; quest cleanly resumes on supervisor instruction.
+- **Files Created / Updated**:
+  - `lib/jarvis-core/capabilities/index.ts` (barrel export for capabilities)
+  - `lib/jarvis-core/routing/strategy-e.ts` (refined word boundary detection for PR and repo signals)
+  - `tests/jarvis-core/integration-c4-c8.test.ts` (full 9-test integration test harness)
+- **Verification Evidence**:
+  - `vitest run tests/jarvis-core/integration-c4-c8.test.ts`: 9/9 passed (100% green)
+  - `vitest run tests/jarvis-core/`: 9 test suites, 163/163 passed (100% green)
+  - `tsc --noEmit`: 0 errors
+  - `pnpm build`: Clean production build (Next.js Turbopack) with 28 dynamic API routes.
 

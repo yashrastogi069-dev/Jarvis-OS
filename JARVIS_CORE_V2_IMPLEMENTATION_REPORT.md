@@ -658,9 +658,76 @@ Checkpoint C8 implements the SQLite-persisted multi-step quest engine in `lib/ja
 
 *End of Checkpoint C8 Report.*
 
+---
 
+## Cross-Checkpoint Integration Gate Report (C4–C8)
 
+### 1. Executive Summary
+The Cross-Checkpoint Integration Gate (`tests/jarvis-core/integration-c4-c8.test.ts`) verifies the unified, end-to-end integration of the complete C4–C8 trustworthy runtime stack WITHOUT requiring a planner. It exercises the combined execution flow across:
+- `lib/jarvis-core/intent/` (C6 Intent & Ambiguity System)
+- `lib/jarvis-core/routing/` (C7 Capability Router)
+- `lib/jarvis-core/safety/` (C4 Central Action Safety Policy)
+- `lib/jarvis-core/ledger/` (C5 Persistent Operation Ledger)
+- `lib/jarvis-core/capabilities/safe-boundary.ts` (C3 Safe Execution Boundary)
+- `lib/jarvis-core/quest/` (C8 Persisted Quest Engine)
 
+### 2. Seven Canonical Scenarios Verified
+1. **Scenario 1 (Pure Conversation)**:
+   - Input: `"Hello Jarvis, good morning! Hope you are having a productive day."`
+   - Intent tagged: `CHAT` (`needsClarification: false`).
+   - Router exposes: 0 tools.
+   - Ledger claims: 0 operations.
+   - Quests created: 0.
+   - Behavior: Direct conversation response without tool invocation overhead.
+2. **Scenario 2 (Simple Read)**:
+   - Input: `"What tasks do I have scheduled for today?"`
+   - Intent tagged: `READ` (`tasks` domain).
+   - Router exposes: `tasks.list` (`listTasks`).
+   - Safety policy: `ALLOW` (read-only, no confirmation needed).
+   - Execution boundary: Safe normalized success envelope. Zero ledger mutations, zero quests created.
+3. **Scenario 3 (Single Mutating Action with Valid Parameters)**:
+   - Input: `"Create a task called 'Deploy release v2'"`
+   - Intent tagged: `ACTION` (`tasks` domain).
+   - Router exposes: `tasks.create` (`createTask`).
+   - Safety policy: `ALLOW` (local create).
+   - Ledger: Claims operation before execution (`status = 'CLAIMED'`).
+   - Execution boundary: Executes safely; ledger transitions record to `SUCCEEDED` with payload.
+4. **Scenario 4 (High-Criticality Destructive Action Without Confirmation)**:
+   - Input: `"Delete task #42"`
+   - Intent tagged: `ACTION` (`tasks.delete`).
+   - Router exposes: `tasks.delete` (`deleteTask`).
+   - Safety policy: Intercepts with `REQUIRE_CONFIRMATION`, issuing cryptographic, unforgeable single-use token and deterministic preview with warning.
+   - Execution gateway: Handler is NEVER executed without valid token; zero ledger mutations.
+5. **Scenario 5 (High-Criticality Destructive Action With Confirmation Token)**:
+   - Input: `"Delete task #55"` with valid ConfirmationToken.
+   - Policy: Validates token against canonical argument hash and consumes it atomically.
+   - Ledger: Claims operation, executes capability, records `SUCCEEDED`.
+   - Replay defense: Re-submitting the consumed token is strictly `BLOCKED` (`status = 'BLOCKED'`).
+6. **Scenario 6 (Ambiguous Destructive Request)**:
+   - Input: `"Delete that task"`
+   - Intent analyzer: Intercepts ambiguity, flags `needsClarification: true`, sets `ambiguityType = 'AMBIGUOUS_TARGET'`.
+   - Safety policy: Returns `REQUIRE_CLARIFICATION` ("missing or invalid task id").
+   - Execution boundary: Zero confirmation tokens issued, capability handler never called.
+7. **Scenario 7 (Multi-Step Goal Prompt)**:
+   - Input: `"Search my emails for flight confirmation and then append the itinerary to my Obsidian vault notes"`
+   - Intent tagged: `QUEST`.
+   - Router exposes: `google` and `obsidian` domains.
+   - Quest engine: Creates persistent quest and DAG steps with dependency constraints in SQLite.
+   - Ledger & Execution: Steps executed sequentially through operation ledger with dependency satisfaction; quest auto-completes to `SUCCEEDED` in SQLite.
 
+### 3. Crash & Restart Recovery Invariants Verified
+1. **Recovery 1 (Orphaned RUNNING Ledger Operations)**:
+   - Unfinished external mutations (`EXTERNAL_SEND`) recover to `UNKNOWN_COMMIT` on boot, blocking automatic re-execution.
+   - Unfinished local mutations (`LOCAL_CREATE`) recover to `FAILED_RETRYABLE`.
+2. **Recovery 2 (Orphaned RUNNING Quests & Steps)**:
+   - Orphaned `RUNNING` quests cleanly transition to `SUSPENDED` with boot audit notice.
+   - Orphaned `RUNNING` steps safely reset to `PENDING` with `CRASH_RECOVERED` error code.
+   - Quest cleanly resumes execution when instructed.
 
+### 4. Verification Evidence
+- `tsc --noEmit`: **0 errors**
+- `vitest run tests/jarvis-core/integration-c4-c8.test.ts`: **9 passed (100% green)**
+- `vitest run tests/jarvis-core/`: **9 test files, 163 passed (100% green)**
+- `pnpm build`: **Turbopack build succeeded, 28 dynamic API routes generated**.
 
+*End of Integration Gate Report.*
