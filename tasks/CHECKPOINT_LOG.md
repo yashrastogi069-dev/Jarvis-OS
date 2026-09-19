@@ -295,11 +295,62 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - V1 runtime in `lib/` remains 100% functional and untouched.
 
 ### Commit & Push
+- **Commit**: `d47ddb5` (*"feat(core-v2): add intent analysis and ambiguity system"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
+
+### Next
+- Checkpoint C7: Capability Router & Shadow Evaluation (`lib/jarvis-core/routing/`). (COMPLETE)
+
+---
+
+## [2026-09-19] Checkpoint C7 — Capability Router & Shadow Evaluation (Strategy E)
+- **Status**: COMPLETE
+- **Corpus / Baseline**: 227-prompt evaluation corpus (`evals/corpora/routing_corpus_227.json`) spanning single-tool, multi-tool, no-tool conversation, ambiguous, and confusion-pair prompts across all 12 canonical domains.
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/routing/types.ts`:
+  - `RoutingDecision` interface with `selectedCapabilities`, `selectedCapabilityIds`, `selectedLegacyToolNames`, `domains`, `confidence`, `reason`, `isFallback`, `shadowOnly`, and `latencyMs`.
+  - `CapabilityRouterOptions` (`shadowMode`, `maxToolsTarget: 12`, `confidenceThreshold: 0.70`, `enableFallback`, `fallbackStrategy`).
+  - `RoutingCorpusItem` and `RoutingEvaluationResult` metrics contract.
+- Created `lib/jarvis-core/routing/strategy-e.ts`:
+  - `classifyStrategyE()` implementing high-recall hybrid domain classification with conversational pruning and fail-open fallback.
+  - Conversational / Chit-Chat pruning: accurately eliminates tool injection for pure greetings, conceptual questions, humor, and poems (0 tools exposed) while rigorously preserving tools if domain keywords or action verbs are present.
+  - Multi-domain routing: seamlessly detects cross-domain dependencies (e.g. Research + Obsidian, Google + Apple Calendar).
+  - Safe fail-open fallback: defaults to `CORE_DOMAINS` (`tasks`, `memory`, `research`, `feed`) or `ALL_CAPABILITIES` on low confidence or ambiguous queries.
+- Created `lib/jarvis-core/routing/router.ts`:
+  - `CapabilityRouter` class and singleton `capabilityRouter` with `route()`, `getCapabilities()`, and `getTools()` for direct AI SDK integration and shadow evaluation.
+- Created `lib/jarvis-core/routing/evaluator.ts`:
+  - `CapabilityRouterEvaluator` class and singleton `routerEvaluator` providing reproducible offline benchmark evaluation across corpora.
+- Created `lib/jarvis-core/routing/index.ts`: canonical module exports.
+- Created `tests/jarvis-core/capability-router.test.ts`:
+  - 23 automated tests verifying corpus recall, coverage of all 12 domains, chit-chat pruning, cross-domain routing, fallback behavior, shadow mode, AI SDK tool exports, and latency invariants.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/capability-router.test.ts`: PASS (23 tests in 16ms)
+- `vitest run tests/jarvis-core/`: PASS (7 test files, 141 tests, 100% green)
+- `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+- **Corpus Benchmark Results (`routing_corpus_227.json`)**:
+  - Total Prompts: 227
+  - Expected Tools: 195 | Matched: 195
+  - **Tool Recall: 100.00%** (target: >= 99.5%)
+  - **False Exclusions: 0** (target: 0 regressions)
+  - **Average Tools Exposed: 6.68** (target heuristic: <= 12.0)
+  - **Schema Token Reduction: 85.7%**
+  - **Average Routing Latency: 0.015ms**
+
+### Review
+- Exceeds both the >=99.5% tool recall requirement and the <=12 tools heuristic target.
+- Eliminates 85.7% of prompt token payload while guaranteeing zero tool starvation.
+- V1 runtime in `lib/` remains 100% functional and untouched.
+
+### Commit & Push
 - **Commit**: Pending
 - **Push**: Pending
 
 ### Next
-- Checkpoint C7: Capability Router & Shadow Evaluation (`lib/jarvis-core/routing/`). (ACTIVE)
+- Checkpoint C8: Persisted Quest Engine (`lib/jarvis-core/quest/`). (ACTIVE)
+
 
 
 

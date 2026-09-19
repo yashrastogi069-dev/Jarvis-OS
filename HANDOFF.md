@@ -1,6 +1,6 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, and C6** of the **JARVIS CORE V2 MASTER PROTOCOL**.
+Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, C6, and C7** of the **JARVIS CORE V2 MASTER PROTOCOL**.
 - **Active Git Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2` on `https://github.com/yashrastogi069-dev/Jarvis-OS.git`)
 - **Master Plan**: `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23)
 - **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008)
@@ -13,6 +13,7 @@ Status as of **2026-09-19**. Authoritative state of the codebase following Check
 - **Central Action Safety Policy**: `lib/jarvis-core/safety/` & `tests/jarvis-core/safety-policy.test.ts` (25/25 tests green)
 - **Persistent Operation Ledger**: `lib/jarvis-core/ledger/` & `tests/jarvis-core/operation-ledger.test.ts` (15/15 tests green)
 - **Intent Analysis & Ambiguity System**: `lib/jarvis-core/intent/` & `tests/jarvis-core/intent-analysis.test.ts` (13/13 tests green)
+- **Capability Router & Shadow Evaluation**: `lib/jarvis-core/routing/` & `tests/jarvis-core/capability-router.test.ts` (23/23 tests green)
 - **Standing Rules**: `CLAUDE.md` and `tasks/lessons.md`.
 
 **Project:** a local-first personal AI operating system — "Jarvis." SQLite +
@@ -21,7 +22,7 @@ Ollama for embeddings, an MCP server so Claude Code can watch/operate the OS,
 and a from-scratch redesign into a real Iron-Man-style HUD: an open 3D stage
 with an interactive Arc Reactor and a color-driving neural network.
 
-**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoint **C6 is COMPLETE**; next immediate step is Checkpoint **C7** (Capability Router & Shadow Evaluation in `lib/jarvis-core/routing/`). Execution proceeds autonomously through the Mega Goal (C4–C8).
+**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoint **C7 is COMPLETE**; next immediate step is Checkpoint **C8** (Persisted Quest Engine in `lib/jarvis-core/quest/`). Execution proceeds autonomously through the Mega Goal (C4–C8).
 
 
 ---

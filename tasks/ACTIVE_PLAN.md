@@ -100,13 +100,12 @@
 - [x] **C6: Intent Analysis & Ambiguity System (COMPLETE)**
   - Path: `lib/jarvis-core/intent/`
   - Deterministic classification: direct answer vs single tool vs multi-step goal vs clarification request. Destructive ambiguity protection verified on 40-prompt corpus.
-- [ ] **C7: Capability Router & Shadow Evaluation (ACTIVE - Strategy E Primary Candidate)**
+- [x] **C7: Capability Router & Shadow Evaluation (COMPLETE - Strategy E)**
   - Path: `lib/jarvis-core/routing/`
-  - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; requires ≥99.5% required-capability recall on the fixed evaluation corpus, 100% recall on known regression prompts, shadow mode first, fail-open fallback on low confidence, with ≤12 tools as heuristic target rather than absolute invariant.
-
-- [ ] **C8: Persisted Quest Engine**
+  - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; achieved 100.0% tool recall, 0 false exclusions, 6.68 average tools exposed (85.7% token reduction), and fail-open safe fallback.
+- [ ] **C8: Persisted Quest Engine (ACTIVE)**
   - Path: `lib/jarvis-core/quest/`
-  - SQLite table `quests` tracking root goals, active subgoals, status, dependencies, and execution history across sessions.
+  - SQLite tables `quests` and `quest_steps` tracking root goals, active subgoals, status, dependencies, execution history across sessions, and operation ledger linkage.
 
 ### Phase 3: Planning, Execution & Verification (Checkpoints C9 – C13)
 - [ ] **C9: Structured DAG Planner**

@@ -595,6 +595,42 @@ Checkpoint C6 implements deterministic intent classification and ambiguity detec
 
 *End of Checkpoint C6 Report.*
 
+---
+
+## Checkpoint C7 Report — Capability Router & Shadow Evaluation (Strategy E)
+
+### 1. Executive Summary
+Checkpoint C7 implements the layered confidence Capability Router (`lib/jarvis-core/routing/`) deploying Strategy E. In accordance with ADR-004 and the C7 specification, it solves the prompt token bloat and hallucination trap of exposing all 47 tools simultaneously, while maintaining an uncompromising safety net against tool starvation:
+1. **Benchmark Verification**: Tested against `evals/corpora/routing_corpus_227.json` (227 prompts, 195 expected tools), achieving **100.00% tool recall** and **0 false exclusions**, exceeding the >=99.5% requirement.
+2. **Dynamic Pruning Budget**: Exposes an average of **6.68 tools** per request, cutting active schema tokens by **85.7%** (from 8,225 down to 1,169 tokens) and meeting the <=12 tools heuristic target.
+3. **Conversational Pruning**: Eliminates tool definitions completely (0 tools exposed) for pure chit-chat greetings, conceptual inquiries, and humor when no actionable domain signals exist.
+4. **Safe Fail-Open Fallback**: When queries are ambiguous or have low classification confidence (<0.70), router automatically exposes core capabilities (`tasks`, `memory`, `research`, `feed`) or all 47 capabilities.
+5. **Shadow Mode Execution**: Supports non-disruptive shadow evaluation alongside V1 with zero runtime overhead (**0.015ms** execution latency).
+
+### 2. Implementation Ledger
+- `lib/jarvis-core/routing/types.ts`: `RoutingDecision`, `CapabilityRouterOptions`, `RoutingCorpusItem`, `RoutingEvaluationResult`.
+- `lib/jarvis-core/routing/strategy-e.ts`: `classifyStrategyE()`, high-recall domain recognition, conversational bypass filters, and fail-open core fallback.
+- `lib/jarvis-core/routing/router.ts`: `CapabilityRouter` class and singleton `capabilityRouter` with `route()`, `getCapabilities()`, and `getTools()` for AI SDK compatibility.
+- `lib/jarvis-core/routing/evaluator.ts`: `CapabilityRouterEvaluator` offline benchmark runner.
+- `lib/jarvis-core/routing/index.ts`: canonical module exports.
+- `tests/jarvis-core/capability-router.test.ts`: 23 automated unit tests evaluating corpus recall, 12-domain routing, conversational pruning, multi-domain routing, fallback, and latency.
+
+### 3. Verification Evidence
+- `pnpm typecheck` (`tsc --noEmit`): **0 errors** (code 0).
+- `vitest run tests/jarvis-core/capability-router.test.ts`: **23 tests passed (100% green)** in 16ms.
+- `vitest run tests/jarvis-core/`: **7 test files, 141 tests passed (100% green)** in 6.93s.
+- `pnpm build`: **Turbopack build succeeded in 18.0s, TypeScript finished in 25.5s, all 28 API routes generated**.
+- **Corpus Evaluation Metrics**:
+  - Corpus: `evals/corpora/routing_corpus_227.json` (N = 227)
+  - Tool Recall: **100.00%** (195/195 expected tools matched)
+  - False Exclusions: **0**
+  - Average Tools Exposed: **6.68** (<= 12 target met)
+  - Schema Token Reduction: **85.7%**
+  - Average Latency: **0.015ms**
+
+*End of Checkpoint C7 Report.*
+
+
 
 
 

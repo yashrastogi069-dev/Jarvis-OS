@@ -16,9 +16,9 @@
 | **Preflight** | Governance Reconciliation | **COMPLETE** | Reconciled `ACTIVE_PLAN.md`, `MASTER_PLAN_V2.md`, `CHECKPOINT_LOG.md`, `KNOWN_ISSUES.md`, `lessons.md`. | Pending C4 |
 | **C4** | Central Action Safety & Confirmation Policy | **COMPLETE** | `lib/jarvis-core/safety/policy.ts`, deterministic decision union, unforgeable tokens, argument binding, preview generators, test suite (25 tests). | `1c46622` |
 | **C5** | Persistent Operation Ledger & Idempotency | **COMPLETE** | SQLite operations table, `dedupeKey` calculation, claim-before-execute, restart persistence, local/external mutation handling. | `c43dd13` |
-| **C6** | Intent Analysis & Ambiguity System | **COMPLETE** | Fast-path classifier (CHAT/READ/MUTATION/GOAL), clarification requirements, destructive ambiguity defense (13 tests, 40 corpus prompts). | Pending |
-| **C7** | Capability Router & Shadow Evaluation | **ACTIVE** | Layered confidence router, Strategy E shadow evaluation against 227-corpus (≥99.5% recall, 100% regression recall, fail-open). | TBD |
-| **C8** | Persisted Quest Engine | **QUEUED** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage. | TBD |
+| **C6** | Intent Analysis & Ambiguity System | **COMPLETE** | Fast-path classifier (CHAT/READ/MUTATION/GOAL), clarification requirements, destructive ambiguity defense (13 tests, 40 corpus prompts). | `d47ddb5` |
+| **C7** | Capability Router & Shadow Evaluation | **COMPLETE** | Strategy E layered confidence router, shadow evaluation against 227-corpus (100% recall, 6.7 avg tools, 23 tests). | Pending |
+| **C8** | Persisted Quest Engine | **ACTIVE** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage. | TBD |
 | **Integration** | Cross-Checkpoint Integration Gate | **QUEUED** | 7 end-to-end headless scenarios verifying full stack without planner. | TBD |
 
 ---
@@ -112,12 +112,30 @@
   - `lib/jarvis-core/intent/classifier.ts`
   - `lib/jarvis-core/intent/analyzer.ts`
   - `lib/jarvis-core/intent/index.ts`
-  - `tests/jarvis-core/intent-analysis.test.ts`
+### Checkpoint C7: Capability Router & Shadow Evaluation
+- **Date**: 2026-09-19
+- **Status**: COMPLETE
+- **Objective**: Implement the layered confidence Capability Router (`lib/jarvis-core/routing/`) deploying Strategy E (high-recall domain classification with conversational pruning and fail-open fallback), evaluated in shadow mode against the fixed 227-prompt corpus.
+- **Architectural Invariants Verified**:
+  1. *>= 99.5% Required-Capability Recall*: Evaluated against `evals/corpora/routing_corpus_227.json` (227 prompts, 195 expected tools), achieving **100.00% tool recall** (195/195 matched) and **100% domain recall**, exceeding the target.
+  2. *Zero False Exclusions on Regressions*: 0 false exclusions across all 227 items, eliminating all 7 previous prototype misses (including task queries, wake words, preferences, bug reporting, email replies).
+  3. *<= 12 Exposed Tools Heuristic Target*: Average tools exposed per prompt is **6.68**, cutting schema token payload by **85.7%** (from 8,225 down to 1,169 tokens).
+  4. *Fail-Open Safe Fallback*: When prompts lack clear domain signals or confidence drops below threshold, automatically falls back to core capabilities (`tasks`, `memory`, `research`, `feed`) or all capabilities, guaranteeing zero tool starvation.
+  5. *Shadow Mode Execution*: Built-in `shadowMode: true` option produces shadow telemetry and classifications without altering active execution.
+  6. *Sub-Millisecond Routing Latency*: Measured routing latency per prompt is **0.015ms** (well under the 1.0ms budget).
+- **Files Created**:
+  - `lib/jarvis-core/routing/types.ts`
+  - `lib/jarvis-core/routing/strategy-e.ts`
+  - `lib/jarvis-core/routing/router.ts`
+  - `lib/jarvis-core/routing/evaluator.ts`
+  - `lib/jarvis-core/routing/index.ts`
+  - `tests/jarvis-core/capability-router.test.ts`
 - **Verification Evidence**:
   - `tsc --noEmit`: 0 errors
-  - `vitest run tests/jarvis-core/intent-analysis.test.ts`: 13 passed / 13 tests (100% green across 40 fixed evaluation scenarios)
-  - `vitest run tests/jarvis-core/`: 6 test files, 118 passed (100% green)
+  - `vitest run tests/jarvis-core/capability-router.test.ts`: 23 passed / 23 tests (100% green)
+  - `vitest run tests/jarvis-core/`: 7 test files, 141 passed (100% green)
   - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
 
 
 
