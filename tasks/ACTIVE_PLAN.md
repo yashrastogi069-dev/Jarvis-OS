@@ -103,9 +103,9 @@
 - [x] **C7: Capability Router & Shadow Evaluation (COMPLETE - Strategy E)**
   - Path: `lib/jarvis-core/routing/`
   - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; achieved 100.0% tool recall, 0 false exclusions, 6.68 average tools exposed (85.7% token reduction), and fail-open safe fallback.
-- [ ] **C8: Persisted Quest Engine (ACTIVE)**
+- [x] **C8: Persisted Quest Engine (COMPLETE)**
   - Path: `lib/jarvis-core/quest/`
-  - SQLite tables `quests` and `quest_steps` tracking root goals, active subgoals, status, dependencies, execution history across sessions, and operation ledger linkage.
+  - SQLite tables `quests` and `quest_steps` tracking root goals, active subgoals, status, dependencies, execution history across sessions, and operation ledger linkage. Verified with 13 unit tests.
 
 ### Phase 3: Planning, Execution & Verification (Checkpoints C9 – C13)
 - [ ] **C9: Structured DAG Planner**

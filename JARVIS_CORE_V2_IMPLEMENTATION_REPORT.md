@@ -630,6 +630,35 @@ Checkpoint C7 implements the layered confidence Capability Router (`lib/jarvis-c
 
 *End of Checkpoint C7 Report.*
 
+---
+
+## Checkpoint C8 Report — Persisted Quest Engine
+
+### 1. Executive Summary
+Checkpoint C8 implements the SQLite-persisted multi-step quest engine in `lib/jarvis-core/quest/`. It establishes durable execution tracking for multi-step goals before introducing planning or DAG orchestration:
+1. **Durable Quest & Step Schema**: Persistent relational tables (`quests`, `quest_steps`) with cascading foreign keys, indices, and transactional consistency across system reboots.
+2. **Lifecycle State Machine**: Explicit status transitions (`INITIALIZING` -> `RUNNING` -> `SUCCEEDED` / `FAILED` / `CANCELLED` / `SUSPENDED`) and step transitions (`PENDING` -> `RUNNING` -> `SUCCEEDED` / `FAILED` / `SKIPPED`).
+3. **Dependency DAG Enforcement**: Guaranteed step execution ordering; prerequisite dependencies must be `SUCCEEDED` before a step can start.
+4. **Operation Ledger Linkage**: Every mutating quest step explicitly links to its atomic C5 `OperationLedger` entry (`operation_id`), establishing end-to-end execution traceability.
+5. **Crash Recovery & Restart Survival**: Orphaned `RUNNING` quests are cleanly transitioned to `SUSPENDED` upon server boot, and unfinished steps reset to `PENDING` with crash audit records, preventing data corruption or duplicate side effects.
+6. **Payload Sanitization**: Credentials, PATs, and bearer tokens are automatically redacted before SQLite persistence.
+
+### 2. Implementation Ledger
+- `lib/jarvis-core/quest/types.ts`: `QuestStatus`, `QuestStepStatus`, branded `QuestId`, `StepId`, `QuestRecord`, `QuestStepRecord`, `QuestWithSteps`, `CreateQuestParams`, `CreateStepParams`.
+- `lib/jarvis-core/quest/schema.ts`: SQLite table creation DDL (`quests`, `quest_steps`) and performance indices.
+- `lib/jarvis-core/quest/engine.ts`: `QuestEngine` engine managing creation, dynamic step appending, dependency checking, auto-completion, retry budgeting, cancellation, suspension/resumption, crash recovery, and payload secret redaction.
+- `lib/jarvis-core/quest/index.ts`: Canonical module exports.
+- `tests/jarvis-core/quest-engine.test.ts`: 13 automated unit tests in isolated in-memory SQLite verifying the complete lifecycle and invariants.
+
+### 3. Verification Evidence
+- `pnpm typecheck` (`tsc --noEmit`): **0 errors** (code 0).
+- `vitest run tests/jarvis-core/quest-engine.test.ts`: **13 tests passed (100% green)** in 70ms.
+- `vitest run tests/jarvis-core/`: **8 test files, 154 tests passed (100% green)** in 7.79s.
+- `pnpm build`: **Turbopack build succeeded in 18.3s, TypeScript finished in 22.0s, all 28 API routes generated**.
+
+*End of Checkpoint C8 Report.*
+
+
 
 
 

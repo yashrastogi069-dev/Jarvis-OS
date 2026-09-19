@@ -345,11 +345,60 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - V1 runtime in `lib/` remains 100% functional and untouched.
 
 ### Commit & Push
+- **Commit**: `bddcb12` (*"feat(core-v2): add capability router and shadow evaluation"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
+
+### Next
+- Checkpoint C8: Persisted Quest Engine (`lib/jarvis-core/quest/`). (COMPLETE)
+
+---
+
+## [2026-09-19] Checkpoint C8 — Persisted Quest Engine
+- **Status**: COMPLETE
+- **Corpus / Baseline**: SQLite-backed quest persistence across sessions, step dependency DAG validation, operation ledger linkage, and process reboot recovery.
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/quest/types.ts`:
+  - `QuestStatus` union (`INITIALIZING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELLED`, `SUSPENDED`).
+  - `QuestStepStatus` union (`PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `SKIPPED`).
+  - Branded `QuestId` and `StepId` types with type constructors `asQuestId`, `asStepId`.
+  - `QuestRecord`, `QuestStepRecord`, `QuestWithSteps`, `CreateQuestParams`, `CreateStepParams`, and `QuestRecoverySummary` interfaces.
+- Created `lib/jarvis-core/quest/schema.ts`:
+  - DDL schema creating `quests` and `quest_steps` tables with cascading foreign keys and indexes on `status`, `session_id`, `created_at`, `quest_id`, and `operation_id`.
+- Created `lib/jarvis-core/quest/engine.ts`:
+  - `QuestEngine` managing atomic multi-step quest lifecycles in SQLite transactions.
+  - `createQuest()`: atomically creates quest and initial planned steps.
+  - `addStep()`: appends steps dynamically with incremental index numbering.
+  - `startStep()`: validates prerequisite step dependencies are `SUCCEEDED` before execution, links `operationId`.
+  - `completeStep()`: transitions step to `SUCCEEDED`, automatically completes parent quest when all steps finish.
+  - `failStep()`: manages retry budgets (`retry_count < max_retries`), resets to `PENDING` for retry or fails quest permanently.
+  - `cancelQuest()`: cancels quest and skips all pending/running steps.
+  - `suspendQuest()` / `resumeQuest()`: pauses quests for user confirmation without state loss.
+  - `recoverCrashedQuests()`: safely recovers orphaned `RUNNING` quests to `SUSPENDED` and steps to `PENDING` on server reboot.
+  - Secret sanitization: ensures credentials, PATs, and bearer tokens are redacted from quest payloads.
+- Created `lib/jarvis-core/quest/index.ts`: canonical module exports.
+- Created `tests/jarvis-core/quest-engine.test.ts`:
+  - 13 automated unit tests in isolated in-memory SQLite verifying quest creation, atomic multi-step planning, dynamic step addition, dependency DAG verification, auto-completion, retry budgets, cancellation, suspension/resumption, crash recovery, operation ledger linkage, and payload secret sanitization.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/quest-engine.test.ts`: PASS (13 tests in 70ms)
+- `vitest run tests/jarvis-core/`: PASS (8 test files, 154 tests, 100% green)
+- `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
+### Review
+- Multi-step goals persist reliably across process lifecycles.
+- Prerequisite step dependencies strictly enforce DAG ordering.
+- Direct linkage to C5 OperationLedger records provides end-to-end execution auditability.
+- V1 runtime in `lib/` remains 100% functional and untouched.
+
+### Commit & Push
 - **Commit**: Pending
 - **Push**: Pending
 
 ### Next
-- Checkpoint C8: Persisted Quest Engine (`lib/jarvis-core/quest/`). (ACTIVE)
+- Cross-Checkpoint Integration Gate (7 headless end-to-end scenarios without planner).
+
 
 
 

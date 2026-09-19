@@ -17,9 +17,9 @@
 | **C4** | Central Action Safety & Confirmation Policy | **COMPLETE** | `lib/jarvis-core/safety/policy.ts`, deterministic decision union, unforgeable tokens, argument binding, preview generators, test suite (25 tests). | `1c46622` |
 | **C5** | Persistent Operation Ledger & Idempotency | **COMPLETE** | SQLite operations table, `dedupeKey` calculation, claim-before-execute, restart persistence, local/external mutation handling. | `c43dd13` |
 | **C6** | Intent Analysis & Ambiguity System | **COMPLETE** | Fast-path classifier (CHAT/READ/MUTATION/GOAL), clarification requirements, destructive ambiguity defense (13 tests, 40 corpus prompts). | `d47ddb5` |
-| **C7** | Capability Router & Shadow Evaluation | **COMPLETE** | Strategy E layered confidence router, shadow evaluation against 227-corpus (100% recall, 6.7 avg tools, 23 tests). | Pending |
-| **C8** | Persisted Quest Engine | **ACTIVE** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage. | TBD |
-| **Integration** | Cross-Checkpoint Integration Gate | **QUEUED** | 7 end-to-end headless scenarios verifying full stack without planner. | TBD |
+| **C7** | Capability Router & Shadow Evaluation | **COMPLETE** | Strategy E layered confidence router, shadow evaluation against 227-corpus (100% recall, 6.7 avg tools, 23 tests). | `bddcb12` |
+| **C8** | Persisted Quest Engine | **COMPLETE** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage (13 tests). | Pending |
+| **Integration** | Cross-Checkpoint Integration Gate | **ACTIVE** | 7 end-to-end headless scenarios verifying full stack without planner. | TBD |
 
 ---
 
@@ -135,6 +135,33 @@
   - `vitest run tests/jarvis-core/capability-router.test.ts`: 23 passed / 23 tests (100% green)
   - `vitest run tests/jarvis-core/`: 7 test files, 141 passed (100% green)
   - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
+### Checkpoint C8: Persisted Quest Engine
+- **Date**: 2026-09-19
+- **Status**: COMPLETE
+- **Objective**: Implement SQLite-persisted multi-step quest engine (`lib/jarvis-core/quest/`) tracking goals, subgoals, step dependencies, execution state machines, operation ledger linkage, and crash recovery.
+- **Architectural Invariants Verified**:
+  1. *Persisted Quest & Step Schema*: Structured `quests` and `quest_steps` tables in SQLite with transactional integrity, foreign key cascading, and status indexes.
+  2. *Strict State Machine Lifecycles*: Quest status (`INITIALIZING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELLED`, `SUSPENDED`) and step status (`PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `SKIPPED`).
+  3. *Dependency DAG Verification*: Steps with prerequisite dependencies cannot start until all required prerequisite steps are `SUCCEEDED`.
+  4. *Atomic Quest Completion*: Automatically completes parent quest when all planned steps have succeeded.
+  5. *Retry Budget Control*: Failed steps retry within `max_retries` budget; upon exhaustion, transitions step and quest to `FAILED` with descriptive error messages.
+  6. *Cancellation & Suspension*: Cancelling a quest marks remaining pending/running steps as `SKIPPED`; suspending allows human confirmation pauses without state loss.
+  7. *Crash Recovery & Restart Survival*: On server reboot, orphaned `RUNNING` quests are cleanly transitioned to `SUSPENDED`, and orphaned `RUNNING` steps are safely reset to `PENDING` with crash notice.
+  8. *Operation Ledger Linkage*: Direct linkage between `quest_steps` and C5 `OperationLedger` (`operation_id`).
+  9. *Payload Secret Sanitization*: Automatically redacts credentials, PATs, and bearer tokens from quest metadata and step input/result payloads before storage.
+- **Files Created**:
+  - `lib/jarvis-core/quest/types.ts`
+  - `lib/jarvis-core/quest/schema.ts`
+  - `lib/jarvis-core/quest/engine.ts`
+  - `lib/jarvis-core/quest/index.ts`
+  - `tests/jarvis-core/quest-engine.test.ts`
+- **Verification Evidence**:
+  - `tsc --noEmit`: 0 errors
+  - `vitest run tests/jarvis-core/quest-engine.test.ts`: 13 passed / 13 tests (100% green)
+  - `vitest run tests/jarvis-core/`: 8 test files, 154 passed (100% green)
+  - `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
 
 
 
