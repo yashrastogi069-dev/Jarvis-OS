@@ -33,14 +33,18 @@
 
 ---
 
-## ADR-004: Strategy E Capability Routing with Semantic Fallback
-- **Status**: ACCEPTED
+## ADR-004: Capability Routing Strategy (Primary Candidate: Strategy E, Subject to C7 Evaluation)
+- **Status**: PROVISIONAL (Primary Candidate subject to C7 evaluation)
 - **Date**: 2026-09-19
-- **Context**: Jarvis has 46+ registered tools across 8 domains (Tasks, Memory, Research, Voice, Google, GitHub, Apple, Obsidian). Passing all 46 schemas in every prompt causes tool confusion, parameter hallucinations, increased token cost, and 30–79s latency outliers on slower reasoning providers.
-- **Decision**: Adopt Strategy E (hybrid domain classifier + vector semantic search) in `lib/jarvis-core/routing/`. The incoming user utterance is deterministically mapped to 1–2 target domains (e.g., Google Calendar, GitHub) or searched against capability embedding vectors, pruning the active tool schema surface from 46 down to ≤12 tools per agent invocation.
+- **Context**: Jarvis has 47 registered tools across 8 domains (Tasks, Memory, Research, Voice, Google, GitHub, Apple, Obsidian). Passing all 47 schemas in every prompt causes tool confusion, parameter hallucinations, increased token cost, and latency outliers.
+- **Decision**: Adopt Strategy E (hybrid deterministic domain classifier + vector semantic search) as the primary capability routing candidate in `lib/jarvis-core/routing/`, subject to formal evaluation in Checkpoint C7. The routing mechanism must:
+  1. Run in shadow mode initially to validate routing accuracy against `evals/corpora/routing_corpus_227.json`.
+  2. Measure required-capability recall (target: ≥99% recall).
+  3. Include a fail-open fallback to broader tool/domain sets whenever routing confidence is below threshold.
+  4. Treat "≤12 tools" as a heuristic target rather than an absolute invariant.
 - **Consequences**:
-  - *Positive*: Reduces token payload per step by >60%; eliminates cross-domain tool hallucinations (e.g., calling Apple Calendar when Google was intended); reduces step latency by ~40%.
-  - *Negative*: Misrouting could prune a necessary tool. Mitigated by explicit fallback to full domain set if confidence is low, and intent clarification on ambiguous requests.
+  - *Positive*: Substantially reduces token payload per turn, eliminates cross-domain parameter hallucinations, and lowers step latency.
+  - *Negative*: Risk of pruning necessary tools on low confidence queries, mitigated by fail-open fallback and intent clarification.
 
 ---
 

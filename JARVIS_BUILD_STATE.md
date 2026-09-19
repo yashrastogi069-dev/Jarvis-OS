@@ -18,19 +18,19 @@ out phase 6 as-is and start with phase 7."
 **JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-19)**:
 - **Active Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2`)
 - **Current Milestone**: Milestone 0 — Repository Truth & Baseline Reconciliation
-- **Current Checkpoint**: **C0 COMPLETE**; preparing **C1** (`lib/jarvis-core/types.ts`)
+- **Current Checkpoint**: **C1 COMPLETE** (`lib/jarvis-core/types.ts`); **C2 QUEUED**
 - **Baseline Health**:
-  - `npm run typecheck`: 0 errors (clean compile)
-  - `npm run test`: 6 test files, 35 tests, 100% green pass in 21.34s
+  - Framework: Next.js 16.2.6 (React 19.2.4)
+  - Canonical Package Manager: `pnpm` (lockfile v9.0, workspace overrides pinned)
+  - Typecheck: `pnpm typecheck` (tsc --noEmit) -> 0 errors
+  - Automated Tests: `pnpm test` (vitest) -> 7 test files, 48 tests, 100% green pass in 19.64s
   - STT sidecar: healthy on port 8976
   - SQLite + `sqlite-vec`: healthy at `data/agentic-os.db`
-  - Next.js dev server: running on port 3100
-- **Canonical Documents Initialized**:
-  - `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23 roadmap)
-  - `tasks/DECISIONS.md` (ADR-001 through ADR-005)
-  - `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
-  - `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md` (Living master report)
-- **V1 Protection Guarantee**: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
+  - Production Build: `pnpm build` green (Next.js Turbopack, 28 dynamic routes)
+- **Core V2 Architecture Baseline Established**:
+  - `lib/jarvis-core/types.ts`: Foundation domain types, lifecycles, and component interfaces with zero framework coupling.
+  - `tests/jarvis-core/types.test.ts`: 13 tests verifying strong IDs, JSON serialization, state distinctions, and headless controllers.
+  - V1 Protection Guarantee: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
 
 **SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:
 Exhaustive end-to-end investigation across the entire agent runtime, live SSE streaming, tool surface (47 tools), production Next.js build, 100-turn soak, real hardware microphone testing, and multi-step orchestration.

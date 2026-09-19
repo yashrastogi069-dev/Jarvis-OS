@@ -1,12 +1,12 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoint **C0** of the **JARVIS CORE V2 MASTER PROTOCOL**.
+Status as of **2026-09-19**. Authoritative state of the codebase following Checkpoints **C0 & C1** of the **JARVIS CORE V2 MASTER PROTOCOL**.
 - **Active Git Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2` on `https://github.com/yashrastogi069-dev/Jarvis-OS.git`)
 - **Master Plan**: `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23)
 - **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-005)
 - **Known Issues Ledger**: `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
 - **Living Implementation Report**: `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md`
-- **Audit Reports**: `JARVIS_COMPREHENSIVE_AUDIT_REPORT.md`, `JARVIS_PRE_FIX_FAILURE_ISOLATION_REPORT.md`, `JARVIS_TOOL_CONTRACT_ROUTING_AUDIT.md`, `JARVIS_ORCHESTRATOR_AB_PRODUCTION_GATE.md`.
+- **Foundation Types**: `lib/jarvis-core/types.ts` & `tests/jarvis-core/types.test.ts` (13/13 tests green)
 - **Standing Rules**: `CLAUDE.md` and `tasks/lessons.md`.
 
 **Project:** a local-first personal AI operating system — "Jarvis." SQLite +
@@ -15,7 +15,7 @@ Ollama for embeddings, an MCP server so Claude Code can watch/operate the OS,
 and a from-scratch redesign into a real Iron-Man-style HUD: an open 3D stage
 with an interactive Arc Reactor and a color-driving neural network.
 
-**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoint C0 is COMPLETE; next immediate step is Checkpoint C1 (`lib/jarvis-core/types.ts`).
+**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoint **C1 is COMPLETE**; next immediate step is Checkpoint **C2** (Canonical Capability Registry & Classification in `lib/jarvis-core/capabilities/`). Do NOT begin C2 until explicitly instructed.
 
 ---
 

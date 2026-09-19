@@ -21,8 +21,7 @@ This document tracks verified defects and architectural risks in the Jarvis repo
 - **Component**: `lib/skills.ts`, `lib/agent.ts`
 - **Status**: CONFIRMED & REPRODUCED
 - **Description**: The skill management functions `deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, and `discoverSkillCandidates` are fully implemented in `lib/skills.ts` with valid schemas and execution logic. However, they were completely omitted from `skillsTools` in `lib/agent.ts` and thus never exposed to the agent.
-- **Evidence**: Static AST analysis and `tests/tool_contracts_audit.test.ts` unregistered capabilities list.
-- **Resolution Plan**: Add all implemented skill capabilities to the Canonical Capability Registry in Checkpoint C2.
+- **Resolution Plan**: In Checkpoint C2, each of the four unexposed skill capabilities (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`) will be formally classified under one of: `USER_FACING`, `INTERNAL_ENGINE`, `BACKGROUND`, `NOT_READY`, or `DEPRECATED`. Only capabilities classified as `USER_FACING` that pass explicit safety and contract verification will be exposed as agent-accessible tools; internal or background functions will remain isolated.
 
 ---
 

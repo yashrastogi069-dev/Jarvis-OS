@@ -1,51 +1,39 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
 ## Current Milestone: Milestone 0 — Repository Truth, Substrate Hardening & Core Architecture Baseline
-## Current Checkpoint: C0 — Repository Truth & Documentation Reconciliation
+## Current Checkpoint: C1 — Foundation Domain Types & Runtime Contracts (COMPLETE)
 
 ---
 
-### Checkpoint C0 Specification (ACTIVE)
-- **Objective**: Establish single source of repository truth, eliminate contradictions between documentation and source code, establish baseline verification (100% clean typecheck and test passes), initialize canonical governance artifacts (`ACTIVE_PLAN.md`, `DECISIONS.md`, `KNOWN_ISSUES.md`, `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md`), and prepare Checkpoint C1.
-- **Dependencies**: None.
-- **Files Expected to Change**:
-  - `tsconfig.json` (exclude scratch)
-  - `tests/idempotency_audit.test.ts` (type cleanup)
-  - `tests/tool_contracts_audit.test.ts` (type cleanup)
-  - `tests/full-system-audit.test.ts` (cold-start timeout tolerance)
-  - `tasks/ACTIVE_PLAN.md` (new canonical plan)
-  - `tasks/DECISIONS.md` (ADRs 001–005)
-  - `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
-  - `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md` (living master report)
-  - `JARVIS_BUILD_STATE.md` (updated with C0 status)
-  - `HANDOFF.md` (updated operational handoff)
-- **Tests Required**:
-  - `npm run typecheck` (tsc --noEmit)
-  - `npm run test` (vitest run across all suites)
-- **Acceptance Criteria**:
-  1. Git working branch is `jarvis-core-v2` tracking `origin/jarvis-core-v2`.
-  2. `tsc --noEmit` exits with code 0 (zero errors).
-  3. All test suites pass.
-  4. Audit findings verified against live codebase and documented without assumption.
-  5. V1 codebase in `lib/` preserved untouched for production continuity.
-  6. Deliverables A through L for Part XLII produced with complete evidence.
-- **Risks**:
-  - Unsynchronized documentation confusing architectural boundaries.
-  - Concurrency locks on SQLite during multi-test execution.
-- **Status**: IN PROGRESS (Verification complete; writing governance files and formal report).
-- **Next Checkpoint**: C1 — Jarvis Core V2 Domain Types & Runtime Interfaces (`lib/jarvis-core/types.ts`).
+### Checkpoint C0 Specification (COMPLETE)
+- **Objective**: Single source of truth reconciliation, baseline verification, and governance file initialization.
+- **Status**: COMPLETE (C0 Amendment executed; Next.js 16.2.6 & pnpm confirmed; orchestration benchmark reconciled; capability inventory categorized; ADRs 001–005 recorded).
 
 ---
 
-## Queued Roadmap: Checkpoints C1 through C23
+### Checkpoint C1 Specification (COMPLETE)
+- **Objective**: Establish the smallest stable, transport-independent type system and component boundaries (`lib/jarvis-core/types.ts`) without premature implementation of C2–C5.
+- **Files Created/Modified**:
+  - `lib/jarvis-core/types.ts` (Domain types, lifecycles, and component interfaces)
+  - `tests/jarvis-core/types.test.ts` (13 unit tests for identities, lifecycles, serialization, framework independence)
+- **Tests & Builds Executed**:
+  - `pnpm typecheck` (`tsc --noEmit`): 0 errors
+  - `vitest run tests/jarvis-core/types.test.ts`: 13 passed in 15ms
+  - `pnpm test` (full suite): 7 test files, 48 tests, 100% green pass in 19.64s
+  - `pnpm build` (production build): Next.js 16.2.6 Turbopack (34.5s), TypeScript (28.4s), 28 routes green
+- **Acceptance Criteria**: ALL 20 ACCEPTANCE GATES SATISFIED.
+- **Status**: COMPLETE.
+- **Next Checkpoint**: C2 — Canonical Capability Registry & Classification (QUEUED — Awaiting User Directive).
 
-### Phase 1: Core Substrate & Capability Registry (Checkpoints C1 – C5)
-- [ ] **C1: Jarvis Core V2 Domain Types & Runtime Interfaces**
-  - Path: `lib/jarvis-core/types.ts`
-  - Defines `CapabilityDefinition`, `ToolResult<T>`, `Quest`, `SubGoal`, `PlanStep`, `ExecutionGraph`, `OperationRecord`, `ActionConfirmationPolicy`.
-- [ ] **C2: Canonical Capability Registry**
+---
+
+## Queued Roadmap: Checkpoints C2 through C23
+
+### Phase 1: Core Substrate & Capability Registry (Checkpoints C2 – C5)
+- [x] **C1: Jarvis Core V2 Domain Types & Runtime Interfaces (COMPLETE)**
+- [ ] **C2: Canonical Capability Registry & Classification (QUEUED)**
   - Path: `lib/jarvis-core/capabilities/`
-  - Single registry replacing fragmented maps; metadata-rich, strongly-typed contracts for all 46 tools.
+  - Single registry for 47 registered tools; formal classification of 4 unexposed skill candidates (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`) as `USER_FACING`, `INTERNAL_ENGINE`, `BACKGROUND`, `NOT_READY`, or `DEPRECATED`. Only verified `USER_FACING` tools become agent-accessible.
 - [ ] **C3: Structured ToolResult Boundary**
   - Path: `lib/jarvis-core/capabilities/result-boundary.ts`
   - Catches all exceptions, formats standardized `{ success, data, error, metadata, retryable }` envelopes, prevents raw stack crashes.
@@ -60,9 +48,9 @@
 - [ ] **C6: Intent Analysis & Ambiguity System**
   - Path: `lib/jarvis-core/intent/`
   - Deterministic classification: direct answer vs single tool vs multi-step goal vs clarification request.
-- [ ] **C7: Capability Router & Pruning (Strategy E)**
+- [ ] **C7: Capability Router & Pruning (Strategy E Primary Candidate)**
   - Path: `lib/jarvis-core/routing/`
-  - Domain and semantic routing selecting top ≤12 relevant capabilities per turn; shadow-mode evaluation against `evals/corpora/routing_corpus_227.json`.
+  - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; requires ≥99% capability recall, fail-open fallback on low confidence, with ≤12 tools as heuristic target rather than absolute invariant.
 - [ ] **C8: Persisted Quest Engine**
   - Path: `lib/jarvis-core/quest/`
   - SQLite table `quests` tracking root goals, active subgoals, status, dependencies, and execution history across sessions.
@@ -85,9 +73,9 @@
   - Recovers from failed steps with bounded replanning budget (max 2 attempts) rather than blind loop churning.
 
 ### Phase 4: Reliability, Providers & Observability (Checkpoints C14 – C16)
-- [ ] **C14: Provider-Role Router & Global Deadline Model**
+- [ ] **C14: Provider-Role Router & UX Deadline Model**
   - Path: `lib/jarvis-core/providers/`
-  - Role-based routing (reasoning, fast tools, embeddings), failover chains with global request deadlines (15s voice, 30s text).
+  - Role-based routing (chat, planner, replanner, finalizer) with provisional UX budgets (15s voice, 30s text) and calibrated stage timeouts.
 - [ ] **C15: Finalizer & Response Generator**
   - Path: `lib/jarvis-core/finalizer/`
   - Grounded summarization based exclusively on ledger outcomes and tool results.
