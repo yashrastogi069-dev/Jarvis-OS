@@ -74,7 +74,7 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - Items D-001 through D-010 logged in `tasks/DEFERRED.md`.
 
 ### Commit & Push
-- **Commit**: `8b0ca8e` (*"feat(core-v2): complete Checkpoint C1 domain types and runtime contracts"*)
+- **Commit**: `8b0ca8e` (*"feat(core-v2): complete Checkpoint C1 domain types and runtime contracts"*) & `33c64ed` (*"docs(core-v2): tighten C1 invariants and checkpoint records"*)
 - **Push**: `origin/jarvis-core-v2` (verified: YES)
 
 ### Next
