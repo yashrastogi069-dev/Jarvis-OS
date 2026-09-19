@@ -1,0 +1,55 @@
+{
+  "traceId": "ddeef494-dd65-4837-9dbf-467421880dcf",
+  "testName": "B3_NoteDown_Fact",
+  "expectedTools": [
+    "saveMemory"
+  ],
+  "expectedBehavior": "Calls saveMemory with profession",
+  "messages": [
+    {
+      "id": "audit-1789719484202",
+      "role": "user",
+      "content": "Please note down: I work as a systems engineer."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719484202,
+    "REQUEST_SENT": 1789719484202,
+    "SERVER_RECEIVED": 1789719486785,
+    "SSE_FIRST_CHUNK": 1789719486790,
+    "FINAL_GENERATION_END": 1789719489709
+  },
+  "toolInvocations": [
+    {
+      "toolName": "saveMemory",
+      "toolCallId": "call_374284",
+      "args": {
+        "content": "User works as a systems engineer.",
+        "category": "fact"
+      },
+      "timestamp": 1789719486790
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "call_374284",
+      "output": {
+        "saved": true,
+        "memoryIds": [
+          21
+        ],
+        "semanticIndex": false
+      },
+      "timestamp": 1789719486831
+    }
+  ],
+  "textDeltas": [
+    "Saved to long-term memory: \"User works as a systems engineer.\""
+  ],
+  "fullText": "Saved to long-term memory: \"User works as a systems engineer.\"",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 5507,
+  "pass": true,
+  "failureReason": null
+}

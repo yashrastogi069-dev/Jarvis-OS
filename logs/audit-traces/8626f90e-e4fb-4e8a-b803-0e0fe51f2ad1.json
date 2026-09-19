@@ -1,0 +1,31 @@
+{
+  "traceId": "8626f90e-e4fb-4e8a-b803-0e0fe51f2ad1",
+  "testName": "A2_General_Question",
+  "expectedTools": [],
+  "expectedBehavior": "Direct answer 100, no tools",
+  "messages": [
+    {
+      "id": "audit-1789717482714",
+      "role": "user",
+      "content": "What is 25 * 4?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789717482714,
+    "REQUEST_SENT": 1789717482714,
+    "SERVER_RECEIVED": 1789717514078,
+    "SSE_FIRST_CHUNK": 1789717514081,
+    "FINAL_GENERATION_END": 1789717514169
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [
+    "100"
+  ],
+  "fullText": "100",
+  "brain": "groq",
+  "error": null,
+  "totalLatencyMs": 31454,
+  "pass": true,
+  "failureReason": null
+}

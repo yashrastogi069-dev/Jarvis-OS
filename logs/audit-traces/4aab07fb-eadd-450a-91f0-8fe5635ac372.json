@@ -1,0 +1,213 @@
+{
+  "traceId": "4aab07fb-eadd-450a-91f0-8fe5635ac372",
+  "testName": "A3_Project_Explanation",
+  "expectedTools": [],
+  "expectedBehavior": "Explains Agentic OS concisely, no tools",
+  "messages": [
+    {
+      "id": "audit-1789719405353",
+      "role": "user",
+      "content": "Explain what this project does in two sentences."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719405353,
+    "REQUEST_SENT": 1789719405353,
+    "SERVER_RECEIVED": 1789719409183,
+    "SSE_FIRST_CHUNK": 1789719409194,
+    "FINAL_GENERATION_END": 1789719428190
+  },
+  "toolInvocations": [
+    {
+      "toolName": "searchNotes",
+      "toolCallId": "call_385694",
+      "args": {
+        "query": "project"
+      },
+      "timestamp": 1789719409194
+    },
+    {
+      "toolName": "listMemories",
+      "toolCallId": "call_369881",
+      "args": {},
+      "timestamp": 1789719419584
+    },
+    {
+      "toolName": "getUpdatesFeed",
+      "toolCallId": "call_387247",
+      "args": {
+        "limit": 5
+      },
+      "timestamp": 1789719422278
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "call_369881",
+      "output": {
+        "memories": [
+          {
+            "id": 18,
+            "content": "User prefers dark roast coffee.",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-09-18T08:08:55.243Z"
+          },
+          {
+            "id": 17,
+            "content": "User works as a systems engineer.",
+            "category": "fact",
+            "source": "chat",
+            "createdAt": "2026-09-18T07:48:12.598Z"
+          },
+          {
+            "id": 15,
+            "content": "Next.js 15 was released on October 21st, 2024.",
+            "category": "fact",
+            "source": "chat",
+            "createdAt": "2026-09-18T07:08:19.300Z"
+          },
+          {
+            "id": 14,
+            "content": "User works as a systems engineer.",
+            "category": "fact",
+            "source": "chat",
+            "createdAt": "2026-09-18T07:06:50.571Z"
+          },
+          {
+            "id": 13,
+            "content": "My dog's name is Buster.",
+            "category": "fact",
+            "source": "chat",
+            "createdAt": "2026-09-18T07:06:45.191Z"
+          },
+          {
+            "id": 12,
+            "content": "User prefers dark roast coffee.",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-09-18T07:06:25.614Z"
+          },
+          {
+            "id": 5,
+            "content": "Notify user on Telegram for any issues, notifications, meetings, or updates",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-07-18T12:12:02.597Z"
+          },
+          {
+            "id": 3,
+            "content": "User's favorite color is arc reactor blue.",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-07-10T10:57:53.292Z"
+          },
+          {
+            "id": 2,
+            "content": "User's favorite color is orange.",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-07-10T10:57:37.550Z"
+          },
+          {
+            "id": 1,
+            "content": "User's favorite color is arc reactor blue.",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-07-09T15:13:44.202Z"
+          }
+        ]
+      },
+      "timestamp": 1789719419664
+    },
+    {
+      "toolCallId": "call_387247",
+      "output": {
+        "events": [
+          {
+            "id": 229,
+            "source": "gmail",
+            "title": "Indeed: Personal Assistant at PPP group limited and 8 more new jobs",
+            "createdAt": "2026-07-23T14:02:39.000Z",
+            "payload": {
+              "kind": "email",
+              "id": "19f8f491a99bb35e",
+              "subject": "Personal Assistant at PPP group limited and 8 more new jobs",
+              "from": "Indeed <donotreply@jobalert.indeed.com>",
+              "snippet": "Posted on 15/07/2026. Personal Assistant – Property Maintenance *Location:* Auckland, New Zealand *Employment Type:* Full-time / Part-time Job Summary We are seeking a highly organized and proactive",
+              "date": 1784815359000
+            }
+          },
+          {
+            "id": 230,
+            "source": "gmail",
+            "title": "Building a Second Brain: Finding Alpha: What's Worth Consuming in the Age of AI",
+            "createdAt": "2026-07-23T13:13:43.000Z",
+            "payload": {
+              "kind": "email",
+              "id": "19f8f1c4b0012b42",
+              "subject": "Finding Alpha: What's Worth Consuming in the Age of AI",
+              "from": "Building a Second Brain <hello@fortelabs.com>",
+              "snippet": "Finding Alpha: What&#39;s Worth Consuming in the Age of AI Julia Saxena Posted in What&#39;s New Every time you ask an LLM for help, you get the same answer everyone else gets: the statistical average",
+              "date": 1784812423000
+            }
+          },
+          {
+            "id": 231,
+            "source": "gmail",
+            "title": "Actionable AI: blurry to sharp",
+            "createdAt": "2026-07-23T13:02:29.000Z",
+            "payload": {
+              "kind": "email",
+              "id": "19f8f1206fc7f69b",
+              "subject": "blurry to sharp",
+              "from": "Actionable AI <the-actionable-ai@mail.theactionableai.com>",
+              "snippet": "one prompt turns any blurry photo into a sharp 4k image ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌",
+              "date": 1784811749000
+            }
+          },
+          {
+            "id": 232,
+            "source": "gmail",
+            "title": "NPTEL: Hurry!! Enhance Your Skills with NPTEL+ Certified Masterclass - Negotiation and AI Practical Business",
+            "createdAt": "2026-07-23T09:50:16.000Z",
+            "payload": {
+              "kind": "email",
+              "id": "19f8e6362f2881d8",
+              "subject": "Hurry!! Enhance Your Skills with NPTEL+ Certified Masterclass - Negotiation and AI Practical Business",
+              "from": "NPTEL <onlinecourses@nptel.iitm.ac.in>",
+              "snippet": "Thanks and Regards, NPTEL TEAM. -- You received this message because you are subscribed to the Google Groups &quot;Announcement for mangement courses&quot; group. To unsubscribe from this group and",
+              "date": 1784800216000
+            }
+          },
+          {
+            "id": 233,
+            "source": "gmail",
+            "title": "Justyn The AI Guy: The real reason AI disappoints most people",
+            "createdAt": "2026-07-23T07:23:29.000Z",
+            "payload": {
+              "kind": "email",
+              "id": "19f8ddba3149a0e0",
+              "subject": "The real reason AI disappoints most people",
+              "from": "Justyn The AI Guy <hello@justyn.ca>",
+              "snippet": "Hey Jam, Yesterday I told you about my Command Center that keeps all my AI executives coordinated. But today I want to share something a friend told me that perfectly explains why most people are",
+              "date": 1784791409000
+            }
+          }
+        ]
+      },
+      "timestamp": 1789719422350
+    }
+  ],
+  "textDeltas": [
+    "Agentic OS is a local-first personal AI operating system that unifies your email, calendar, tasks,",
+    " notes, GitHub, and messaging services into a central intelligence hub. It leverages long-term memory and tool integrations to manage",
+    " schedules, track context, and execute daily personal and software workflows directly from your local machine."
+  ],
+  "fullText": "Agentic OS is a local-first personal AI operating system that unifies your email, calendar, tasks, notes, GitHub, and messaging services into a central intelligence hub. It leverages long-term memory and tool integrations to manage schedules, track context, and execute daily personal and software workflows directly from your local machine.",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 22837,
+  "pass": false,
+  "failureReason": "Over-triggered tools: expected none, got [searchNotes, listMemories, getUpdatesFeed]"
+}

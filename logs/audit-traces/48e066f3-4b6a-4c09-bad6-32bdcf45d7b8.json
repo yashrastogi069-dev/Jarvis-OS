@@ -1,0 +1,193 @@
+{
+  "traceId": "48e066f3-4b6a-4c09-bad6-32bdcf45d7b8",
+  "testName": "D1_Create_Verify_Task",
+  "expectedTools": [
+    "createTask",
+    "listTasks"
+  ],
+  "expectedBehavior": "Calls createTask, then listTasks sequentially",
+  "messages": [
+    {
+      "id": "audit-1789719653606",
+      "role": "user",
+      "content": "Create a task called 'Buy milk', and then list my open tasks to confirm it was created."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719653606,
+    "REQUEST_SENT": 1789719653606,
+    "SERVER_RECEIVED": 1789719686636,
+    "SSE_FIRST_CHUNK": 1789719686652,
+    "FINAL_GENERATION_END": 1789719776993
+  },
+  "toolInvocations": [
+    {
+      "toolName": "createTask",
+      "toolCallId": "fc_fe1bba4b-838c-4b71-a2d0-a483ba138d4f",
+      "args": {
+        "title": "Buy milk"
+      },
+      "timestamp": 1789719686736
+    },
+    {
+      "toolName": "listTasks",
+      "toolCallId": "fc_4c6b6f77-333d-4c0f-b504-23796dc393e8",
+      "args": {
+        "status": "open"
+      },
+      "timestamp": 1789719731967
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "fc_fe1bba4b-838c-4b71-a2d0-a483ba138d4f",
+      "output": {
+        "id": 24,
+        "title": "Buy milk",
+        "status": "open"
+      },
+      "timestamp": 1789719686751
+    },
+    {
+      "toolCallId": "fc_4c6b6f77-333d-4c0f-b504-23796dc393e8",
+      "output": {
+        "tasks": [
+          {
+            "id": 3,
+            "title": "Check email",
+            "notes": "Check email every weekday at 8am",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": null,
+            "recurrence": "weekdays"
+          },
+          {
+            "id": 4,
+            "title": "Meeting: New Consultation",
+            "notes": "New Consultation without BTR Astrologer Code 5031 - Yash Rastogi at https://meet.zoho.in/zwbr-xbc-rjp",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-07-18T12:44:47.349Z",
+            "recurrence": null
+          },
+          {
+            "id": 21,
+            "title": "Buy milk",
+            "notes": null,
+            "status": "open",
+            "dueAt": null,
+            "remindAt": null,
+            "recurrence": null
+          },
+          {
+            "id": 24,
+            "title": "Buy milk",
+            "notes": null,
+            "status": "open",
+            "dueAt": null,
+            "remindAt": null,
+            "recurrence": null
+          },
+          {
+            "id": 6,
+            "title": "Audit Task 1789645045938",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:47:25.942Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 8,
+            "title": "Audit Task 1789645130952",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:48:50.953Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 10,
+            "title": "Audit Task 1789645149859",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:49:09.860Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 12,
+            "title": "Audit Task 1789645314600",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:51:54.602Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 14,
+            "title": "Audit Task 1789645367038",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:52:47.039Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 17,
+            "title": "Audit Task 1789645700513",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:58:20.515Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 19,
+            "title": "Audit Task 1789717128858",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-19T07:48:48.861Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 23,
+            "title": "Submit tax return",
+            "notes": "Submit by next Friday at 5pm",
+            "status": "open",
+            "dueAt": "2026-09-25T11:30:00.000Z",
+            "remindAt": null,
+            "recurrence": null
+          },
+          {
+            "id": 20,
+            "title": "Submit tax return",
+            "notes": null,
+            "status": "open",
+            "dueAt": "2026-09-25T11:30:00.000Z",
+            "remindAt": "2026-09-25T11:30:00.000Z",
+            "recurrence": null
+          },
+          {
+            "id": 22,
+            "title": "Submit tax return",
+            "notes": "Submit tax return",
+            "status": "open",
+            "dueAt": "2026-09-25T17:00:00.000Z",
+            "remindAt": "2026-09-25T17:00:00.000Z",
+            "recurrence": null
+          }
+        ]
+      },
+      "timestamp": 1789719731982
+    }
+  ],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "groq",
+  "error": "Groq GPT-OSS 20B stalled (no response for 45s)",
+  "totalLatencyMs": 123380,
+  "pass": false,
+  "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+}

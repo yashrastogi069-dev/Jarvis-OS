@@ -10,6 +10,10 @@ __v0_jsx-dev-runtime.ts
 .env*.local
 KeysJarvis.env
 *.keys.env
+069 google.txt
+jarvis.db
+.claude/
+scratch/
 
 # Common ignores
 node_modules

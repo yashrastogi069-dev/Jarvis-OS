@@ -6,7 +6,7 @@ import { telegramTools, getTelegramSettings, checkTelegram, syncTelegramToFeed }
 import { googleTools, getGoogleSettings, isGoogleConnected, syncGoogleToFeed } from "@/lib/connectors/google"
 import { appleTools, getAppleSettings, checkApple, syncAppleToFeed } from "@/lib/connectors/apple"
 import { getObsidianSettings } from "@/lib/settings"
-import { WHISPER_BIN, WHISPER_MODEL, PIPER_BIN, PIPER_VOICE } from "@/lib/voice/paths"
+import { WHISPER_BIN, WHISPER_MODEL, PIPER_BIN, PIPER_VOICE, STT_PYTHON, STT_SERVER_SCRIPT } from "@/lib/voice/paths"
 
 /**
  * Single source of truth for the five OS connectors (plus voice + the not-
@@ -151,12 +151,13 @@ export const CONNECTORS: ConnectorEntry[] = [
     label: "Voice",
     promptHint: "",
     probe: async () => {
-      // Verbatim move of app/api/health/route.ts's inline voice checks.
+      const sidecar = fs.existsSync(STT_PYTHON) && fs.existsSync(STT_SERVER_SCRIPT)
       const whisper = fs.existsSync(WHISPER_BIN) && fs.existsSync(WHISPER_MODEL)
+      const stt = sidecar || whisper
       const piper = fs.existsSync(PIPER_BIN) && fs.existsSync(PIPER_VOICE)
       return {
-        status: whisper && piper ? "ok" : whisper || piper ? "warn" : "off",
-        detail: { whisper, piper },
+        status: stt && piper ? "ok" : stt || piper ? "warn" : "off",
+        detail: { stt, sidecar, whisper, piper },
       }
     },
     tools: {},

@@ -102,12 +102,11 @@ export function HudShell({ isDesktop }: { isDesktop: boolean }) {
         setChatCollapsed((v) => !v)
         return
       }
-      // Right Alt pressed alone (not as a modifier held with another key) —
-      // talk to Jarvis (§2.2/§6): same event the reactor click dispatches;
-      // voice-controller's listener toggles the mic. Fires on the Alt
-      // keydown itself (event.key === 'Alt'), distinct from Alt+1..5 below
-      // which fires on the digit's keydown with altKey held.
-      if (event.code === 'AltRight' && event.key === 'Alt') {
+      // Right Alt alone OR Alt+J — talk to Jarvis: dispatches jarvis:toggle-mic
+      if (
+        (event.code === 'AltRight' && event.key === 'Alt') ||
+        (event.altKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 'j')
+      ) {
         event.preventDefault()
         window.dispatchEvent(new CustomEvent('jarvis:toggle-mic'))
         return

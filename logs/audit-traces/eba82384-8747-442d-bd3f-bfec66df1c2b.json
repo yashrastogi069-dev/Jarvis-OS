@@ -1,0 +1,89 @@
+{
+  "traceId": "eba82384-8747-442d-bd3f-bfec66df1c2b",
+  "testName": "E1_GitHub_Notifications_NoKey",
+  "expectedTools": [
+    "getGithubNotifications"
+  ],
+  "expectedBehavior": "Invokes tool, catches missing token, informs user GITHUB_TOKEN is required",
+  "messages": [
+    {
+      "id": "audit-1789719789941",
+      "role": "user",
+      "content": "Check my GitHub notifications."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719789941,
+    "REQUEST_SENT": 1789719789941,
+    "SERVER_RECEIVED": 1789719823192,
+    "SSE_FIRST_CHUNK": 1789719823197,
+    "FINAL_GENERATION_END": 1789719868661
+  },
+  "toolInvocations": [
+    {
+      "toolName": "getGithubNotifications",
+      "toolCallId": "fc_342da0b8-4a5c-4d1a-892a-0692a41e9728",
+      "args": {
+        "limit": 10
+      },
+      "timestamp": 1789719823290
+    }
+  ],
+  "toolResults": [],
+  "textDeltas": [
+    "I",
+    " don",
+    "’t",
+    " have",
+    " permission",
+    " to",
+    " read",
+    " your",
+    " Git",
+    "Hub",
+    " notifications",
+    ".",
+    "  \n",
+    "Add",
+    " a",
+    " Git",
+    "Hub",
+    " personal",
+    " access",
+    " token",
+    " to",
+    " the",
+    " ",
+    "`.",
+    "env",
+    ".local",
+    "`",
+    " file",
+    " (",
+    "or",
+    " set",
+    " `",
+    "G",
+    "ITHUB",
+    "_TOKEN",
+    "`",
+    " in",
+    " the",
+    " environment",
+    ")",
+    " and",
+    " I",
+    " can",
+    " fetch",
+    " them",
+    " for",
+    " you",
+    "."
+  ],
+  "fullText": "I don’t have permission to read your GitHub notifications.  \nAdd a GitHub personal access token to the `.env.local` file (or set `GITHUB_TOKEN` in the environment) and I can fetch them for you.",
+  "brain": "groq",
+  "error": null,
+  "totalLatencyMs": 78715,
+  "pass": true,
+  "failureReason": null
+}

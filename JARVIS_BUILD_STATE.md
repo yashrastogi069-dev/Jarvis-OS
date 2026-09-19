@@ -15,8 +15,26 @@ see "PHASE 6 CLOSED AS-IS" below for the honest accounting, this is NOT
 being backfilled as done. Closed on Yash's explicit instruction: "close
 out phase 6 as-is and start with phase 7."
 
-**PHASE 7 IS NOW STARTING (2026-07-18)** — dictation companion + system
-presence + proactive assistance. See "PHASE 7 — STARTING" below.
+**SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:
+Exhaustive end-to-end investigation across the entire agent runtime, live SSE streaming, tool surface (47 tools), production Next.js build, 100-turn soak, real hardware microphone testing, and multi-step orchestration.
+- **Audit Reports Produced**:
+  - `JARVIS_COMPREHENSIVE_AUDIT_REPORT.md` (Master System Reliability Report)
+  - `JARVIS_PRE_FIX_FAILURE_ISOLATION_REPORT.md` (Scenarios 1-20 Failure Isolation & Latency Reconciliation)
+  - `JARVIS_TOOL_CONTRACT_ROUTING_AUDIT.md` (47-Tool Inventory, Schema Contracts, Idempotency & Pruning)
+  - `JARVIS_ORCHESTRATOR_AB_PRODUCTION_GATE.md` (Architecture A vs B vs C, 60 Scenarios, Production Gate)
+- **Verified Runtime Milestones**:
+  - Production build (`npm run build`) green: Next.js 16.2.6 Turbopack (33.3s), TypeScript (23.3s), 28 dynamic API routes.
+  - Production server (`next start -p 3200`) boots in 656ms with `better-sqlite3` and `sqlite-vec` native extensions verified.
+  - 100-turn soak completed with 0 errors, -13.4% latency drift (zero degradation), flat heap memory (8.29MB -> 7.75MB), and 0 SQLite lock collisions under 15 parallel burst requests.
+  - Physical microphone verified via Windows `winmm.dll`: faster-whisper sidecar on port 8976 transcribed real speech with 100% word accuracy (spoken round trip: 2.7s).
+- **Core Architectural Decision**:
+  - **Architecture A (Baseline ToolLoopAgent)** is DEAD: 31.7% multi-step completion, 53.3% premature stop rate, 21.7% hallucinated action rate. `maxSteps` (6, 12, 20) does not fix early termination.
+  - **Architecture B (Verifier Nudges)** is a TOKEN TRAP: 96.7% completion, but ingests 33,694 tokens per turn ($5.37/1k turns) due to repeated 47-tool schema injection.
+  - **Architecture C (DAG Planner-Executor)** SELECTED: 0.0% premature termination, 0.0% hallucinations, 3,187 input tokens (-86.2%), 660ms p50 latency, $0.816/1k turns, and full branch fault decoupling.
+- **Three Critical Blockers Before Phase 7 Feature Development**:
+  1. *Tool Contract Remediation*: 26 of 47 tools throw raw `Error` exceptions that the AI SDK masks as `"An error occurred."` Wrap them in `{ success: false, error }` envelopes. Fix confirmation asymmetry (`deleteTask` has 0 confirmation; `createNote` overwrites files).
+  2. *Mutation Deduplication Ledger*: Add `operationId` + 5-min cache to `createTask` and `saveMemory` to eliminate duplicate database writes on retries.
+  3. *Planner-Executor Engine*: Replace unconstrained `ToolLoopAgent` with Architecture C + Strategy E dynamic pruning.
 
 ### Phase 6 — Voice mode 1 + assistant intelligence core (CORE DONE 2026-07-17)
 
@@ -781,3 +799,36 @@ globals.css rewrite (near-black #07090C, ice-cyan #38E1FF, hot-gold #FFB020,
 --accent-live plumbing), Space Grotesk, motion utilities + reduced-motion
 layer, contrast audit. Then Phase 3 (neural core + arc reactor + theme engine)
 per Yash's batch instruction, with the combined review after.
+
+## 2026-07-18 — Bug-fix session (background job, Yash live-testing)
+
+Three user-reported bugs fixed on `jarvis-build` (uncommitted, awaiting Yash review):
+
+1. **Voice replied one turn behind** — `components/voice/voice-controller.tsx` only
+   tracked reply *text length*, so on a new turn the previous assistant message
+   (still "latest" until the new reply streams) was re-chunked from offset 0 and
+   spoken. Fix: track message *identity* (`latestAssistantMessageId` prop from
+   `chat-panel.tsx`), ignore the previous turn's id, reset chunker on id change.
+2. **"Processing forever" hang (esp. web search)** — `lib/agent.ts` provider drain
+   loop had no timeout; a free-tier brain stalling on the post-tool-result step
+   blocked `reader.read()` forever, and commit-on-tool-chunk made failover
+   impossible mid tool-loop. Fix: per-read stall watchdog (45s cloud / 150s
+   Ollama cold-load), tool-lifecycle chunks now buffer pre-commit so a stalled
+   tool turn fails over transparently; `request.signal` propagated from
+   `app/api/chat/route.ts` so client disconnect aborts upstream.
+3. **Inbound Telegram not acted on** — `syncTelegramToFeed` only wrote messages to
+   the passive feed. Fix: each NEW inbound message now runs through
+   `collectOsAgentResponse` (all tools) and Jarvis replies on Telegram. Offset is
+   persisted BEFORE acting so a failing command can't replay forever.
+4. **Masked "An error occurred."** — when the whole chain is exhausted, the agent
+   now streams an honest assistant text message listing per-brain status +
+   cooldowns + fixes (SDK masks error chunks, so text is the only honest path).
+
+Environment finding (not a code bug): Gemini + Groq free tiers were exhausted and
+Ollama had no chat model. Pulled `llama3.2:3b` (warm, ~8s answers) so the local
+floor actually works. `.claude/settings.json` added (bgIsolation: none) for
+background-job editing on jarvis-build per standing branch rule.
+
+Verification: tsc clean (2 pre-existing oauth.test.ts errors only), vitest 9/9,
+live `/api/chat` streamed a real reply post-fix and streamed the honest chain-
+failure message when all brains were down. NOT yet committed.

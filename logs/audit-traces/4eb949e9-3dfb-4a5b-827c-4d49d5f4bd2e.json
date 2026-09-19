@@ -1,0 +1,72 @@
+{
+  "traceId": "4eb949e9-3dfb-4a5b-827c-4d49d5f4bd2e",
+  "testName": "C4_Recall_Memory",
+  "expectedTools": [
+    "recallMemory"
+  ],
+  "expectedBehavior": "Calls recallMemory or listMemories",
+  "messages": [
+    {
+      "id": "audit-1789717933535",
+      "role": "user",
+      "content": "What do you remember about my coffee preference?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789717933535,
+    "REQUEST_SENT": 1789717933535,
+    "SERVER_RECEIVED": 1789717977029,
+    "SSE_FIRST_CHUNK": 1789717977035,
+    "FINAL_GENERATION_END": 1789718022614
+  },
+  "toolInvocations": [
+    {
+      "toolName": "recallMemory",
+      "toolCallId": "fc_039b7d2c-d2e6-412c-9ebc-090d44f242d8",
+      "args": {
+        "query": "coffee",
+        "category": "preference"
+      },
+      "timestamp": 1789717977239
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "fc_039b7d2c-d2e6-412c-9ebc-090d44f242d8",
+      "output": {
+        "memories": [
+          {
+            "id": 12,
+            "content": "User prefers dark roast coffee.",
+            "category": "preference",
+            "source": "chat",
+            "createdAt": "2026-09-18T07:06:25.614Z"
+          }
+        ]
+      },
+      "timestamp": 1789717977253
+    }
+  ],
+  "textDeltas": [
+    "I",
+    " have",
+    " a",
+    " stored",
+    " preference",
+    " that",
+    " you",
+    " like",
+    " **",
+    "dark",
+    " roast",
+    " coffee",
+    "**",
+    "."
+  ],
+  "fullText": "I have a stored preference that you like **dark roast coffee**.",
+  "brain": "groq",
+  "error": null,
+  "totalLatencyMs": 89078,
+  "pass": true,
+  "failureReason": null
+}

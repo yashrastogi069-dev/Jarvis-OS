@@ -1,0 +1,204 @@
+[
+  {
+    "scenarioId": "B1",
+    "prompt": "Remember that I prefer dark roast coffee.",
+    "brainUsed": "openrouter",
+    "toolCalls": [
+      "saveMemory"
+    ],
+    "totalLatencyMs": 17621,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 9654,
+      "first_chunk": 9656,
+      "first_content_chunk": 9656,
+      "tool_start": 15082,
+      "tool_end": 16053,
+      "post_tool_chunk": 17400,
+      "stream_end": 17621
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 9604,
+      "TTFT": 15082,
+      "TOOL_EXECUTION": 971,
+      "POST_TOOL_LLM": 1347,
+      "STREAMING": 5647,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 17621
+    },
+    "chunkEventsCount": 23
+  },
+  {
+    "scenarioId": "C5",
+    "prompt": "Brief me: what are the recent updates on my feed?",
+    "brainUsed": "openrouter",
+    "toolCalls": [
+      "getUpdatesFeed"
+    ],
+    "totalLatencyMs": 29871,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 11782,
+      "first_chunk": 11784,
+      "first_content_chunk": 11784,
+      "tool_start": 15448,
+      "tool_end": 15729,
+      "post_tool_chunk": 21316,
+      "stream_end": 29871
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 11732,
+      "TTFT": 15448,
+      "TOOL_EXECUTION": 281,
+      "POST_TOOL_LLM": 5587,
+      "STREAMING": 12219,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 29871
+    },
+    "chunkEventsCount": 73
+  },
+  {
+    "scenarioId": "E1",
+    "prompt": "Check my GitHub notifications.",
+    "brainUsed": "openrouter",
+    "toolCalls": [
+      "getGithubNotifications"
+    ],
+    "totalLatencyMs": 15593,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 10109,
+      "first_chunk": 10111,
+      "first_content_chunk": 10111,
+      "tool_start": 11435,
+      "tool_end": null,
+      "post_tool_chunk": null,
+      "stream_end": 15593
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 10059,
+      "TTFT": 11435,
+      "TOOL_EXECUTION": 0,
+      "POST_TOOL_LLM": 0,
+      "STREAMING": 5482,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 15593
+    },
+    "chunkEventsCount": 31
+  },
+  {
+    "scenarioId": "F1",
+    "prompt": "I am writing a blog post about how people organize tasks and reminders. Can you suggest 3 engaging talking points?",
+    "brainUsed": "openrouter",
+    "toolCalls": [],
+    "totalLatencyMs": 28281,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 12032,
+      "first_chunk": 12034,
+      "first_content_chunk": 12034,
+      "tool_start": null,
+      "tool_end": null,
+      "post_tool_chunk": null,
+      "stream_end": 28281
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 11982,
+      "TTFT": 12034,
+      "TOOL_EXECUTION": 0,
+      "POST_TOOL_LLM": 0,
+      "STREAMING": 16247,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 28281
+    },
+    "chunkEventsCount": 61
+  },
+  {
+    "scenarioId": "F2",
+    "prompt": "Write a short 4-line poem about human memory.",
+    "brainUsed": "openrouter",
+    "toolCalls": [],
+    "totalLatencyMs": 13364,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 10594,
+      "first_chunk": 10595,
+      "first_content_chunk": 10595,
+      "tool_start": null,
+      "tool_end": null,
+      "post_tool_chunk": null,
+      "stream_end": 13364
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 10544,
+      "TTFT": 10595,
+      "TOOL_EXECUTION": 0,
+      "POST_TOOL_LLM": 0,
+      "STREAMING": 2769,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 13364
+    },
+    "chunkEventsCount": 15
+  },
+  {
+    "scenarioId": "F3",
+    "prompt": "What is the difference between a Git branch and a GitHub fork in software development?",
+    "brainUsed": "openrouter",
+    "toolCalls": [],
+    "totalLatencyMs": 29727,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 14604,
+      "first_chunk": 14605,
+      "first_content_chunk": 17428,
+      "tool_start": null,
+      "tool_end": null,
+      "post_tool_chunk": null,
+      "stream_end": 29727
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 14554,
+      "TTFT": 17428,
+      "TOOL_EXECUTION": 0,
+      "POST_TOOL_LLM": 0,
+      "STREAMING": 12299,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 29727
+    },
+    "chunkEventsCount": 76
+  },
+  {
+    "scenarioId": "G1",
+    "prompt": "Remind me later.",
+    "brainUsed": "openrouter",
+    "toolCalls": [],
+    "totalLatencyMs": 22423,
+    "waterfallTimestamps": {
+      "client_request_start": 0,
+      "headers_received": 10009,
+      "first_chunk": 10010,
+      "first_content_chunk": 10010,
+      "tool_start": null,
+      "tool_end": null,
+      "post_tool_chunk": null,
+      "stream_end": 22423
+    },
+    "delayCategories": {
+      "PRE_PROVIDER": 50,
+      "CONTEXT_BUILD": 9959,
+      "TTFT": 10010,
+      "TOOL_EXECUTION": 0,
+      "POST_TOOL_LLM": 0,
+      "STREAMING": 12413,
+      "FAILOVER_OR_WATCHDOG": 0,
+      "TOTAL_MEASURED": 22423
+    },
+    "chunkEventsCount": 23
+  }
+]

@@ -1,0 +1,1960 @@
+[
+  {
+    "id": "T001",
+    "prompt": "Remind me to call the dentist tomorrow at 2pm.",
+    "expectedTools": [
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T002",
+    "prompt": "Create a task called 'Submit quarterly tax report'.",
+    "expectedTools": [
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T003",
+    "prompt": "Add to my to-do list: buy groceries tonight.",
+    "expectedTools": [
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T004",
+    "prompt": "I need to file my expenses by Friday.",
+    "expectedTools": [
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T005",
+    "prompt": "Set a reminder for the team standup on Monday morning.",
+    "expectedTools": [
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T006",
+    "prompt": "What tasks do I have open right now?",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T007",
+    "prompt": "Show me all my completed tasks.",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T008",
+    "prompt": "List all items on my to-do list.",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T009",
+    "prompt": "What is on my pending task list?",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T010",
+    "prompt": "Mark task 14 as done.",
+    "expectedTools": [
+      "completeTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T011",
+    "prompt": "I finished task 5.",
+    "expectedTools": [
+      "completeTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T012",
+    "prompt": "Complete the buy milk task (id 21).",
+    "expectedTools": [
+      "completeTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T013",
+    "prompt": "Snooze task 3 by 30 minutes.",
+    "expectedTools": [
+      "snoozeTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T014",
+    "prompt": "Delay reminder for task 12 by an hour.",
+    "expectedTools": [
+      "snoozeTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T015",
+    "prompt": "Change the due date of task 8 to next Tuesday.",
+    "expectedTools": [
+      "updateTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T016",
+    "prompt": "Update task 10 title to 'Doctor checkup postponed'.",
+    "expectedTools": [
+      "updateTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T017",
+    "prompt": "Delete task 4.",
+    "expectedTools": [
+      "deleteTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "T018",
+    "prompt": "Remove task 19 from my database permanently.",
+    "expectedTools": [
+      "deleteTask"
+    ],
+    "domain": "Tasks",
+    "type": "single-tool"
+  },
+  {
+    "id": "M001",
+    "prompt": "Remember that I prefer dark roast coffee.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M002",
+    "prompt": "Keep in mind that my daughter's birthday is June 14.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M003",
+    "prompt": "Please note down: I am allergic to peanuts.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M004",
+    "prompt": "Save to memory: my car license plate is 7XYZ99.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M005",
+    "prompt": "Don't forget that I work as a systems reliability engineer.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M006",
+    "prompt": "What do you remember about my coffee preference?",
+    "expectedTools": [
+      "recallMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M007",
+    "prompt": "Do you recall my daughter's birthday?",
+    "expectedTools": [
+      "recallMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M008",
+    "prompt": "What allergies do I have in my records?",
+    "expectedTools": [
+      "recallMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M009",
+    "prompt": "Search memory for anything about my car.",
+    "expectedTools": [
+      "recallMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M010",
+    "prompt": "List all memories you have stored about me.",
+    "expectedTools": [
+      "listMemories"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M011",
+    "prompt": "Show me everything in long-term memory.",
+    "expectedTools": [
+      "listMemories"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M012",
+    "prompt": "Audit my stored memories, show the latest 20.",
+    "expectedTools": [
+      "listMemories"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M013",
+    "prompt": "Delete memory 4.",
+    "expectedTools": [
+      "deleteMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M014",
+    "prompt": "Forget the memory with id 12.",
+    "expectedTools": [
+      "deleteMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M015",
+    "prompt": "Remove memory entry 9.",
+    "expectedTools": [
+      "deleteMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "M016",
+    "prompt": "Confirm deletion of memory 4.",
+    "expectedTools": [
+      "deleteMemory"
+    ],
+    "domain": "Memory",
+    "type": "single-tool"
+  },
+  {
+    "id": "S001",
+    "prompt": "Save this as a skill: whenever I ask for a PR summary, fetch the PR commits and list them concisely.",
+    "expectedTools": [
+      "saveAsSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S002",
+    "prompt": "Automate this repeated workflow as a skill called 'standup-prep'.",
+    "expectedTools": [
+      "saveAsSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S003",
+    "prompt": "Create a reusable skill named 'weekly-digest'.",
+    "expectedTools": [
+      "saveAsSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S004",
+    "prompt": "What skills are currently registered in the system?",
+    "expectedTools": [
+      "listSkills"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S005",
+    "prompt": "List all available skills in Skill Factory.",
+    "expectedTools": [
+      "listSkills"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S006",
+    "prompt": "Show my installed automation skills.",
+    "expectedTools": [
+      "listSkills"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S007",
+    "prompt": "Run the skill 'pr-summary' on PR #42.",
+    "expectedTools": [
+      "runSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S008",
+    "prompt": "Execute skill 'standup-prep' with input 'today'.",
+    "expectedTools": [
+      "runSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S009",
+    "prompt": "Run the 'weekly-digest' automation skill.",
+    "expectedTools": [
+      "runSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "S010",
+    "prompt": "Execute skill 'code-review' on repo yash/agentic-os.",
+    "expectedTools": [
+      "runSkill"
+    ],
+    "domain": "Skills",
+    "type": "single-tool"
+  },
+  {
+    "id": "W001",
+    "prompt": "Add a wake word 'computer' to activate voice.",
+    "expectedTools": [
+      "addWakeWord"
+    ],
+    "domain": "Wake Words",
+    "type": "single-tool"
+  },
+  {
+    "id": "W002",
+    "prompt": "Register 'hey assistant' as a trigger phrase for activate-voice.",
+    "expectedTools": [
+      "addWakeWord"
+    ],
+    "domain": "Wake Words",
+    "type": "single-tool"
+  },
+  {
+    "id": "W003",
+    "prompt": "What wake words are registered right now?",
+    "expectedTools": [
+      "listWakeWords"
+    ],
+    "domain": "Wake Words",
+    "type": "single-tool"
+  },
+  {
+    "id": "W004",
+    "prompt": "List all spoken trigger words.",
+    "expectedTools": [
+      "listWakeWords"
+    ],
+    "domain": "Wake Words",
+    "type": "single-tool"
+  },
+  {
+    "id": "W005",
+    "prompt": "Remove the wake word with id 'ww-123'.",
+    "expectedTools": [
+      "removeWakeWord"
+    ],
+    "domain": "Wake Words",
+    "type": "single-tool"
+  },
+  {
+    "id": "W006",
+    "prompt": "Delete wake word entry 'ww-456'.",
+    "expectedTools": [
+      "removeWakeWord"
+    ],
+    "domain": "Wake Words",
+    "type": "single-tool"
+  },
+  {
+    "id": "P001",
+    "prompt": "Please be more casual in your responses.",
+    "expectedTools": [
+      "setPreference"
+    ],
+    "domain": "Preferences",
+    "type": "single-tool"
+  },
+  {
+    "id": "P002",
+    "prompt": "Change your tone to professional from now on.",
+    "expectedTools": [
+      "setPreference"
+    ],
+    "domain": "Preferences",
+    "type": "single-tool"
+  },
+  {
+    "id": "P003",
+    "prompt": "Keep your answers brief and concise.",
+    "expectedTools": [
+      "setPreference"
+    ],
+    "domain": "Preferences",
+    "type": "single-tool"
+  },
+  {
+    "id": "P004",
+    "prompt": "Call me Boss when addressing me.",
+    "expectedTools": [
+      "setPreference"
+    ],
+    "domain": "Preferences",
+    "type": "single-tool"
+  },
+  {
+    "id": "F001",
+    "prompt": "Brief me: what are the recent updates on my feed?",
+    "expectedTools": [
+      "getUpdatesFeed"
+    ],
+    "domain": "Feed",
+    "type": "single-tool"
+  },
+  {
+    "id": "F002",
+    "prompt": "What's new across all my connected services?",
+    "expectedTools": [
+      "getUpdatesFeed"
+    ],
+    "domain": "Feed",
+    "type": "single-tool"
+  },
+  {
+    "id": "F003",
+    "prompt": "Show recent events from the github feed.",
+    "expectedTools": [
+      "getUpdatesFeed"
+    ],
+    "domain": "Feed",
+    "type": "single-tool"
+  },
+  {
+    "id": "F004",
+    "prompt": "Give me the morning activity briefing.",
+    "expectedTools": [
+      "getUpdatesFeed"
+    ],
+    "domain": "Feed",
+    "type": "single-tool"
+  },
+  {
+    "id": "R001",
+    "prompt": "Search the web: what is the latest stable version of Next.js?",
+    "expectedTools": [
+      "webSearch"
+    ],
+    "domain": "Research",
+    "type": "single-tool"
+  },
+  {
+    "id": "R002",
+    "prompt": "Look up today's weather forecast in London on the web.",
+    "expectedTools": [
+      "webSearch"
+    ],
+    "domain": "Research",
+    "type": "single-tool"
+  },
+  {
+    "id": "R003",
+    "prompt": "Search the web for recent announcements from Anthropic.",
+    "expectedTools": [
+      "webSearch"
+    ],
+    "domain": "Research",
+    "type": "single-tool"
+  },
+  {
+    "id": "R004",
+    "prompt": "Fetch and read the content of https://nextjs.org/docs as markdown.",
+    "expectedTools": [
+      "fetchPage"
+    ],
+    "domain": "Research",
+    "type": "single-tool"
+  },
+  {
+    "id": "R005",
+    "prompt": "Scrape the webpage at https://news.ycombinator.com.",
+    "expectedTools": [
+      "fetchPage"
+    ],
+    "domain": "Research",
+    "type": "single-tool"
+  },
+  {
+    "id": "R006",
+    "prompt": "Read the article at https://en.wikipedia.org/wiki/Artificial_intelligence.",
+    "expectedTools": [
+      "fetchPage"
+    ],
+    "domain": "Research",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH01",
+    "prompt": "Check my GitHub notifications.",
+    "expectedTools": [
+      "getGithubNotifications"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH02",
+    "prompt": "Do I have any unread GitHub mentions or alerts?",
+    "expectedTools": [
+      "getGithubNotifications"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH03",
+    "prompt": "List my open pull requests on GitHub.",
+    "expectedTools": [
+      "getMyOpenPRs"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH04",
+    "prompt": "What PRs are waiting on my review?",
+    "expectedTools": [
+      "getMyOpenPRs"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH05",
+    "prompt": "What GitHub issues are currently assigned to me?",
+    "expectedTools": [
+      "getMyOpenIssues"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH06",
+    "prompt": "List open issues assigned to me across all repos.",
+    "expectedTools": [
+      "getMyOpenIssues"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH07",
+    "prompt": "Show recent commits in repo 'facebook/react'.",
+    "expectedTools": [
+      "getRecentCommits"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH08",
+    "prompt": "What are the latest commits on 'vercel/next.js'?",
+    "expectedTools": [
+      "getRecentCommits"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH09",
+    "prompt": "Create a GitHub issue in 'yash/agentic-os' titled 'Fix memory leak'.",
+    "expectedTools": [
+      "createGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH10",
+    "prompt": "File a bug report on 'owner/repo' with title 'Broken STT'.",
+    "expectedTools": [
+      "createGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH11",
+    "prompt": "Confirm creating GitHub issue #0 in 'yash/test'.",
+    "expectedTools": [
+      "createGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH12",
+    "prompt": "Comment on issue 42 in repo 'facebook/react': 'Looking into this.'",
+    "expectedTools": [
+      "commentOnGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH13",
+    "prompt": "Post a comment on PR 15 in 'yash/agentic-os'.",
+    "expectedTools": [
+      "commentOnGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "GH14",
+    "prompt": "Confirm posting comment on issue 12 in 'org/repo'.",
+    "expectedTools": [
+      "commentOnGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "single-tool"
+  },
+  {
+    "id": "G001",
+    "prompt": "What events do I have on my Google Calendar this week?",
+    "expectedTools": [
+      "getCalendarEvents"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G002",
+    "prompt": "Show my schedule for the next 7 days.",
+    "expectedTools": [
+      "getCalendarEvents"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G003",
+    "prompt": "What meetings are coming up on my calendar?",
+    "expectedTools": [
+      "getCalendarEvents"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G004",
+    "prompt": "Check my recent emails in Gmail.",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G005",
+    "prompt": "What are the latest emails in my inbox?",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G006",
+    "prompt": "Create a calendar event 'Dentist Appointment' on October 5 from 10am to 11am.",
+    "expectedTools": [
+      "createCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G007",
+    "prompt": "Schedule a meeting with Alex tomorrow from 3pm to 4pm.",
+    "expectedTools": [
+      "createCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G008",
+    "prompt": "Send an email to boss@company.com with subject 'Report' and body 'Attached'.",
+    "expectedTools": [
+      "sendGmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G009",
+    "prompt": "Email john@example.com saying I will be late.",
+    "expectedTools": [
+      "sendGmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G010",
+    "prompt": "Confirm sending Gmail to client@test.com.",
+    "expectedTools": [
+      "sendGmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G011",
+    "prompt": "Reply to email 'msg_123' saying 'Received, thank you.'",
+    "expectedTools": [
+      "replyToEmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G012",
+    "prompt": "Send a reply to message 'msg_456'.",
+    "expectedTools": [
+      "replyToEmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G013",
+    "prompt": "Search Gmail for emails from 'stripe.com'.",
+    "expectedTools": [
+      "searchGmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G014",
+    "prompt": "Find emails with subject 'invoice' in Gmail.",
+    "expectedTools": [
+      "searchGmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G015",
+    "prompt": "Read the full body of email message 'msg_789'.",
+    "expectedTools": [
+      "readEmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G016",
+    "prompt": "Fetch email content for id '189284fa'.",
+    "expectedTools": [
+      "readEmail"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G017",
+    "prompt": "Update calendar event 'evt_123' to start at 2pm.",
+    "expectedTools": [
+      "updateCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G018",
+    "prompt": "Confirm updating calendar event 'evt_123'.",
+    "expectedTools": [
+      "updateCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G019",
+    "prompt": "Delete calendar event 'evt_456' from Google Calendar.",
+    "expectedTools": [
+      "deleteCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "G020",
+    "prompt": "Search Google Calendar for events matching 'Product Launch'.",
+    "expectedTools": [
+      "searchCalendarEvents"
+    ],
+    "domain": "Google",
+    "type": "single-tool"
+  },
+  {
+    "id": "A001",
+    "prompt": "What events are on my Apple iCloud Calendar for the next 3 days?",
+    "expectedTools": [
+      "getAppleCalendarEvents"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A002",
+    "prompt": "Show my Apple Calendar agenda.",
+    "expectedTools": [
+      "getAppleCalendarEvents"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A003",
+    "prompt": "Create an Apple Calendar event 'Soccer Practice' on Saturday from 9am to 10am.",
+    "expectedTools": [
+      "createAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A004",
+    "prompt": "Add event 'Gym' to my iCloud calendar on Friday at 6pm.",
+    "expectedTools": [
+      "createAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A005",
+    "prompt": "Update Apple Calendar event with UID 'uid_apple_123'.",
+    "expectedTools": [
+      "updateAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A006",
+    "prompt": "Confirm updating iCloud event 'uid_apple_123'.",
+    "expectedTools": [
+      "updateAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A007",
+    "prompt": "Delete Apple Calendar event with UID 'uid_apple_456'.",
+    "expectedTools": [
+      "deleteAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A008",
+    "prompt": "Confirm deleting iCloud event 'uid_apple_456'.",
+    "expectedTools": [
+      "deleteAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A009",
+    "prompt": "Search my Apple Calendar for events with 'Doctor'.",
+    "expectedTools": [
+      "searchAppleCalendarEvents"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "A010",
+    "prompt": "Find iCloud calendar entries matching 'Flight'.",
+    "expectedTools": [
+      "searchAppleCalendarEvents"
+    ],
+    "domain": "Apple Calendar",
+    "type": "single-tool"
+  },
+  {
+    "id": "TEL01",
+    "prompt": "Send a Telegram message to my phone: 'Meeting starts in 10 minutes.'",
+    "expectedTools": [
+      "sendTelegram"
+    ],
+    "domain": "Telegram",
+    "type": "single-tool"
+  },
+  {
+    "id": "TEL02",
+    "prompt": "Push a Telegram notification saying 'Build completed successfully.'",
+    "expectedTools": [
+      "sendTelegram"
+    ],
+    "domain": "Telegram",
+    "type": "single-tool"
+  },
+  {
+    "id": "TEL03",
+    "prompt": "Message me on Telegram: Remember to pick up milk.",
+    "expectedTools": [
+      "sendTelegram"
+    ],
+    "domain": "Telegram",
+    "type": "single-tool"
+  },
+  {
+    "id": "TEL04",
+    "prompt": "Check my incoming Telegram messages.",
+    "expectedTools": [
+      "getTelegramMessages"
+    ],
+    "domain": "Telegram",
+    "type": "single-tool"
+  },
+  {
+    "id": "TEL05",
+    "prompt": "Sync Telegram feed and show new messages.",
+    "expectedTools": [
+      "getTelegramMessages"
+    ],
+    "domain": "Telegram",
+    "type": "single-tool"
+  },
+  {
+    "id": "TEL06",
+    "prompt": "Did anyone text me on Telegram recently?",
+    "expectedTools": [
+      "getTelegramMessages"
+    ],
+    "domain": "Telegram",
+    "type": "single-tool"
+  },
+  {
+    "id": "O001",
+    "prompt": "Search my Obsidian vault for notes mentioning 'Agentic OS'.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O002",
+    "prompt": "Find notes in my vault containing 'machine learning'.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O003",
+    "prompt": "Read my Obsidian note titled 'Daily.md'.",
+    "expectedTools": [
+      "readNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O004",
+    "prompt": "Open and read 'Projects/Roadmap.md' from my vault.",
+    "expectedTools": [
+      "readNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O005",
+    "prompt": "Append 'Review code before release' to note 'Daily.md'.",
+    "expectedTools": [
+      "appendNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O006",
+    "prompt": "Add a checklist item to my note 'Work.md'.",
+    "expectedTools": [
+      "appendNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O007",
+    "prompt": "Create a new note in Obsidian at 'Ideas/Startup.md' with content 'AI operating system'.",
+    "expectedTools": [
+      "createNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O008",
+    "prompt": "Write a new note titled 'Meeting-Notes.md' in my vault.",
+    "expectedTools": [
+      "createNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O009",
+    "prompt": "Search my vault for recipes.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "O010",
+    "prompt": "Read the note at 'Archive/2025.md'.",
+    "expectedTools": [
+      "readNote"
+    ],
+    "domain": "Obsidian",
+    "type": "single-tool"
+  },
+  {
+    "id": "MT01",
+    "prompt": "Create a task called 'Buy milk', and then list my open tasks to confirm it was created.",
+    "expectedTools": [
+      "createTask",
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT02",
+    "prompt": "Find the release date of Next.js 15 on the web, and save that date into my long-term memory.",
+    "expectedTools": [
+      "webSearch",
+      "saveMemory"
+    ],
+    "domain": "Research/Memory",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT03",
+    "prompt": "Search my notes for 'project alpha', and then append today's date to that note.",
+    "expectedTools": [
+      "searchNotes",
+      "appendNote"
+    ],
+    "domain": "Obsidian",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT04",
+    "prompt": "Check my recent emails, and reply to the latest one confirming attendance.",
+    "expectedTools": [
+      "getRecentEmails",
+      "replyToEmail"
+    ],
+    "domain": "Google",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT05",
+    "prompt": "List my open GitHub issues, and post a comment on issue #5.",
+    "expectedTools": [
+      "getMyOpenIssues",
+      "commentOnGithubIssue"
+    ],
+    "domain": "GitHub",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT06",
+    "prompt": "List my memories, and then delete memory id 2.",
+    "expectedTools": [
+      "listMemories",
+      "deleteMemory"
+    ],
+    "domain": "Memory",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT07",
+    "prompt": "List my wake words, and remove the one called 'computer'.",
+    "expectedTools": [
+      "listWakeWords",
+      "removeWakeWord"
+    ],
+    "domain": "Wake Words",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT08",
+    "prompt": "Search Google Calendar for 'Doctor', and delete that event.",
+    "expectedTools": [
+      "searchCalendarEvents",
+      "deleteCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT09",
+    "prompt": "Search Apple Calendar for 'Dentist', and update its start time to 3pm.",
+    "expectedTools": [
+      "searchAppleCalendarEvents",
+      "updateAppleCalendarEvent"
+    ],
+    "domain": "Apple Calendar",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT10",
+    "prompt": "Check my GitHub notifications, and if there are any PRs, list my open PRs.",
+    "expectedTools": [
+      "getGithubNotifications",
+      "getMyOpenPRs"
+    ],
+    "domain": "GitHub",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT11",
+    "prompt": "Look up Python 3.13 release notes on the web and create an Obsidian note 'Python-3.13.md' with the summary.",
+    "expectedTools": [
+      "webSearch",
+      "createNote"
+    ],
+    "domain": "Research/Obsidian",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT12",
+    "prompt": "Check my open tasks, and send a summary of them to my Telegram.",
+    "expectedTools": [
+      "listTasks",
+      "sendTelegram"
+    ],
+    "domain": "Tasks/Telegram",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT13",
+    "prompt": "Read note 'Daily.md' and create a task for every to-do item found inside.",
+    "expectedTools": [
+      "readNote",
+      "createTask"
+    ],
+    "domain": "Obsidian/Tasks",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT14",
+    "prompt": "Find emails from 'boss@corp.com' and create a calendar meeting based on his request.",
+    "expectedTools": [
+      "searchGmail",
+      "createCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT15",
+    "prompt": "Recall what you know about my dietary preferences and search the web for healthy dinner recipes fitting them.",
+    "expectedTools": [
+      "recallMemory",
+      "webSearch"
+    ],
+    "domain": "Memory/Research",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT16",
+    "prompt": "List open tasks, complete task 1, and create a task for the follow-up.",
+    "expectedTools": [
+      "listTasks",
+      "completeTask",
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT17",
+    "prompt": "Check GitHub PRs, and send me a Telegram message if any are open.",
+    "expectedTools": [
+      "getMyOpenPRs",
+      "sendTelegram"
+    ],
+    "domain": "GitHub/Telegram",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT18",
+    "prompt": "List all skills, and run the skill 'daily-review'.",
+    "expectedTools": [
+      "listSkills",
+      "runSkill"
+    ],
+    "domain": "Skills",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT19",
+    "prompt": "Search Gmail for 'flight confirmation' and add the flight to Apple Calendar.",
+    "expectedTools": [
+      "searchGmail",
+      "createAppleCalendarEvent"
+    ],
+    "domain": "Google/Apple",
+    "type": "multi-tool"
+  },
+  {
+    "id": "MT20",
+    "prompt": "Scrape the URL https://github.com/blog and save key insights to memory.",
+    "expectedTools": [
+      "fetchPage",
+      "saveMemory"
+    ],
+    "domain": "Research/Memory",
+    "type": "multi-tool"
+  },
+  {
+    "id": "NO01",
+    "prompt": "Write a short 4-line poem about human memory.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO02",
+    "prompt": "What is the neurological mechanism behind long-term memory formation?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO03",
+    "prompt": "Can you explain the difference between RAM and virtual memory in an OS?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO04",
+    "prompt": "What is the difference between a Git branch and a GitHub fork in software development?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO05",
+    "prompt": "Explain the concept of GitHub pull requests to a beginner programmer.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO06",
+    "prompt": "Who founded GitHub and when was it acquired by Microsoft?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO07",
+    "prompt": "I am writing a blog post about how people organize tasks and reminders. Can you suggest 3 engaging talking points?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO08",
+    "prompt": "What is the Eisenhower Matrix for task prioritization?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO09",
+    "prompt": "Why do people procrastinate on difficult tasks?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO10",
+    "prompt": "Tell me about the history of Google and how PageRank works.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO11",
+    "prompt": "What is the difference between Gmail and regular IMAP/POP3 email protocols?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO12",
+    "prompt": "How was the Gregorian calendar developed and why do we have leap years?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO13",
+    "prompt": "What is the geological origin of obsidian volcanic rock?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO14",
+    "prompt": "Why do surgeons sometimes use obsidian scalpel blades?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO15",
+    "prompt": "What are the nutritional benefits of eating an apple a day?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO16",
+    "prompt": "Who were the key founders of Apple Computer in 1976?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO17",
+    "prompt": "How did the invention of the electric telegraph change global communication in the 19th century?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO18",
+    "prompt": "What encryption protocol does the Telegram messaging protocol MTProto use?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO19",
+    "prompt": "What is the difference between hard skills and soft skills in career development?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO20",
+    "prompt": "How do humans acquire motor skills like riding a bicycle?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO21",
+    "prompt": "What does the phrase 'in the wake of the storm' mean metaphorically?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO22",
+    "prompt": "How do wake words like 'Alexa' work using acoustic model neural networks?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO23",
+    "prompt": "Explain what this project does in two sentences.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO24",
+    "prompt": "Hello Jarvis, good morning!",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO25",
+    "prompt": "What is 25 * 4?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO26",
+    "prompt": "Solve for x: 2x + 10 = 30.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO27",
+    "prompt": "Tell me a clean programming joke.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO28",
+    "prompt": "Translate 'Good morning, friend' into French and German.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO29",
+    "prompt": "What is the capital of Australia?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO30",
+    "prompt": "Can you write a python function to check if a string is a palindrome?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO31",
+    "prompt": "How does binary search work on a sorted array?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO32",
+    "prompt": "What is the difference between SQL and NoSQL databases?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO33",
+    "prompt": "How does HTTPS establish a TLS handshake?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO34",
+    "prompt": "Explain quantum computing superposition in simple terms.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO35",
+    "prompt": "What causes tides in the oceans?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO36",
+    "prompt": "Who painted the Mona Lisa?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO37",
+    "prompt": "Thank you, that was very helpful.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO38",
+    "prompt": "Good night Jarvis.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO39",
+    "prompt": "How fast does light travel in vacuum?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "NO40",
+    "prompt": "Explain the difference between concurrency and parallelism.",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "no-tool"
+  },
+  {
+    "id": "AM01",
+    "prompt": "Remind me later.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM02",
+    "prompt": "Check it.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM03",
+    "prompt": "Save that.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM04",
+    "prompt": "Show me my stuff.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM05",
+    "prompt": "Send a message to him.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM06",
+    "prompt": "Delete it now.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM07",
+    "prompt": "What's the status?",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM08",
+    "prompt": "Add this note.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM09",
+    "prompt": "Can you update that?",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM10",
+    "prompt": "Look into that for me.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM11",
+    "prompt": "Create an entry.",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "AM12",
+    "prompt": "Where did I put that?",
+    "expectedTools": [],
+    "domain": "Ambiguous",
+    "type": "ambiguous"
+  },
+  {
+    "id": "PH01",
+    "prompt": "Remember that I like green tea.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH02",
+    "prompt": "Keep in mind that I prefer green tea.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH03",
+    "prompt": "Note down: green tea is my favorite beverage.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH04",
+    "prompt": "Don't forget that green tea is what I drink.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH05",
+    "prompt": "What tasks do I have scheduled?",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH06",
+    "prompt": "Show my to-do items.",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH07",
+    "prompt": "What is on my agenda to do?",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH08",
+    "prompt": "Display my pending tasks.",
+    "expectedTools": [
+      "listTasks"
+    ],
+    "domain": "Tasks",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH09",
+    "prompt": "Search my vault for meeting notes.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH10",
+    "prompt": "Find notes with 'meeting' in my Obsidian directory.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH11",
+    "prompt": "Look up notes about meetings in Obsidian.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH12",
+    "prompt": "What emails came in recently?",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH13",
+    "prompt": "Fetch my latest Gmail messages.",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH14",
+    "prompt": "Check inbox for new mail.",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "PH15",
+    "prompt": "Show me new emails.",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "phrasing-variant"
+  },
+  {
+    "id": "CF01",
+    "prompt": "Remember that I like to be addressed as Commander.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF02",
+    "prompt": "Please address me as Commander from now on.",
+    "expectedTools": [
+      "setPreference"
+    ],
+    "domain": "Preferences",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF03",
+    "prompt": "What do you remember about my doctor's appointment?",
+    "expectedTools": [
+      "recallMemory"
+    ],
+    "domain": "Memory",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF04",
+    "prompt": "List every single memory you have stored about me.",
+    "expectedTools": [
+      "listMemories"
+    ],
+    "domain": "Memory",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF05",
+    "prompt": "Remind me to attend the board meeting next Tuesday at 9am.",
+    "expectedTools": [
+      "createTask"
+    ],
+    "domain": "Tasks",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF06",
+    "prompt": "Put the board meeting on my Google Calendar for next Tuesday at 9am.",
+    "expectedTools": [
+      "createCalendarEvent"
+    ],
+    "domain": "Google",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF07",
+    "prompt": "What events are on my Google Calendar for the next 7 days?",
+    "expectedTools": [
+      "getCalendarEvents"
+    ],
+    "domain": "Google",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF08",
+    "prompt": "Search Google Calendar for any event with the word 'Review'.",
+    "expectedTools": [
+      "searchCalendarEvents"
+    ],
+    "domain": "Google",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF09",
+    "prompt": "What are the latest messages in my Gmail inbox?",
+    "expectedTools": [
+      "getRecentEmails"
+    ],
+    "domain": "Google",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF10",
+    "prompt": "Search Gmail for emails from 'billing@aws.amazon.com'.",
+    "expectedTools": [
+      "searchGmail"
+    ],
+    "domain": "Google",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF11",
+    "prompt": "Search my notes for 'react 19'.",
+    "expectedTools": [
+      "searchNotes"
+    ],
+    "domain": "Obsidian",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF12",
+    "prompt": "Search the web for 'react 19 release date'.",
+    "expectedTools": [
+      "webSearch"
+    ],
+    "domain": "Research",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF13",
+    "prompt": "Create a note in Obsidian called 'Weekly-Summary.md' with my key accomplishments.",
+    "expectedTools": [
+      "createNote"
+    ],
+    "domain": "Obsidian",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF14",
+    "prompt": "Save to memory: my key accomplishment this week was shipping v1.",
+    "expectedTools": [
+      "saveMemory"
+    ],
+    "domain": "Memory",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF15",
+    "prompt": "How do pull requests work on GitHub?",
+    "expectedTools": [],
+    "domain": "Conversation",
+    "type": "confusion-pair"
+  },
+  {
+    "id": "CF16",
+    "prompt": "Show my open pull requests on GitHub.",
+    "expectedTools": [
+      "getMyOpenPRs"
+    ],
+    "domain": "GitHub",
+    "type": "confusion-pair"
+  }
+]

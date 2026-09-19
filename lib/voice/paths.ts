@@ -30,7 +30,7 @@ export const PIPER_VOICE =
 
 /** faster-whisper sidecar (tools/stt-server/server.py), 127.0.0.1 only. */
 export const STT_SIDECAR_URL =
-  process.env.STT_SIDECAR_URL ?? "http://127.0.0.1:8765"
+  process.env.STT_SIDECAR_URL ?? "http://127.0.0.1:8976"
 
 export const STT_PYTHON =
   process.env.STT_PYTHON ??

@@ -1,0 +1,33 @@
+{
+  "traceId": "4e3e300b-9e5c-4dfe-8553-57c8042e5f26",
+  "testName": "F1_Task_Topic_Discussion",
+  "expectedTools": [],
+  "expectedBehavior": "No createTask or listTasks called; provides discussion outline",
+  "messages": [
+    {
+      "id": "audit-1789715311922",
+      "role": "user",
+      "content": "I am writing a blog post about how people organize tasks and reminders. Can you suggest 3 engaging talking points?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715311922,
+    "REQUEST_SENT": 1789715311922,
+    "SERVER_RECEIVED": 1789715315600,
+    "SSE_FIRST_CHUNK": 1789715315611,
+    "FINAL_GENERATION_END": 1789715316486
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [
+    "Here are 3 engaging talking points for your blog post:\n\n1.  **The \"Second Brain\" Delusion**: Explore how the pursuit of the \"perfect\" task management system can become a distraction in itself, leading to more time organizing",
+    " than actually accomplishing. Discuss the irony of productivity tools consuming productivity.\n2.  **The Mental Load Crisis**: Focus on the cognitive burden of remembering everything and how offloading tasks to a reliable system (any system!) can free up mental bandwidth",
+    " for creativity and deep work.\n3.  **Beyond the Checklist: Connecting Tasks to Purpose**: Discuss how to move beyond simply listing tasks to connecting them with larger goals and values, making task completion feel more meaningful and less like a chore."
+  ],
+  "fullText": "Here are 3 engaging talking points for your blog post:\n\n1.  **The \"Second Brain\" Delusion**: Explore how the pursuit of the \"perfect\" task management system can become a distraction in itself, leading to more time organizing than actually accomplishing. Discuss the irony of productivity tools consuming productivity.\n2.  **The Mental Load Crisis**: Focus on the cognitive burden of remembering everything and how offloading tasks to a reliable system (any system!) can free up mental bandwidth for creativity and deep work.\n3.  **Beyond the Checklist: Connecting Tasks to Purpose**: Discuss how to move beyond simply listing tasks to connecting them with larger goals and values, making task completion feel more meaningful and less like a chore.",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 4564,
+  "pass": true,
+  "failureReason": null
+}

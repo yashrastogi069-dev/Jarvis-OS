@@ -1,0 +1,1069 @@
+[
+  {
+    "id": "scen_2step_01",
+    "category": "2-step",
+    "name": "Search -> Summarize",
+    "prompt": "Search the web for the latest developments in quantum computing in 2026 and give me a 3-bullet point summary.",
+    "expected_goals": [
+      "Perform web search on quantum computing 2026",
+      "Summarize findings in 3 bullet points"
+    ],
+    "expected_tools": [
+      "webSearch"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_02",
+    "category": "2-step",
+    "name": "Search -> Save Memory",
+    "prompt": "Look up what year the Artemis III moon landing is scheduled for and save the result into my memory.",
+    "expected_goals": [
+      "Search web for Artemis III scheduled year",
+      "Save the confirmed date into memory"
+    ],
+    "expected_tools": [
+      "webSearch",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_03",
+    "category": "2-step",
+    "name": "Task Creation -> Verification",
+    "prompt": "Create a task to submit the Q3 financial report by Friday 5 PM, and then list my tasks to verify it was added.",
+    "expected_goals": [
+      "Create task for Q3 financial report",
+      "List tasks to verify creation"
+    ],
+    "expected_tools": [
+      "createTask",
+      "listTasks"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_04",
+    "category": "2-step",
+    "name": "Memory Recall -> Action",
+    "prompt": "Recall my preferred programming language from memory and create a new task to practice coding in it.",
+    "expected_goals": [
+      "Recall preferred programming language from memory",
+      "Create task with the recalled language"
+    ],
+    "expected_tools": [
+      "recallMemory",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_05",
+    "category": "2-step",
+    "name": "GitHub Read -> Task Creation",
+    "prompt": "Check my open GitHub pull requests and create a task to review the most urgent one.",
+    "expected_goals": [
+      "Fetch open GitHub PRs",
+      "Create task for reviewing open PR"
+    ],
+    "expected_tools": [
+      "getMyOpenPRs",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_06",
+    "category": "2-step",
+    "name": "Web Research -> Note Creation",
+    "prompt": "Search for the top 3 productivity frameworks and create an Obsidian note named 'Productivity_Frameworks.md' with the results.",
+    "expected_goals": [
+      "Search web for productivity frameworks",
+      "Create Obsidian note with research content"
+    ],
+    "expected_tools": [
+      "webSearch",
+      "createNote"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_07",
+    "category": "2-step",
+    "name": "Calendar Search -> Check Schedule",
+    "prompt": "Search my calendar for any meetings with Sarah this week and tell me what time they start.",
+    "expected_goals": [
+      "Search calendar for meetings with Sarah",
+      "Synthesize meeting times from results"
+    ],
+    "expected_tools": [
+      "searchCalendarEvents"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_08",
+    "category": "2-step",
+    "name": "Email Search -> Summarize",
+    "prompt": "Find recent emails regarding the product launch and summarize what the team discussed.",
+    "expected_goals": [
+      "Search emails for product launch",
+      "Summarize email contents"
+    ],
+    "expected_tools": [
+      "searchGmail"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_09",
+    "category": "2-step",
+    "name": "Task Update -> Set Preference",
+    "prompt": "Mark task 12 as completed and update my preference so that completed tasks are hidden by default.",
+    "expected_goals": [
+      "Mark task 12 completed",
+      "Set preference for hiding completed tasks"
+    ],
+    "expected_tools": [
+      "completeTask",
+      "setPreference"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_10",
+    "category": "2-step",
+    "name": "Wake Word List -> Remove",
+    "prompt": "List my active wake words and remove the wake word with ID 'ww-old'.",
+    "expected_goals": [
+      "List existing wake words",
+      "Remove specified wake word"
+    ],
+    "expected_tools": [
+      "listWakeWords",
+      "removeWakeWord"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_11",
+    "category": "2-step",
+    "name": "List Tasks -> Snooze Task",
+    "prompt": "Show me my current pending tasks and snooze task 5 until tomorrow morning.",
+    "expected_goals": [
+      "List pending tasks",
+      "Snooze task 5 until tomorrow"
+    ],
+    "expected_tools": [
+      "listTasks",
+      "snoozeTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_12",
+    "category": "2-step",
+    "name": "Search Notes -> Append Note",
+    "prompt": "Search my notes for 'Project Alpha' and append 'Milestone 2 completed on schedule' to it.",
+    "expected_goals": [
+      "Search Obsidian notes for Project Alpha",
+      "Append milestone update to the note"
+    ],
+    "expected_tools": [
+      "searchNotes",
+      "appendNote"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_13",
+    "category": "2-step",
+    "name": "Get Updates Feed -> Save Memory",
+    "prompt": "Check my system updates feed for recent system activity and save a summary memory of what happened.",
+    "expected_goals": [
+      "Get recent system updates feed",
+      "Save summary into memory"
+    ],
+    "expected_tools": [
+      "getUpdatesFeed",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_14",
+    "category": "2-step",
+    "name": "Search Calendar -> Create Task",
+    "prompt": "Check when my next dentist appointment is on my calendar and create a task to buy toothpaste before then.",
+    "expected_goals": [
+      "Search calendar for dentist appointment",
+      "Create task to buy toothpaste before appointment date"
+    ],
+    "expected_tools": [
+      "searchCalendarEvents",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_15",
+    "category": "2-step",
+    "name": "Recall Memory -> Search Notes",
+    "prompt": "Recall what project code name I saved earlier, and then search my Obsidian vault for notes matching that code name.",
+    "expected_goals": [
+      "Recall project code name from memory",
+      "Search Obsidian notes with that code name"
+    ],
+    "expected_tools": [
+      "recallMemory",
+      "searchNotes"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_16",
+    "category": "2-step",
+    "name": "Get Open PRs -> List Open Issues",
+    "prompt": "Fetch my open pull requests on GitHub and also list my assigned open issues.",
+    "expected_goals": [
+      "Fetch open PRs",
+      "Fetch open issues"
+    ],
+    "expected_tools": [
+      "getMyOpenPRs",
+      "getMyOpenIssues"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_17",
+    "category": "2-step",
+    "name": "Search Gmail -> Read Email",
+    "prompt": "Search my Gmail for messages from Stripe and read the contents of the latest invoice email.",
+    "expected_goals": [
+      "Search Gmail for Stripe emails",
+      "Read specific Stripe invoice email"
+    ],
+    "expected_tools": [
+      "searchGmail",
+      "readEmail"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_18",
+    "category": "2-step",
+    "name": "Web Search -> Create Task",
+    "prompt": "Check when the next solar eclipse is visible in North America and create a reminder task for that date.",
+    "expected_goals": [
+      "Search web for next solar eclipse date",
+      "Create task with eclipse date"
+    ],
+    "expected_tools": [
+      "webSearch",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_19",
+    "category": "2-step",
+    "name": "List Skills -> Run Skill",
+    "prompt": "List all available custom skills and run the 'daily-briefing' skill.",
+    "expected_goals": [
+      "List existing skills",
+      "Execute the daily-briefing skill"
+    ],
+    "expected_tools": [
+      "listSkills",
+      "runSkill"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_2step_20",
+    "category": "2-step",
+    "name": "Get Telegram Messages -> Save Memory",
+    "prompt": "Check recent incoming Telegram messages and save any shared book recommendations to my memory.",
+    "expected_goals": [
+      "Fetch Telegram messages",
+      "Save extracted recommendations to memory"
+    ],
+    "expected_tools": [
+      "getTelegramMessages",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_01",
+    "category": "3-step",
+    "name": "Email Search -> Read -> Summarize",
+    "prompt": "Search Gmail for emails from 'finance@company.com', read the latest one with the subject 'Q2 Budget', and summarize the key budget figures.",
+    "expected_goals": [
+      "Search Gmail for finance emails",
+      "Read the specific Q2 Budget email",
+      "Summarize key figures"
+    ],
+    "expected_tools": [
+      "searchGmail",
+      "readEmail"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_02",
+    "category": "3-step",
+    "name": "Search Notes -> Append Note -> Verify",
+    "prompt": "Find my note called 'Reading_List.md', append 'Thinking in Systems by Donella Meadows' to it, and read the note back to verify.",
+    "expected_goals": [
+      "Search notes for Reading_List.md",
+      "Append book to note",
+      "Read note to verify update"
+    ],
+    "expected_tools": [
+      "searchNotes",
+      "appendNote",
+      "readNote"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_03",
+    "category": "3-step",
+    "name": "Calendar Search -> Compare Two Days -> Summarize",
+    "prompt": "Get my calendar events for Monday and Tuesday next week, compare my free time on both days, and recommend which day is better for deep work.",
+    "expected_goals": [
+      "Get Monday calendar events",
+      "Get Tuesday calendar events",
+      "Compare schedules and synthesize recommendation"
+    ],
+    "expected_tools": [
+      "getCalendarEvents"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_04",
+    "category": "3-step",
+    "name": "GitHub Issues -> Pick Top Issue -> Create Task",
+    "prompt": "Fetch my open GitHub issues, identify the one with label 'critical-bug', and create a task titled 'Fix critical bug: <issue title>' due tomorrow.",
+    "expected_goals": [
+      "Fetch open GitHub issues",
+      "Identify critical-bug issue",
+      "Create local task for that bug"
+    ],
+    "expected_tools": [
+      "getMyOpenIssues",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_05",
+    "category": "3-step",
+    "name": "Web Research -> Summarize -> Save to Memory",
+    "prompt": "Search the web for the current status of Node.js 24 LTS release, summarize what features are finalized, and save the release date in memory.",
+    "expected_goals": [
+      "Search web for Node.js 24 LTS release",
+      "Summarize finalized features",
+      "Save release date into memory"
+    ],
+    "expected_tools": [
+      "webSearch",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_06",
+    "category": "3-step",
+    "name": "Recall Memory -> Search Web -> Create Task",
+    "prompt": "Recall where I planned my vacation from memory, search the web for top 3 attractions there, and create a task to book tickets.",
+    "expected_goals": [
+      "Recall vacation destination from memory",
+      "Search web for attractions in that destination",
+      "Create task to book tickets"
+    ],
+    "expected_tools": [
+      "recallMemory",
+      "webSearch",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_07",
+    "category": "3-step",
+    "name": "List Tasks -> Complete High Priority -> List Remaining",
+    "prompt": "List all my tasks, mark the one about 'Database Migration' as completed, and list the remaining unfinished tasks.",
+    "expected_goals": [
+      "List existing tasks",
+      "Complete the Database Migration task",
+      "List remaining active tasks"
+    ],
+    "expected_tools": [
+      "listTasks",
+      "completeTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_08",
+    "category": "3-step",
+    "name": "Check Email -> Create Task -> Save Reminder Memory",
+    "prompt": "Find emails from 'Alex' regarding the contract, create a task to review Alex's contract by Thursday, and save a memory that Alex sent the updated agreement.",
+    "expected_goals": [
+      "Search Gmail for emails from Alex",
+      "Create task to review contract by Thursday",
+      "Save memory about Alex's updated agreement"
+    ],
+    "expected_tools": [
+      "searchGmail",
+      "createTask",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_09",
+    "category": "3-step",
+    "name": "Check GitHub Notifications -> Read PR -> Create Task",
+    "prompt": "Check my GitHub notifications, find the notification for PR #42, and create a high-priority task to review PR #42.",
+    "expected_goals": [
+      "Fetch GitHub notifications",
+      "Inspect PR #42 notification",
+      "Create task to review PR #42"
+    ],
+    "expected_tools": [
+      "getGithubNotifications",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_10",
+    "category": "3-step",
+    "name": "Search Calendar -> Check Conflicting Tasks -> Summarize Schedule",
+    "prompt": "Look at my calendar events for tomorrow from 2 PM to 5 PM, list my tasks due tomorrow, and tell me if any deadlines conflict with meetings.",
+    "expected_goals": [
+      "Get calendar events for tomorrow afternoon",
+      "List tasks due tomorrow",
+      "Cross-reference schedule and identify conflicts"
+    ],
+    "expected_tools": [
+      "getCalendarEvents",
+      "listTasks"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_11",
+    "category": "3-step",
+    "name": "Get Feed -> Search Web for News -> Create Task",
+    "prompt": "Check the updates feed for recent system errors, search the web for solutions to the top error, and create a task to apply the patch.",
+    "expected_goals": [
+      "Get updates feed for system errors",
+      "Search web for error fix",
+      "Create task to patch the error"
+    ],
+    "expected_tools": [
+      "getUpdatesFeed",
+      "webSearch",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_12",
+    "category": "3-step",
+    "name": "Recall Preferences -> Search Notes -> Create Note",
+    "prompt": "Recall my note-taking format preference, search my notes for 'Architecture', and create a new note 'Arch_v2.md' using my preferred format.",
+    "expected_goals": [
+      "Recall note formatting preference from memory/prefs",
+      "Search notes for Architecture",
+      "Create new note Arch_v2.md with preferred format"
+    ],
+    "expected_tools": [
+      "recallMemory",
+      "searchNotes",
+      "createNote"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_13",
+    "category": "3-step",
+    "name": "Search Email -> Reply Preview -> Create Follow-up Task",
+    "prompt": "Find the latest email from 'Client X', draft a reply acknowledging receipt (generate preview, do not send), and create a task to follow up on Monday.",
+    "expected_goals": [
+      "Search Gmail for Client X email",
+      "Draft reply preview with confirmed: false",
+      "Create task to follow up on Monday"
+    ],
+    "expected_tools": [
+      "searchGmail",
+      "replyToEmail",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_14",
+    "category": "3-step",
+    "name": "Check Open Issues -> Comment Preview -> Notify on Telegram",
+    "prompt": "Find issue #101 on repo 'owner/repo', draft a comment saying 'Investigating fix' (preview mode), and draft a Telegram update to the team.",
+    "expected_goals": [
+      "Fetch issue #101",
+      "Generate issue comment preview",
+      "Draft Telegram notification"
+    ],
+    "expected_tools": [
+      "getMyOpenIssues",
+      "commentOnGithubIssue",
+      "sendTelegram"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_3step_15",
+    "category": "3-step",
+    "name": "Check Apple Calendar -> Find Free Slot -> Draft Calendar Event",
+    "prompt": "Search Apple Calendar for events this Friday, find an open 1-hour window between 1 PM and 5 PM, and draft an event 'Design Sync' in that window.",
+    "expected_goals": [
+      "Search Apple Calendar for Friday events",
+      "Analyze free slots between 1 PM and 5 PM",
+      "Draft createAppleCalendarEvent preview"
+    ],
+    "expected_tools": [
+      "searchAppleCalendarEvents",
+      "createAppleCalendarEvent"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_01",
+    "category": "4-step",
+    "name": "Search Emails -> Read Email -> Summarize -> Create Task",
+    "prompt": "Search Gmail for 'Quarterly Security Audit', read the full email text, summarize the top 3 action items, and create a task for each action item.",
+    "expected_goals": [
+      "Search Gmail for audit email",
+      "Read the audit email",
+      "Summarize 3 action items",
+      "Create task for action items"
+    ],
+    "expected_tools": [
+      "searchGmail",
+      "readEmail",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_02",
+    "category": "4-step",
+    "name": "Check GitHub PRs -> Fetch Issue -> Summarize Changes -> Create Task",
+    "prompt": "List my open PRs, find the issue referenced in the first PR, summarize what changes are proposed, and create a task to test those changes locally.",
+    "expected_goals": [
+      "List open PRs",
+      "Fetch related open issue",
+      "Summarize proposed changes",
+      "Create local testing task"
+    ],
+    "expected_tools": [
+      "getMyOpenPRs",
+      "getMyOpenIssues",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_03",
+    "category": "4-step",
+    "name": "Recall Preference -> Search Web -> Create Obsidian Note -> Add Review Task",
+    "prompt": "Recall my favorite AI frameworks from memory, search the web for the latest v2 release of that framework, create a note 'AI_Framework_Update.md', and add a task to test it this weekend.",
+    "expected_goals": [
+      "Recall framework preference",
+      "Search web for latest release",
+      "Create Obsidian note with update info",
+      "Add task to test it"
+    ],
+    "expected_tools": [
+      "recallMemory",
+      "webSearch",
+      "createNote",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_04",
+    "category": "4-step",
+    "name": "Search Calendar -> Find Clash -> Snooze Conflicting Task -> Save Memory",
+    "prompt": "Check my calendar for tomorrow at 3 PM, check if I have a task due at 3 PM, snooze the conflicting task to 6 PM, and save a memory that my meeting shifted my task schedule.",
+    "expected_goals": [
+      "Search calendar events at 3 PM",
+      "List tasks due at 3 PM",
+      "Snooze conflicting task to 6 PM",
+      "Save schedule shift memory"
+    ],
+    "expected_tools": [
+      "getCalendarEvents",
+      "listTasks",
+      "snoozeTask",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_05",
+    "category": "4-step",
+    "name": "Get Updates Feed -> Search Related Email -> Read Email -> Draft Reply Preview",
+    "prompt": "Check the updates feed for connector errors, search Gmail for error alerts from the service, read the latest alert email, and draft a reply preview acknowledging the alert.",
+    "expected_goals": [
+      "Check updates feed",
+      "Search Gmail for error alerts",
+      "Read the latest alert email",
+      "Draft reply preview"
+    ],
+    "expected_tools": [
+      "getUpdatesFeed",
+      "searchGmail",
+      "readEmail",
+      "replyToEmail"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_06",
+    "category": "4-step",
+    "name": "List Tasks -> Update Due Date -> Complete Previous Task -> Audit Task List",
+    "prompt": "List my current tasks, update task 3's due date to tomorrow, mark task 2 as completed, and list the updated task list to verify the new state.",
+    "expected_goals": [
+      "List existing tasks",
+      "Update task 3 due date",
+      "Mark task 2 completed",
+      "List tasks to verify"
+    ],
+    "expected_tools": [
+      "listTasks",
+      "updateTask",
+      "completeTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_07",
+    "category": "4-step",
+    "name": "Search Notes -> Read Note -> Search Web -> Append Note",
+    "prompt": "Search my notes for 'TypeScript 5.8 Roadmap', read the note content, search the web to see if TS 5.8 has officially shipped, and append the release status to the note.",
+    "expected_goals": [
+      "Search notes for TS roadmap",
+      "Read existing note",
+      "Search web for release status",
+      "Append status to note"
+    ],
+    "expected_tools": [
+      "searchNotes",
+      "readNote",
+      "webSearch",
+      "appendNote"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_08",
+    "category": "4-step",
+    "name": "Check Notifications -> Read PR -> Create Issue Preview -> Create Task",
+    "prompt": "Check GitHub notifications for review requests, inspect the PR details, draft a preview of a bug issue tracking the blocker, and create a task to conduct the code review.",
+    "expected_goals": [
+      "Check GitHub notifications",
+      "Inspect PR details",
+      "Draft createGithubIssue preview",
+      "Create task to conduct code review"
+    ],
+    "expected_tools": [
+      "getGithubNotifications",
+      "createGithubIssue",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_09",
+    "category": "4-step",
+    "name": "Check Telegram -> Recall Memory -> Save Note -> Create Reminder Task",
+    "prompt": "Fetch recent Telegram messages from the developer group, recall our internal project guidelines from memory, write a summary note 'Group_Updates.md', and create a task to reply on Telegram tomorrow.",
+    "expected_goals": [
+      "Fetch Telegram messages",
+      "Recall project guidelines from memory",
+      "Create Obsidian note with summary",
+      "Create task to reply tomorrow"
+    ],
+    "expected_tools": [
+      "getTelegramMessages",
+      "recallMemory",
+      "createNote",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_4step_10",
+    "category": "4-step",
+    "name": "Search Calendar -> Compare with Apple Calendar -> Identify Sync Gap -> Create Task",
+    "prompt": "Get my Google Calendar events for Wednesday, get my Apple Calendar events for Wednesday, list any events present in one but missing in the other, and create a task to fix the sync discrepancy.",
+    "expected_goals": [
+      "Get Google Calendar events",
+      "Get Apple Calendar events",
+      "Compare and identify missing events",
+      "Create task to fix sync"
+    ],
+    "expected_tools": [
+      "getCalendarEvents",
+      "getAppleCalendarEvents",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_5step_01",
+    "category": "5-or-more-step",
+    "name": "Comprehensive Morning Briefing",
+    "prompt": "Give me a full morning briefing: check today's Google Calendar events, check my unread emails, check my pending tasks, check the system updates feed, and synthesize an hourly agenda for my day.",
+    "expected_goals": [
+      "Fetch today's Google Calendar events",
+      "Fetch recent unread emails",
+      "List pending tasks",
+      "Check system updates feed",
+      "Synthesize unified hourly day plan"
+    ],
+    "expected_tools": [
+      "getCalendarEvents",
+      "getRecentEmails",
+      "listTasks",
+      "getUpdatesFeed"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_5step_02",
+    "category": "5-or-more-step",
+    "name": "Complete GitHub Triage Workflow",
+    "prompt": "Run a full GitHub triage: list my open issues, read the most recent one, search Obsidian notes for related architecture docs, create a task to fix the issue, and prepare a comment preview acknowledging the issue.",
+    "expected_goals": [
+      "List open GitHub issues",
+      "Inspect recent issue details",
+      "Search Obsidian notes for architecture docs",
+      "Create local task to fix issue",
+      "Generate preview for issue comment"
+    ],
+    "expected_tools": [
+      "getMyOpenIssues",
+      "searchNotes",
+      "createTask",
+      "commentOnGithubIssue"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_5step_03",
+    "category": "5-or-more-step",
+    "name": "Deep Research, Synthesis & Archiving",
+    "prompt": "Perform deep research on 'SolidJS 2.0 reactivity changes': search the web, fetch the official blog post page, summarize the architectural differences, create an Obsidian note 'Solid_v2_Reactivity.md', save the key takeaway to memory, and create a task to evaluate SolidJS in Q4.",
+    "expected_goals": [
+      "Search web for SolidJS 2.0 changes",
+      "Fetch the official blog post page",
+      "Summarize architectural differences",
+      "Create Obsidian note with research",
+      "Save key takeaway to memory",
+      "Create task to evaluate SolidJS in Q4"
+    ],
+    "expected_tools": [
+      "webSearch",
+      "fetchPage",
+      "createNote",
+      "saveMemory",
+      "createTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_5step_04",
+    "category": "5-or-more-step",
+    "name": "Weekly Review & Database Cleanup",
+    "prompt": "Perform my weekly review: list all tasks, mark task 7 as completed, snooze task 9 to next Monday, list all stored memories, and save a new memory summarizing this week's progress.",
+    "expected_goals": [
+      "List all tasks",
+      "Complete task 7",
+      "Snooze task 9 to next Monday",
+      "List stored memories",
+      "Save summary memory of progress"
+    ],
+    "expected_tools": [
+      "listTasks",
+      "completeTask",
+      "snoozeTask",
+      "listMemories",
+      "saveMemory"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_5step_05",
+    "category": "5-or-more-step",
+    "name": "Cross-Platform Calendar Audit & Alert",
+    "prompt": "Audit my schedule: fetch Google Calendar events for the week, fetch Apple Calendar events for the week, search my tasks for upcoming deadlines, identify any scheduling conflicts, create a task to resolve conflicts, and draft an email preview to my manager with my finalized availability.",
+    "expected_goals": [
+      "Fetch Google Calendar events for week",
+      "Fetch Apple Calendar events for week",
+      "List pending tasks",
+      "Identify scheduling conflicts",
+      "Create resolution task",
+      "Draft email preview with availability"
+    ],
+    "expected_tools": [
+      "getCalendarEvents",
+      "getAppleCalendarEvents",
+      "listTasks",
+      "createTask",
+      "sendGmail"
+    ],
+    "allows_partial": false,
+    "failure_injection": null
+  },
+  {
+    "id": "scen_fail_01",
+    "category": "failure-ambiguity",
+    "name": "Compound Independent: 1 Service Offline (Calendar 401, Web Search OK)",
+    "prompt": "Check my Google Calendar for meetings today and search the web for today's weather forecast in New York.",
+    "expected_goals": [
+      "Check Google Calendar events",
+      "Search web for New York weather forecast"
+    ],
+    "expected_tools": [
+      "getCalendarEvents",
+      "webSearch"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "tool": "getCalendarEvents",
+      "error": "401_UNAUTHORIZED",
+      "expected_status": "BLOCKED_WITH_REASON"
+    }
+  },
+  {
+    "id": "scen_fail_02",
+    "category": "failure-ambiguity",
+    "name": "Compound Independent: GitHub Missing Auth + Local Task List",
+    "prompt": "Fetch my assigned GitHub issues and list my local pending tasks.",
+    "expected_goals": [
+      "Fetch GitHub issues",
+      "List local pending tasks"
+    ],
+    "expected_tools": [
+      "getMyOpenIssues",
+      "listTasks"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "tool": "getMyOpenIssues",
+      "error": "AUTH_MISSING",
+      "expected_status": "BLOCKED_WITH_REASON"
+    }
+  },
+  {
+    "id": "scen_fail_03",
+    "category": "failure-ambiguity",
+    "name": "Ambiguous Request: Missing Title and Due Date",
+    "prompt": "Remind me to do the thing later.",
+    "expected_goals": [
+      "Identify underspecified reminder and ask clarifying question"
+    ],
+    "expected_tools": [],
+    "allows_partial": false,
+    "failure_injection": {
+      "type": "AMBIGUITY_CLARIFICATION"
+    }
+  },
+  {
+    "id": "scen_fail_04",
+    "category": "failure-ambiguity",
+    "name": "Tool 500 Error Resilience (Obsidian 500, Memory Save OK)",
+    "prompt": "Search my Obsidian notes for 'Project Budget' and save a memory that I looked for the budget today.",
+    "expected_goals": [
+      "Search Obsidian notes",
+      "Save memory of search"
+    ],
+    "expected_tools": [
+      "searchNotes",
+      "saveMemory"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "tool": "searchNotes",
+      "error": "500_INTERNAL_ERROR",
+      "expected_status": "BLOCKED_WITH_REASON"
+    }
+  },
+  {
+    "id": "scen_fail_05",
+    "category": "failure-ambiguity",
+    "name": "Missing Auth with Structured Explanation",
+    "prompt": "Send an email to boss@company.com saying I finished the quarterly report.",
+    "expected_goals": [
+      "Detect missing OAuth credentials and provide clear configuration steps"
+    ],
+    "expected_tools": [
+      "sendGmail"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "tool": "sendGmail",
+      "error": "AUTH_MISSING",
+      "expected_status": "BLOCKED_WITH_REASON"
+    }
+  },
+  {
+    "id": "scen_fail_06",
+    "category": "failure-ambiguity",
+    "name": "Tool Timeout Resilience",
+    "prompt": "Search the web for the latest updates on the Hubble space telescope and list my tasks.",
+    "expected_goals": [
+      "Search web for Hubble updates",
+      "List local tasks"
+    ],
+    "expected_tools": [
+      "webSearch",
+      "listTasks"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "tool": "webSearch",
+      "error": "TIMEOUT",
+      "expected_status": "BLOCKED_WITH_REASON"
+    }
+  },
+  {
+    "id": "scen_fail_07",
+    "category": "failure-ambiguity",
+    "name": "Empty Result Handling Without Hallucination",
+    "prompt": "Search my Gmail for any emails containing the tracking code 'TRACK9999XYZNONEXISTENT' and tell me the shipping status.",
+    "expected_goals": [
+      "Search Gmail for specific tracking code",
+      "Honestly report 0 results found without hallucinating delivery details"
+    ],
+    "expected_tools": [
+      "searchGmail"
+    ],
+    "allows_partial": false,
+    "failure_injection": {
+      "tool": "searchGmail",
+      "error": "EMPTY_RESULT"
+    }
+  },
+  {
+    "id": "scen_fail_08",
+    "category": "failure-ambiguity",
+    "name": "Malformed Entity ID Error Normalization",
+    "prompt": "Mark task 'not-a-number' as completed and list remaining tasks.",
+    "expected_goals": [
+      "Handle invalid task ID with clean error",
+      "List remaining tasks"
+    ],
+    "expected_tools": [
+      "completeTask",
+      "listTasks"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "tool": "completeTask",
+      "error": "INVALID_PARAM"
+    }
+  },
+  {
+    "id": "scen_fail_09",
+    "category": "failure-ambiguity",
+    "name": "Non-Existent Task ID Deletion Safety",
+    "prompt": "Delete task 999999 from my database.",
+    "expected_goals": [
+      "Attempt task deletion and report not found without unhandled crash"
+    ],
+    "expected_tools": [
+      "deleteTask"
+    ],
+    "allows_partial": false,
+    "failure_injection": {
+      "tool": "deleteTask",
+      "error": "NOT_FOUND"
+    }
+  },
+  {
+    "id": "scen_fail_10",
+    "category": "failure-ambiguity",
+    "name": "Conflicting Intent & Bulk Deletion Gate",
+    "prompt": "Delete all my tasks and also create a task to buy groceries.",
+    "expected_goals": [
+      "Enforce confirmation safety on bulk deletion",
+      "Create task to buy groceries"
+    ],
+    "expected_tools": [
+      "deleteTask",
+      "createTask"
+    ],
+    "allows_partial": true,
+    "failure_injection": {
+      "type": "SAFETY_GATE_CONFIRMATION"
+    }
+  }
+]

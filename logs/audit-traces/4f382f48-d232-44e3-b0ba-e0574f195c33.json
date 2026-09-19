@@ -1,0 +1,39 @@
+{
+  "traceId": "4f382f48-d232-44e3-b0ba-e0574f195c33",
+  "testName": "Debug_Github",
+  "expectedTools": [],
+  "expectedBehavior": "",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Check my GitHub notifications."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715678873,
+    "REQUEST_SENT": 1789715678876,
+    "SERVER_RECEIVED": 1789715687400,
+    "SSE_FIRST_CHUNK": 1789715687405,
+    "FINAL_GENERATION_END": 1789715688012
+  },
+  "toolInvocations": [
+    {
+      "toolName": "getGithubNotifications",
+      "toolCallId": "pne0thdxSWSYaRLy",
+      "args": {},
+      "timestamp": 1789715687405
+    }
+  ],
+  "toolResults": [],
+  "textDeltas": [
+    "I cannot",
+    " check your GitHub notifications. The `GITHUB_TOKEN` environment variable is not set.",
+    " Please add a GitHub personal access token to your `.env.local` file."
+  ],
+  "fullText": "I cannot check your GitHub notifications. The `GITHUB_TOKEN` environment variable is not set. Please add a GitHub personal access token to your `.env.local` file.",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 9136,
+  "pass": false,
+  "failureReason": "Over-triggered tools: expected none, got [getGithubNotifications]"
+}

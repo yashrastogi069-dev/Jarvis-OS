@@ -1,0 +1,31 @@
+{
+  "traceId": "28622184-cb91-4efa-bd2a-0766af324437",
+  "testName": "E1_GitHub_Notifications_NoKey",
+  "expectedTools": [
+    "getGithubNotifications"
+  ],
+  "expectedBehavior": "Invokes tool, catches missing token, informs user GITHUB_TOKEN is required",
+  "messages": [
+    {
+      "id": "audit-1789715302206",
+      "role": "user",
+      "content": "Check my GitHub notifications."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715302206,
+    "REQUEST_SENT": 1789715302206,
+    "SERVER_RECEIVED": 1789715304635,
+    "SSE_FIRST_CHUNK": 1789715304636,
+    "FINAL_GENERATION_END": 1789715304636
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": null,
+  "error": null,
+  "totalLatencyMs": 2430,
+  "pass": false,
+  "failureReason": "Under-triggered: expected [getGithubNotifications], got []"
+}

@@ -1,0 +1,76 @@
+{
+  "traceId": "159119a9-7220-4b33-9a0a-9551586e0121",
+  "testName": "D2_Search_And_Save",
+  "expectedTools": [
+    "webSearch",
+    "saveMemory"
+  ],
+  "expectedBehavior": "Calls webSearch, then saveMemory with found date",
+  "messages": [
+    {
+      "id": "audit-1789718285940",
+      "role": "user",
+      "content": "Find the release date of Next.js 15 on the web, and save that date into my long-term memory."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789718285941,
+    "REQUEST_SENT": 1789718285941,
+    "SERVER_RECEIVED": 1789718324010,
+    "SSE_FIRST_CHUNK": 1789718324012,
+    "FINAL_GENERATION_END": 1789718326311
+  },
+  "toolInvocations": [
+    {
+      "toolName": "webSearch",
+      "toolCallId": "fc_8e449974-33c1-43e2-9fdf-e8f060f58fda",
+      "args": {
+        "query": "Next.js 15 release date"
+      },
+      "timestamp": 1789718324192
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "fc_8e449974-33c1-43e2-9fdf-e8f060f58fda",
+      "output": {
+        "source": "tavily",
+        "results": [
+          {
+            "title": "Next.js 15",
+            "url": "https://nextjs.org/blog/next-15",
+            "snippet": "Skip to content\n\nSkip to content\n\nBack to Blog\n\nMonday, October 21st 2024\n\n# Next.js 15\n\nPosted by\n\nDelba de Oliveira\n\nDelba de Oliveira@delba\\_oliveiraJimmy Lai\n\nJimmy Lai@feedthejimRich Haines\n\nRich Haines@studio\\_hungry\n\nNext.js 15 is officially stable and ready for production. This release builds on the updates from both RC1 and RC2. We've focused heavily on stability while adding some exciting updates we think you'll love. Try Next.js 15 today: [...] Learn more about optimizing external packages.\n\n## ESLint 9 Support\n\nNext.js 15 also introduces support for ESLint 9, following the end-of-life for ESLint 8 on October 5, 2024.\n\nTo ensure a smooth transition, Next.js remain backwards compatible, meaning you can continue using either ESLint 8 or 9.\n\nIf you upgrade to ESLint 9, and we detect that you haven't yet adopted the new config format, Next.js will automatically apply the `ESLINT_USE_FLAT_CONFIG=false` escape hatch to ease migration. [...] ```\n# Use the new automated upgrade CLI # Use the new automated upgrade CLInpx @next/codemod@canary upgrade latest npx @next/codemod@canary  upgrade  latest  # ...or upgrade manually# ...or upgrade manuallynpm install next@latest react@rc react-dom@rc npm  install  next@latest  react@rc react-dom@rc\n```\n\nWe're also excited to share more about what's coming next at Next.js Conf this Thursday, October 24th.\n\nHere's what is new in Next.js 15:"
+          },
+          {
+            "title": "Next.js - Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/Next.js",
+            "snippet": "In May 2023, Vercel released Next.js 13.4. This brought with it the stable version of App Router, which allows developers to use it in production.\n\nIn October 2023, Vercel released Next.js 14, which comes with improved memory management with using edge runtime.\n\nIn October 2024, Vercel released Next.js 15. It introduces the Rust-based bundler Turbopack (which is faster than Webpack), support for React 19, and asynchronous request APIs. [...] 28. ↑ \"Next.js 14.0.0\". nextjs.org. 2023-12-08. Retrieved 2023-11-26.\n29. ↑ \"Next.js v15.0.0\". nextjs.org. 2024-10-22. Retrieved 2024-10-22.\n30. ↑ \"Next.js 15 arrives with faster bundler\". InfoWorld. 2024-10-24. Retrieved 2025-04-14.\n31. ↑ \"Next.js 16\". nextjs.org. 2025-10-21. Retrieved 2025-11-11.\n32. ↑ \"RFC: Deployment Adapters API #77740\". github.com. 2025-04-02. Retrieved 2025-11-11. [...] [edit]\n\nNext.js was first released as an open-source project on GitHub on October 25, 2016. It was originally developed based on six principles: out-of-the-box functionality requiring no setup, JavaScript everywhere, all functions are written in JavaScript, automatic code-splitting and server-rendering, configurable data-fetching, anticipating requests, and simplifying deployment."
+          },
+          {
+            "title": "Next.js by Vercel - The React Framework",
+            "url": "https://nextjs.org/blog",
+            "snippet": "Next.js 15 RC\n\nThe Next.js 15 Release Candidate (RC) is now available. This early version allows you to test the latest features before the upcoming stable release.\n\n React RC\n Caching defaults changes\n Incremental Partial Prerendering adoption\n next/after (Experimental)\n New create-next-app design\n Bundling external packages (Stable)\n\nRead More\n\nApril 11th, 2024\n\nNext.js 14.2\n\nNext.js 14.2 includes development, production, and caching improvements. [...] It's been a long road, but we are happy to announce that `next dev --turbo` is now stable and ready to speed up your development experience.\n\nRead More\n\nOctober 15th, 2024\n\n+3\n\nNext.js 15 RC 2\n\nThe Next.js 15 Release Candidate (RC) is now available. This early version allows you to test the latest features before the upcoming stable release.\n\n Turbopack (dev)\n Async Request APIs (breaking)\n `next/form`\n Self-hosting\n ESLint 9 support\n\nRead More\n\nMay 23rd, 2024\n\nNext.js 15 RC [...] Read More\n\nOctober 21st, 2024\n\nNext.js 15\n\nOur mission to create the best developer experience continues with Next.js 15, featuring:"
+          },
+          {
+            "title": "Next.js Support Policy | Next.js by Vercel - The React Framework",
+            "url": "https://nextjs.org/support-policy",
+            "snippet": "For Maintenance LTS versions, updates will land as semver-minor releases, even if they are breaking changes.\n\nIn rare circumstances, depending on the severity of the underlying bug, we will patch versions of Next.js that are outside of our LTS policy.\n\n### Supported Versions\n\n| Major Version | Release Date |\n --- |\n| 16.x (Active LTS) | Oct. 21, 2025 |\n| 15.x (Maintenance LTS) | Oct. 21, 2024 |\n\n### Unsupported Versions [...] | Major Version | Release Date |\n --- |\n| 14.x | Oct. 26, 2023 |\n| 13.x | Oct. 26, 2022 |\n| 12.x | Oct. 26, 2021 |\n| 11.x | Jun 15, 2021 |\n| 10.x | Oct. 27, 2020 |\n| 9.x | Jul. 7, 2019 |\n| 8.x | Feb. 11, 2019 |\n| 7.x | Sept. 19, 2018 |\n| 6.x | Apr. 29, 2018 |\n| 5.x | Feb. 5, 2018 |\n| 4.x | Oct. 9, 2017 |\n| 3.x | Aug. 8, 2017 |\n| 2.x | Mar. 27, 2017 |\n| 1.x | Oct. 25, 2016 |"
+          },
+          {
+            "title": "Next.js - endoflife.date",
+            "url": "https://endoflife.date/nextjs",
+            "snippet": "| Release | Released | Security Support | Latest |\n ---  --- |\n| 16 (LTS) | 10 months ago (22 Oct 2025) | Yes | 16.3.1 (13 Aug 2026) |\n| 15 (LTS) | 1 year and 10 months ago (21 Oct 2024) | Ends in 2 months (21 Oct 2026) | 15.5.23 (06 Aug 2026) |\n| 14 (LTS) | 2 years and 10 months ago (26 Oct 2023) | Ended 9 months ago (26 Oct 2025) | 14.2.35 (11 Dec 2025) |\n| 13 | 3 years and 10 months ago (25 Oct 2022) | Ended 1 year and 8 months ago (21 Dec 2024) | 13.5.11 (27 Mar 2025) | [...] | 12 | 4 years and 10 months ago (26 Oct 2021) | Ended 3 years and 9 months ago (21 Nov 2022) | 12.3.7 (28 Mar 2025) |\n| 11 | 5 years ago (15 Jun 2021) | Ended 4 years and 6 months ago (27 Jan 2022) | 11.1.4 (27 Jan 2022) |\n| 10 | 5 years and 9 months ago (27 Oct 2020) | Ended 5 years ago (15 Jun 2021) | 10.2.3 (24 May 2021) |\n| 9 | 7 years ago (08 Jul 2019) | Ended 5 years and 9 months ago (27 Oct 2020) | 9.5.5 (10 Oct 2020) |\n|  | [...] # Next.js\n\n framework javascript-runtime vercel\n\nNext.js logo\n\nNext.js is an open-source React framework developed by Vercel. It offers server-side rendering, static site generation, and client-side rendering capabilities, enabling developers to build performant and scalable web applications. The framework is designed to be developer-friendly, with a focus on fast refresh and an optimized production build.\n\nRelease Schedule Image Gantt Chart for Next.js"
+          }
+        ]
+      },
+      "timestamp": 1789718325943
+    }
+  ],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "groq",
+  "error": "An error occurred.",
+  "totalLatencyMs": 40370,
+  "pass": false,
+  "failureReason": "Under-triggered: expected [webSearch, saveMemory], got [webSearch]"
+}

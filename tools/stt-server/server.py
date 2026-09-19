@@ -32,7 +32,7 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-PORT = int(os.environ.get("STT_PORT", "8765"))
+PORT = int(os.environ.get("STT_PORT", "8976"))
 MODEL_NAME = os.environ.get("STT_MODEL", "base")
 COMPUTE_TYPE = os.environ.get("STT_COMPUTE", "int8")
 CPU_THREADS = int(os.environ.get("STT_THREADS", "4"))

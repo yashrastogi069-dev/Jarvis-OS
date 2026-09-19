@@ -1,0 +1,33 @@
+{
+  "traceId": "1d0641b5-7502-45f1-9178-6c5a5f94ec66",
+  "testName": "C2_Create_Task",
+  "expectedTools": [
+    "createTask"
+  ],
+  "expectedBehavior": "Calls createTask with due date and title",
+  "messages": [
+    {
+      "id": "audit-1789715240564",
+      "role": "user",
+      "content": "Remind me to submit the tax return by next Friday at 5pm."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715240564,
+    "REQUEST_SENT": 1789715240564,
+    "SERVER_RECEIVED": 1789715247977,
+    "SSE_FIRST_CHUNK": 1789715247991,
+    "FINAL_GENERATION_END": 1789715247992
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [
+    "I couldn't reach any AI brain right now — every provider in the failover chain is unavailable. This is a capacity issue, not a problem with your message:\n\n- Gemini 2.5 Flash: rate-limited (retry in ~1m)\n- Groq Llama 3.3 70B: rate-limited (retry in ~1m)\n- OpenRouter (free): rate-limited (retry in ~1m)\n- NVIDIA NIM Llama 3.3 70B: rate-limited (retry in ~1m)\n- Ollama (local): rate-limited (retry in ~1m)\n\nFixes: wait for the free-tier limits to reset, or run an always-on local brain — make sure Ollama is running and the chat model is pulled:\n    ollama serve\n    ollama pull llama3.2:3b\n\n(last error: An error occurred.)"
+  ],
+  "fullText": "I couldn't reach any AI brain right now — every provider in the failover chain is unavailable. This is a capacity issue, not a problem with your message:\n\n- Gemini 2.5 Flash: rate-limited (retry in ~1m)\n- Groq Llama 3.3 70B: rate-limited (retry in ~1m)\n- OpenRouter (free): rate-limited (retry in ~1m)\n- NVIDIA NIM Llama 3.3 70B: rate-limited (retry in ~1m)\n- Ollama (local): rate-limited (retry in ~1m)\n\nFixes: wait for the free-tier limits to reset, or run an always-on local brain — make sure Ollama is running and the chat model is pulled:\n    ollama serve\n    ollama pull llama3.2:3b\n\n(last error: An error occurred.)",
+  "brain": null,
+  "error": null,
+  "totalLatencyMs": 7428,
+  "pass": false,
+  "failureReason": "Under-triggered: expected [createTask], got []"
+}

@@ -1,0 +1,166 @@
+{
+  "traceId": "32c422f9-9e66-4c20-8442-0e2d60258f8b",
+  "testName": "C3_Web_Search",
+  "expectedTools": [
+    "webSearch"
+  ],
+  "expectedBehavior": "Calls webSearch with query",
+  "messages": [
+    {
+      "id": "audit-1789719561676",
+      "role": "user",
+      "content": "Search the web: what is the latest stable version of Next.js?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719561676,
+    "REQUEST_SENT": 1789719561676,
+    "SERVER_RECEIVED": 1789719565400,
+    "SSE_FIRST_CHUNK": 1789719565405,
+    "FINAL_GENERATION_END": 1789719582145
+  },
+  "toolInvocations": [
+    {
+      "toolName": "webSearch",
+      "toolCallId": "call_382980",
+      "args": {
+        "query": "latest stable version Next.js release"
+      },
+      "timestamp": 1789719565405
+    },
+    {
+      "toolName": "webSearch",
+      "toolCallId": "call_49469",
+      "args": {
+        "query": "\"next\" npm package latest version"
+      },
+      "timestamp": 1789719569697
+    },
+    {
+      "toolName": "webSearch",
+      "toolCallId": "call_529768",
+      "args": {
+        "query": "github vercel next.js releases latest"
+      },
+      "timestamp": 1789719574043
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "call_382980",
+      "output": {
+        "source": "tavily",
+        "results": [
+          {
+            "title": "Next.js Changelog",
+            "url": "https://next-changelog.vercel.app",
+            "snippet": "Track all Next.js releases in one place\n\n# Next.js Changelog\n\nStay up to date with the latest releases of Next.js framework and packages.\n\nTotal Releases\n\nIn the last year\n\nStable Releases\n\n68\n\nProduction ready\n\nCanary Releases\n\n432\n\nExperimental features\n\nLatest Release\n\nv16.4.0-canary.2\n\n8/22/2026\n\n### Filter Releases\n\nShowing 1-8of 68releases\n\n🌟 LATESTSTABLE\n\nauthor image\n\ntimneutkens released this 2 days ago\n\n> [!NOTE] Thisreleaseisbackportingbugfixes.Itdoes\n\n### Core Changes [...] ### v16.2.12\n\nSTABLE\n\nauthor image\n\nlukesandberg released this a month ago\n\n## What's Changed\n\n Backport/docsfixes16.2-Julyroundby@icyJosephin\n [Backport]FixestosupportTypeScript7by@lukesandbergin\n\nFull Changelog: \n\n### v15.5.22\n\nSTABLE\n\nauthor image\n\nlukesandberg released this a month ago\n\n## What's Changed\n\n [15.5]RejectTypeScript>=7.0withanactionableerrorby@lukesandbergin\n\nFull Changelog: \n\n### v16.2.11\n\nSTABLE\n\nauthor image\n\neps1lon released this a month ago [...] ### Credits\n\nHugethanksto@lubieowoce, @unstubbable, @timneutkens, @mischnic, and @eps1lon for helping!\n\n### v16.3.1\n\nSTABLE\n\nauthor image\n\nlukesandberg released this 10 days ago\n\n## What's Changed"
+          },
+          {
+            "title": "Next.js by Vercel - The React Framework",
+            "url": "https://nextjs.org/blog",
+            "snippet": "App Router (Stable)\n Turbopack (Beta)\n Server Actions (Alpha)\n\nRead More\n\nApril 6th, 2023\n\nNext.js 13.3\n\nNext.js 13.3 adds popular community-requested features and is the last release before the App Router is stable, including:\n\n File-Based Metadata API\n Dynamic Open Graph Images\n Static Export for App Router\n Parallel Routes and Interception\n\nRead More\n\nFebruary 23rd, 2023\n\n+1\n\nNext.js 13.2\n\nNext.js 13.2 includes major improvements to the App Router (`app`) in preparation for stability: [...] Next.js 15 RC\n\nThe Next.js 15 Release Candidate (RC) is now available. This early version allows you to test the latest features before the upcoming stable release.\n\n React RC\n Caching defaults changes\n Incremental Partial Prerendering adoption\n next/after (Experimental)\n New create-next-app design\n Bundling external packages (Stable)\n\nRead More\n\nApril 11th, 2024\n\nNext.js 14.2\n\nNext.js 14.2 includes development, production, and caching improvements. [...] Read More\n\nAugust 18th, 2025\n\nNext.js 15.5\n\nNext.js 15.5 includes Turbopack builds in beta, stable Node.js middleware, TypeScript improvements, `next lint` deprecation, and deprecation warnings for Next.js 16. Highlights for this release include:"
+          },
+          {
+            "title": "Next.js - endoflife.date",
+            "url": "https://endoflife.date/nextjs",
+            "snippet": "| Release | Released | Security Support | Latest |\n ---  --- |\n| 16 (LTS) | 10 months ago (22 Oct 2025) | Yes | 16.3.1 (13 Aug 2026) |\n| 15 (LTS) | 1 year and 10 months ago (21 Oct 2024) | Ends in 2 months (21 Oct 2026) | 15.5.23 (06 Aug 2026) |\n| 14 (LTS) | 2 years and 10 months ago (26 Oct 2023) | Ended 9 months ago (26 Oct 2025) | 14.2.35 (11 Dec 2025) |\n| 13 | 3 years and 10 months ago (25 Oct 2022) | Ended 1 year and 8 months ago (21 Dec 2024) | 13.5.11 (27 Mar 2025) | [...] Next.js follows semantic versioning. Major versions seem to be released on average twice per year, minor versions more frequently, and patch versions very frequently. Important patches are sometimes backported to past major versions, but it’s not clear which past versions are supported.\n\nNext.js has two release channels: stable and canary. Only stable releases are suitable for production.\n\nYou should be running one of the supported release numbers listed above in the rightmost column. [...] | 12 | 4 years and 10 months ago (26 Oct 2021) | Ended 3 years and 9 months ago (21 Nov 2022) | 12.3.7 (28 Mar 2025) |\n| 11 | 5 years ago (15 Jun 2021) | Ended 4 years and 6 months ago (27 Jan 2022) | 11.1.4 (27 Jan 2022) |\n| 10 | 5 years and 9 months ago (27 Oct 2020) | Ended 5 years ago (15 Jun 2021) | 10.2.3 (24 May 2021) |\n| 9 | 7 years ago (08 Jul 2019) | Ended 5 years and 9 months ago (27 Oct 2020) | 9.5.5 (10 Oct 2020) |\n|  |"
+          },
+          {
+            "title": "Progress Unveils Native Next.js Support in Sitefinity, Offering Maximum Flexibility to Create and Scale Digital Experiences",
+            "url": "https://finance.yahoo.com/news/progress-unveils-native-next-js-140000162.html",
+            "snippet": "BURLINGTON, Mass., Nov. 21, 2024 (GLOBE NEWSWIRE) -- Progress (Nasdaq: PRGS), the trusted provider of AI-powered infrastructure software, today announced new powerful capabilities and enhancements in the latest release of Progress® Sitefinity®. With this release, Sitefinity introduces native support for Next.js, a React framework, enabling organizations to leverage one of the fastest growing frontend frameworks for developers to create modern, state-of-the-art digital experiences. [...] Latest Sitefinity release offers out-of-the-box native support for Next.js and Gen AI-powered content workflows--accelerating the delivery of digital experiences [...] As the cornerstone of the Progress Digital Experience (DX) portfolio, Sitefinity serves mid-market and enterprise organizations with the right digital experience tools set to drive efficiency and rapid time to value in their digital initiatives.\n\nSitefinity 15.2 is available today. For more information, visit"
+          },
+          {
+            "title": "A newer version is available",
+            "url": "https://nextjs.org/docs/messages/version-staleness",
+            "snippet": "```\npnpm add next@latest pnpm  add  next@latest\n```\n\nTo upgrade to the latest canary release:\n\nTerminal\n\n```\npnpm add next@canary pnpm  add  next@canary\n```\n\nIf you are coming from an older major version, check out the upgrade guides.\n\n## Contributing\n\nNext.js is open source and welcomes contributions. If you have identified a bug and want to fix it yourself, see the contributing guide or watch How to Contribute to Open Source (Next.js) to get started. [...] Skip to content\n\n# A newer version is available\n\n## What this notice means\n\nThe development overlay shows that your installed version of Next.js is not the latest available. During development, Next.js checks the npm registry and compares your installed version against the latest release. If a newer version is available, Next.js displays a notice in the overlay.\n\nNewer versions contain bug fixes and improved error tracing capabilities. Upgrade before investigating further."
+          }
+        ]
+      },
+      "timestamp": 1789719567400
+    },
+    {
+      "toolCallId": "call_49469",
+      "output": {
+        "source": "tavily",
+        "results": [
+          {
+            "title": "Next.js - Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/Next.js",
+            "snippet": "Next.js 2.0 was announced in March 2017 including several improvements that made it easier to work with small websites. It also increased the build efficiency and improved the scalability of the hot-module replacement feature.\n\nVersion 7.0 was released in September 2018 with improved error handling and support for React's context API for improved dynamic route handling. This was also the first version to upgrade to Webpack 4. [...] On July 27, 2020 Next.js version 9.5 was announced, adding new capabilities including incremental static regeneration, rewrites, and redirect support.\n\nOn June 15, 2021 Next.js version 11 was released, introducing among others: Webpack 5 support, preview of real-time collaborative coding functionality \"Next.js Live\", and experimental function of automatic conversion from Create React App to Next.js compatible form \"Create React App Migration\". [...] default App Router configuration was susceptible. Amazon threat intelligence teams observed exploitation attempts by multiple Chinese state-nexus threat groups within hours of public disclosure. On December 5th, CISA added the vulnerability to its Known Exploited Vulnerabilities (KEV) catalog. On December 6, 2025, Vercel released the npm package fix-react2shell-next for updating to versions with the security fix applied."
+          },
+          {
+            "title": "npm - npm",
+            "url": "https://www.npmjs.com/package/npm?activeTab=versions",
+            "snippet": "| Version | Downloads (Last 7 Days) | Tag |\n --- \n| 11.19.1 | 1,961,474 | next-11 |\n| 12.0.2 | 1,369,353 | latest |\n| 12.0.2 | 1,369,353 | next-12 |\n| 10.9.9 | 513,537 | next-10 |\n| 8.19.4 | 381,096 | next-8 |\n| 9.9.4 | 284,952 | next-9 |\n| 6.14.18 | 200,498 | latest-6 |\n| 6.14.18 | 200,498 | next-6 |\n| 6.14.18 | 200,498 | v6.14-next |\n| 7.24.2 | 145,804 | latest-7 |\n| 7.24.2 | 145,804 | next-7 |\n| 2.15.12 | 61,322 | latest-2 |\n| 2.15.12 | 61,322 | next-2 |\n| 5.10.0 | 22,221 | latest-5 | [...] | 5.10.0 | 22,221 | next-5 |\n| 3.10.10 | 16,574 | latest-3 |\n| 3.10.10 | 16,574 | next-3 |\n| 4.6.1 | 13,487 | latest-4 |\n| 4.6.1 | 13,487 | next-4 |\n| 1.4.29 | 914 | latest-1 | [...] | 6.5.0-next.0 | 12 |  |\n| 6.4.1 | 13,181 |  |\n| 6.4.1-next.0 | 11 |  |\n| 6.4.0 | 1,187 |  |\n| 6.4.0-next.0 | 11 |  |\n| 6.3.0 | 608 |  |\n| 6.3.0-next.0 | 11 |  |\n| 6.2.0 | 787 |  |\n| 6.2.0-next.1 | 6,732 |  |\n| 6.2.0-next.0 | 13 |  |\n| 6.1.0 | 1,695 |  |\n| 6.1.0-next.0 | 12 |  |\n| 5.10.0 | 22,221 |  |\n| 6.0.1 | 396 |  |\n| 5.10.0-next.1 | 17 |  |\n| 6.0.1-next.0 | 14 |  |\n| 6.0.0 | 813 |  |\n| 6.0.0-next.2 | 11 |  |\n| 6.0.0-next.1 | 11 |  |\n| 5.10.0-next.0 | 10 |  |\n| 5.9.0-next.0 | 6,017 |  |"
+          },
+          {
+            "title": "Getting Started: Installation",
+            "url": "https://nextjs.org/docs/app/getting-started/installation",
+            "snippet": "After the prompts, `create-next-app` will create a folder with your project name and install the required dependencies.\n\n## Manual installation\n\nTo manually create a new Next.js app, install the required packages:\n\nTerminal\n\n```\npnpm i next@latest react@latest react-dom@latest pnpm  i  next@latest  react@latest react-dom@latest\n``` [...] Keep your Next.js version up to date. Each release ships security patches, bug fixes, and performance optimizations alongside new features, and staying current keeps every individual upgrade small. Run the `upgrade` command:\n\nTerminal\n\n```\npnpm next upgrade pnpm  next  upgrade\n``` [...] Upgrading also updates the documentation bundled inside the `next` package at `node_modules/next/dist/docs/`. New features arrive with their docs, and existing pages pick up new guidance and pitfalls discovered along the way. AI coding agents in your project then work from the version you have installed rather than their training data. After an upgrade, you can prompt your agent to catch up:\n\nPrompt"
+          },
+          {
+            "title": "next-auth",
+            "url": "https://www.npmjs.com/package/next-auth",
+            "snippet": "## License\n\n[](\n\nISC\n\n## Readme\n\n### Keywords\n\n   react\n   nodejs\n   oauth\n   jwt\n   oauth2\n   authentication\n   nextjs\n   csrf\n   oidc\n   nextauth\n\n## Package Sidebar\n\n### Install\n\n`npm i next-auth`\n\n### Repository\n\ngithub.com/nextauthjs/next-auth\n\n### Homepage\n\nauthjs.dev\n\n### Weekly Downloads\n\n5,093,380\n\n### Version\n\n4.24.15\n\n### License\n\nISC\n\n### Last publish\n\na month ago\n\n### Collaborators [...] ⚠️\n\nnpm tokens that bypass 2FA are being restricted — account changes (Aug 2026) and direct publishing (Jan 2027). Learn how to prepare →\n\n×\n\nskip to:contentpackage searchsign in\n\n   Pro\n   Teams\n   Pricing\n   Documentation\n\nnpm\n\n\n   Supports both JSON Web Tokens and database sessions\n   Designed for Serverless but runs anywhere (AWS Lambda, Docker, Heroku, etc…)\n\n### Own your own data"
+          },
+          {
+            "title": "next",
+            "url": "https://www.npmjs.com/~next",
+            "snippet": "npm tokens that bypass 2FA are being restricted — account changes (Aug 2026) and direct publishing (Jan 2027). Learn how to prepare →\n\n# next\n\n## Packages 59\n\n### next\n\nThe React Framework\n\n### @next/bundle-analyzer\n\nUse `webpack-bundle-analyzer` in your Next.js project\n\n### @next/codemod\n\nNext.js provides Codemod transformations to help upgrade your Next.js codebase when a feature is deprecated.\n\n### @next/env\n\nNext.js dotenv file loading\n\n### @next/eslint-plugin-next [...] This package is still very experimental and should not be used at this point\n\n### @next/plugin-storybook\n\nThis package is still very experimental and should not be used at this point\n\n### @next/polyfill-module\n\nA standard library polyfill for ES Modules supporting browsers (Edge 16+, Firefox 60+, Chrome 61+, Safari 10.1+)\n\n### @next/polyfill-nomodule\n\nA polyfill for non-dead, nomodule browsers.\n\n### @next/react-dev-overlay\n\nA development-only overlay for developing React applications. [...] ### @next/react-refresh-utils\n\nAn experimental package providing utilities for React Refresh.\n\n### @next/routing\n\nNext.js shared route resolving\n\n### @next/rs\n\n### @next/rs-darwin-arm64\n\nThis is the \\\\aarch64-apple-darwin\\\\ binary for `@next/rs`\n\n### @next/rs-darwin-x64\n\nThis is the \\\\x86\\_64-apple-darwin\\\\ binary for `@next/rs`\n\n### @next/rs-linux-arm64-gnu\n\nThis is the \\\\linux-arm64-gnu\\\\ binary for `@next/rs`\n\n### @next/rs-linux-x64-gnu"
+          }
+        ]
+      },
+      "timestamp": 1789719571293
+    },
+    {
+      "toolCallId": "call_529768",
+      "output": {
+        "source": "tavily",
+        "results": [
+          {
+            "title": "Next.js Updates by Vercel - September 2026 - Releasebot",
+            "url": "https://releasebot.io/updates/vercel/next-js",
+            "snippet": "Jul 28, 2026\n  + First seen by Releasebot:\n\n    Jul 26, 2026\n  + Modified by Releasebot:\n\n    Aug 18, 2026\n\n  Vercel logo\n\n  Next.js by Vercel\n\n  Next.js ships backport docs fixes and TypeScript 7 support in the latest 16.2.12 release.\n\n  ### Backport/docs fixes 16.2 - July round by @icyJoseph in #96031\n\n  [Backport] Fixes to support TypeScript 7 by @lukesandberg in #95831\n\n  Full Changelog : v16.2.11...v16.2.12\n\n  Original source\n\nReleasebot\n\n## Curated by the Releasebot team [...] ## August 2026 Security Release\n\n  Next.js releases an August 2026 security update with critical vulnerability fixes for Active and Maintenance LTS users.\n\n  The August 2026 security release is now available. Upgrade to 16.3.3 (Active LTS) or 15.5.24 (Maintenance LTS) now to address two Critical severity vulnerabilities.\n\n  Original source\n Aug 25, 2026 \n  + Date parsed from source:\n\n    Aug 25, 2026\n  + First seen by Releasebot:\n\n    Aug 25, 2026\n\n  Vercel logo\n\n  Next.js by Vercel [...] Aug 25, 2026\n  + First seen by Releasebot:\n\n    Aug 25, 2026\n\n  Vercel logo\n\n  Next.js by Vercel\n\n  ## v15.5.24\n\n  Next.js releases security fixes for critical remote code execution vulnerabilities in Windows-hosted servers and Image Optimization API.\n\n  This release contains security fixes for the following advisories:\n\n  ### Critical"
+          },
+          {
+            "title": "GitHub - vercel/next.js: The React Framework · GitHub",
+            "url": "https://github.com/vercel/next.js",
+            "snippet": "## Repository files navigation\n\nNext.js logo \n\n# Next.js\n\nVercel logo NPM version License Join the community on GitHub\n\n## Getting Started\n\nUsed by some of the world's largest companies, Next.js enables you to create full-stack web applications by extending the latest React features, and integrating powerful Rust-based JavaScript tooling for the fastest builds.\n\n Visit our Learn Next.js course to get started with Next.js.\n Visit the Next.js Showcase to see more sites built with Next.js. [...] Notifications  You must be signed in to change notification settings\n Fork 31.8k\n Star  142k\n\nBranchesTags\n\nOpen more actions menu\n\n## Latest commit\n\n## History\n\n35,343 Commits\n\n35,343 Commits\n\n## Folders and files [...] | Name | Name | Last commit message | Last commit date |\n ---  --- |\n| .agents/skills | .agents/skills |  |  |\n| .cargo | .cargo |  |  |\n| .claude-plugin | .claude-plugin |  |  |\n| .claude | .claude |  |  |\n| .conductor | .conductor |  |  |\n| .config | .config |  |  |\n| .cursor | .cursor |  |  |\n| .devcontainer | .devcontainer |  |  |\n| .github | .github |  |  |\n| .husky | .husky |  |  |\n| .vscode | .vscode |  |  |\n| apps/bundle-analyzer | apps/bundle-analyzer |  |  |\n| bench | bench |  |  |"
+          },
+          {
+            "title": "Ably Launches Next.js Starter Kit on Vercel Templates Marketplace",
+            "url": "https://finance.yahoo.com/news/ably-launches-next-js-starter-090000369.html",
+            "snippet": "LONDON, Feb. 28, 2023 (GLOBE NEWSWIRE) -- Ably, a Realtime Experience Platform, today announced it has launched a Next.js Starter Kit on the Vercel Templates Marketplace. The prebuilt template helps front-end developers quickly build Next.js applications that include realtime digital experiences, such as multiplayer collaboration, live chat, data synchronization, data broadcast, and notifications. [...] In addition to the release of the Next.js Starter Kit, Ably has made its platform even more accessible for developers to build applications with realtime experiences. Recently, Ably became available on the Netlify Integrations Hub, making it simple for Netlify developers to add realtime functionality to their web applications. Ably has also announced the availability of its Ably Terraform Provider, enabling developers to programmatically manage their Ably infrastructure as code. [...] \"The launch of our Next.js Starter Kit on the Vercel Templates Marketplace demonstrates our ongoing commitment to empowering developers,\" said Matthew O'Riordan, CEO, Ably. \"By providing Next.js developers with a prebuilt template, we're making it easier for them to bring their apps to life with amazing realtime interactive and collaborative experiences while freeing them from the burden of infrastructure management.\""
+          },
+          {
+            "title": "Vercel Announces $150M in Series D Funding at a $2.5B Valuation to Further Fuel Innovation and Global Adoption of World’s Fastest Frontend Development Platform | YMM Stock News",
+            "url": "https://www.stocktitan.net/news/YMM/vercel-announces-150m-in-series-d-funding-at-a-2-5b-valuation-to-2yit551h30md.html",
+            "snippet": "Vercel has gained strong momentum since its Series A in April 2020. Next.js has grown 300%, with weekly npm installs rising from 500k to 2M. The number of individual Next.js contributors has doubled to 1,800 and traffic on the Vercel Edge Network has grown 700%, with requests rising from 3B to 24B+ per week."
+          },
+          {
+            "title": "Next.js Release Notes & Changelog · September 2026 — Releases Index",
+            "url": "https://releases.sh/vercel/nextjs",
+            "snippet": "v16.4.0-canary.26\n\nnext/image no longer shares the requester's socket with the internal image response, and duplicate background revalidation for 'use cache' is fixed. Turbopack also resolves ../ and /-rooted import.meta.glob patterns, and build errors now report incompatible parallel route slots, non-canonical interception routes, and app pages matching no route.\n\nRead more →\n\n## Canceled-task read hang fixed\n\npre\n\nv16.4.0-canary.20 [...] v16.4.0-canary.20\n\nFixed a hang in the turbo-tasks backend where strongly consistent reads would stall on a canceled task, plus smaller test stability and documentation cleanups.\n\nRead more →\n\n## Route info segment overrides show correctly in dev overlay\n\npre\n\nv16.4.0-canary.19\n\nFixed an issue where route info segment overrides were not updating in the dev overlay, causing stale information to be displayed.\n\nRead more →\n\n## Server errors returned to client\n\npre\n\nv16.4.0-canary.16 [...] v16.4.0-canary.32\n\nFixed unexpected query parameters in adapter deployments, an addMissingDependency bug, constant inlining in shorthand properties, and Turbopack cyclic module tracing to explicit entries, plus a Pages Router fix so the \\_\\_appRouter prefetch marker is no longer returned as route info on shallow navigation. The rest is test enablement for verified deploy suites, pnpm install changes, and docs clarifications.\n\nRead more →\n\n## Turbopack result payloads made disjoint\n\npre"
+          }
+        ]
+      },
+      "timestamp": 1789719577762
+    }
+  ],
+  "textDeltas": [
+    "As of late August / September 2026:\n\n* **",
+    "Latest Stable Version:** **`v16.3.3`** (released August 25, 2026)",
+    "\n* **Active Major Line:** **Next.js 16** (Active LTS)\n* **Maintenance Line:**",
+    " **`v15.5.24`** (Maintenance LTS)\n\nIf you're using `npm",
+    "` or `pnpm`, you can install or upgrade to the latest stable release with:\n\n```bash\npnpm add",
+    " next@latest react@latest react-dom@latest\n```"
+  ],
+  "fullText": "As of late August / September 2026:\n\n* **Latest Stable Version:** **`v16.3.3`** (released August 25, 2026)\n* **Active Major Line:** **Next.js 16** (Active LTS)\n* **Maintenance Line:** **`v15.5.24`** (Maintenance LTS)\n\nIf you're using `npm` or `pnpm`, you can install or upgrade to the latest stable release with:\n\n```bash\npnpm add next@latest react@latest react-dom@latest\n```",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 20469,
+  "pass": true,
+  "failureReason": null
+}

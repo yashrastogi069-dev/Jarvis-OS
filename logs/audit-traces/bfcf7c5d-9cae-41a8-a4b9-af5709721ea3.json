@@ -1,0 +1,47 @@
+{
+  "traceId": "bfcf7c5d-9cae-41a8-a4b9-af5709721ea3",
+  "testName": "G1_Vague_Reminder",
+  "expectedTools": [],
+  "expectedBehavior": "Asks user WHAT to remind and WHEN, rather than inventing random tasks",
+  "messages": [
+    {
+      "id": "audit-1789720006607",
+      "role": "user",
+      "content": "Remind me later."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789720006607,
+    "REQUEST_SENT": 1789720006607,
+    "SERVER_RECEIVED": 1789720051085,
+    "SSE_FIRST_CHUNK": 1789720051087,
+    "FINAL_GENERATION_END": 1789720051335
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [
+    "I",
+    "’ll",
+    " set",
+    " a",
+    " reminder",
+    " for",
+    " you",
+    ".",
+    " When",
+    " would",
+    " you",
+    " like",
+    " me",
+    " to",
+    " remind",
+    " you",
+    "?"
+  ],
+  "fullText": "I’ll set a reminder for you. When would you like me to remind you?",
+  "brain": "groq",
+  "error": null,
+  "totalLatencyMs": 44725,
+  "pass": true,
+  "failureReason": null
+}

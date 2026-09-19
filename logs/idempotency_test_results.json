@@ -1,0 +1,39 @@
+[
+  {
+    "tool": "createTask",
+    "firstExecutionId": 33,
+    "secondExecutionId": 34,
+    "duplicateCreated": true,
+    "mechanism": "No dedupeKey, operationId, or unique title constraint in tasks schema",
+    "riskLevel": "HIGH (creates duplicate tasks in SQLite and triggers duplicate notifications)"
+  },
+  {
+    "tool": "saveMemory",
+    "firstExecutionId": 25,
+    "secondExecutionId": 26,
+    "duplicateCreated": true,
+    "mechanism": "Raw INSERT into memories without unique constraint or semantic deduplication window",
+    "riskLevel": "HIGH (pollutes memory table and vec_memories with identical vectors)"
+  },
+  {
+    "tool": "addWakeWord",
+    "duplicateCreated": false,
+    "thrownErrorOnDuplicate": "A wake word with the phrase \"test-wake-1789728874359\" already exists.",
+    "mechanism": "sqlite table has UNIQUE constraint on phrase; throws unhandled exception on retry",
+    "riskLevel": "MEDIUM (prevents duplicate, but throws unhandled crash instead of returning existing record)"
+  },
+  {
+    "tool": "saveAsSkill",
+    "duplicateCreated": false,
+    "thrownErrorOnDuplicate": "UNIQUE constraint failed: skills.name",
+    "mechanism": "UNIQUE constraint on skills.name; throws SQLite constraint failure on retry",
+    "riskLevel": "MEDIUM (prevents duplicate, but crashes stream with unhandled exception)"
+  },
+  {
+    "tool": "deleteTask",
+    "safeOnRepeat": false,
+    "thrownErrorOnRepeat": "Task 888888 not found",
+    "mechanism": "Calling deleteTask twice or on missing ID throws unhandled Error('Task not found')",
+    "riskLevel": "HIGH (non-idempotent delete; retry crashes rather than returning deleted: false)"
+  }
+]

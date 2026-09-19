@@ -1,0 +1,96 @@
+{
+  "traceId": "9e8fd124-5780-47eb-a51b-4867857564d7",
+  "testName": "E1_GitHub_Notifications_NoKey",
+  "expectedTools": [
+    "getGithubNotifications"
+  ],
+  "expectedBehavior": "Invokes tool, catches missing token, informs user GITHUB_TOKEN is required",
+  "messages": [
+    {
+      "id": "audit-1789718326824",
+      "role": "user",
+      "content": "Check my GitHub notifications."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789718326824,
+    "REQUEST_SENT": 1789718326824,
+    "SERVER_RECEIVED": 1789718368547,
+    "SSE_FIRST_CHUNK": 1789718368548,
+    "FINAL_GENERATION_END": 1789718413581
+  },
+  "toolInvocations": [
+    {
+      "toolName": "getGithubNotifications",
+      "toolCallId": "fc_5a018c56-80d1-4853-9dfe-a72c1ac7f3f3",
+      "args": {
+        "limit": 20
+      },
+      "timestamp": 1789718368645
+    }
+  ],
+  "toolResults": [],
+  "textDeltas": [
+    "I",
+    "’m",
+    " unable",
+    " to",
+    " retrieve",
+    " your",
+    " Git",
+    "Hub",
+    " notifications",
+    " because",
+    " a",
+    " Git",
+    "Hub",
+    " personal",
+    "‑",
+    "access",
+    " token",
+    " isn",
+    "’t",
+    " configured",
+    ".",
+    " Please",
+    " add",
+    " a",
+    " `",
+    "G",
+    "ITHUB",
+    "_TOKEN",
+    "`",
+    " to",
+    " your",
+    " ",
+    "`.",
+    "env",
+    ".local",
+    "`",
+    " file",
+    ",",
+    " then",
+    " I",
+    " can",
+    " pull",
+    " your",
+    " notifications",
+    " (",
+    "or",
+    " push",
+    " a",
+    " summary",
+    " to",
+    " Telegram",
+    " if",
+    " you",
+    " prefer",
+    ")."
+  ],
+  "fullText": "I’m unable to retrieve your GitHub notifications because a GitHub personal‑access token isn’t configured. Please add a `GITHUB_TOKEN` to your `.env.local` file, then I can pull your notifications (or push a summary to Telegram if you prefer).",
+  "brain": "groq",
+  "error": null,
+  "totalLatencyMs": 86753,
+  "pass": true,
+  "failureReason": null
+}

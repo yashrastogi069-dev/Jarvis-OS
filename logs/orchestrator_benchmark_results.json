@@ -1,0 +1,6530 @@
+{
+  "timestamp": "2026-09-18T11:10:06.403Z",
+  "scenariosCount": 60,
+  "summaries": {
+    "ArchitectureA": {
+      "architecture": "Architecture A (Current Baseline ToolLoopAgent)",
+      "totalScenarios": 60,
+      "fullTaskCompletionRate": "31.67%",
+      "partialCompletionRate": "56.67%",
+      "prematureTerminationRate": "53.33%",
+      "wrongToolRate": "0.00%",
+      "unnecessaryToolRate": "0.00%",
+      "argumentValidityRate": "100.0%",
+      "duplicateMutationRate": "0.00%",
+      "hallucinatedSuccessRate": "21.67%",
+      "clarificationCorrectness": "10.00%",
+      "avgLlmCalls": "2.38",
+      "avgToolCalls": "1.50",
+      "avgInputTokens": 23119,
+      "avgOutputTokens": 286,
+      "avgTtftMs": "559.2",
+      "p50LatencyMs": "700.0",
+      "p95LatencyMs": "1400.0",
+      "costPer1kTurnsUsd": "3.639"
+    },
+    "ArchitectureB": {
+      "architecture": "Architecture B (Tool Loop + Completion Verifier)",
+      "totalScenarios": 60,
+      "fullTaskCompletionRate": "96.67%",
+      "partialCompletionRate": "1.67%",
+      "prematureTerminationRate": "3.33%",
+      "wrongToolRate": "0.00%",
+      "unnecessaryToolRate": "0.00%",
+      "argumentValidityRate": "100.0%",
+      "duplicateMutationRate": "0.00%",
+      "hallucinatedSuccessRate": "0.00%",
+      "clarificationCorrectness": "10.00%",
+      "avgLlmCalls": "4.38",
+      "avgToolCalls": "2.42",
+      "avgInputTokens": 33694,
+      "avgOutputTokens": 528,
+      "avgTtftMs": "320.0",
+      "p50LatencyMs": "1390.0",
+      "p95LatencyMs": "2650.0",
+      "costPer1kTurnsUsd": "5.371"
+    },
+    "ArchitectureC": {
+      "architecture": "Architecture C (Planner / Executor)",
+      "totalScenarios": 60,
+      "fullTaskCompletionRate": "88.33%",
+      "partialCompletionRate": "8.33%",
+      "prematureTerminationRate": "0.00%",
+      "wrongToolRate": "0.00%",
+      "unnecessaryToolRate": "0.00%",
+      "argumentValidityRate": "100.0%",
+      "duplicateMutationRate": "0.00%",
+      "hallucinatedSuccessRate": "0.00%",
+      "clarificationCorrectness": "10.00%",
+      "avgLlmCalls": "2.10",
+      "avgToolCalls": "2.80",
+      "avgInputTokens": 3187,
+      "avgOutputTokens": 564,
+      "avgTtftMs": "410.0",
+      "p50LatencyMs": "660.0",
+      "p95LatencyMs": "1100.1",
+      "costPer1kTurnsUsd": "0.816"
+    }
+  },
+  "stepLimitComparison": {
+    "maxSteps6": {
+      "architecture": "maxSteps = 6",
+      "totalScenarios": 40,
+      "fullTaskCompletionRate": "7.50%",
+      "partialCompletionRate": "72.50%",
+      "prematureTerminationRate": "72.50%",
+      "wrongToolRate": "2.50%",
+      "unnecessaryToolRate": "0.00%",
+      "argumentValidityRate": "100.0%",
+      "duplicateMutationRate": "0.00%",
+      "hallucinatedSuccessRate": "17.50%",
+      "clarificationCorrectness": "0.00%",
+      "avgLlmCalls": "2.25",
+      "avgToolCalls": "1.45",
+      "avgInputTokens": 21804,
+      "avgOutputTokens": 270,
+      "avgTtftMs": "556.6",
+      "p50LatencyMs": "700.0",
+      "p95LatencyMs": "1400.0",
+      "costPer1kTurnsUsd": "3.433"
+    },
+    "maxSteps12": {
+      "architecture": "maxSteps = 12",
+      "totalScenarios": 40,
+      "fullTaskCompletionRate": "12.50%",
+      "partialCompletionRate": "70.00%",
+      "prematureTerminationRate": "72.50%",
+      "wrongToolRate": "0.00%",
+      "unnecessaryToolRate": "0.00%",
+      "argumentValidityRate": "100.0%",
+      "duplicateMutationRate": "0.00%",
+      "hallucinatedSuccessRate": "27.50%",
+      "clarificationCorrectness": "10.00%",
+      "avgLlmCalls": "2.23",
+      "avgToolCalls": "1.40",
+      "avgInputTokens": 21572,
+      "avgOutputTokens": 267,
+      "avgTtftMs": "555.3",
+      "p50LatencyMs": "700.0",
+      "p95LatencyMs": "1400.0",
+      "costPer1kTurnsUsd": "3.396"
+    },
+    "maxSteps20": {
+      "architecture": "maxSteps = 20",
+      "totalScenarios": 40,
+      "fullTaskCompletionRate": "7.50%",
+      "partialCompletionRate": "72.50%",
+      "prematureTerminationRate": "70.00%",
+      "wrongToolRate": "2.50%",
+      "unnecessaryToolRate": "0.00%",
+      "argumentValidityRate": "100.0%",
+      "duplicateMutationRate": "0.00%",
+      "hallucinatedSuccessRate": "42.50%",
+      "clarificationCorrectness": "0.00%",
+      "avgLlmCalls": "2.23",
+      "avgToolCalls": "1.43",
+      "avgInputTokens": 21564,
+      "avgOutputTokens": 267,
+      "avgTtftMs": "553.0",
+      "p50LatencyMs": "700.0",
+      "p95LatencyMs": "1400.0",
+      "costPer1kTurnsUsd": "3.395"
+    }
+  },
+  "detailedResults": {
+    "ArchitectureA": [
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_01",
+        "category": "2-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 541.9041822606107,
+        "latency": 700.7617,
+        "executedTools": [
+          "webSearch"
+        ],
+        "completedGoals": [
+          "Perform web search on quantum computing 2026"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_02",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 521.4754036033246,
+        "latency": 1050.0789,
+        "executedTools": [
+          "webSearch",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search web for Artemis III scheduled year",
+          "Save the confirmed date into memory"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_03",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 565.242710791011,
+        "latency": 1050.0595,
+        "executedTools": [
+          "createTask",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Create task for Q3 financial report",
+          "List tasks to verify creation"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_04",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 594.5190634213814,
+        "latency": 1050.0486,
+        "executedTools": [
+          "recallMemory",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall preferred programming language from memory",
+          "Create task with the recalled language"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_05",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 554.7608874706275,
+        "latency": 1050.0755,
+        "executedTools": [
+          "getMyOpenPRs",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch open GitHub PRs",
+          "Create task for reviewing open PR"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_06",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 598.7164270547893,
+        "latency": 1050.087,
+        "executedTools": [
+          "webSearch",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Search web for productivity frameworks",
+          "Create Obsidian note with research content"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_07",
+        "category": "2-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 531.9583261092872,
+        "latency": 700.0448,
+        "executedTools": [
+          "searchCalendarEvents"
+        ],
+        "completedGoals": [
+          "Search calendar for meetings with Sarah"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_08",
+        "category": "2-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 591.5269776297961,
+        "latency": 700.0185,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search emails for product launch"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_09",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 535.0195498285428,
+        "latency": 1050.0428,
+        "executedTools": [
+          "completeTask",
+          "setPreference"
+        ],
+        "completedGoals": [
+          "Mark task 12 completed",
+          "Set preference for hiding completed tasks"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_10",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 584.9869437328298,
+        "latency": 1050.0276,
+        "executedTools": [
+          "listWakeWords",
+          "removeWakeWord"
+        ],
+        "completedGoals": [
+          "List existing wake words",
+          "Remove specified wake word"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_11",
+        "category": "2-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 571.6345659304977,
+        "latency": 700.0092,
+        "executedTools": [
+          "listTasks"
+        ],
+        "completedGoals": [
+          "List pending tasks"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_12",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 544.1067233021798,
+        "latency": 1050.026,
+        "executedTools": [
+          "searchNotes",
+          "appendNote"
+        ],
+        "completedGoals": [
+          "Search Obsidian notes for Project Alpha",
+          "Append milestone update to the note"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_13",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 555.1992422812278,
+        "latency": 1050.0197,
+        "executedTools": [
+          "getUpdatesFeed",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Get recent system updates feed",
+          "Save summary into memory"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_14",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 583.7937272814121,
+        "latency": 1050.0059,
+        "executedTools": [
+          "searchCalendarEvents",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search calendar for dentist appointment",
+          "Create task to buy toothpaste before appointment date"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_15",
+        "category": "2-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 545.1426117577138,
+        "latency": 700.0078,
+        "executedTools": [
+          "recallMemory"
+        ],
+        "completedGoals": [
+          "Recall project code name from memory"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_16",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 597.4238564195689,
+        "latency": 1050.0124,
+        "executedTools": [
+          "getMyOpenPRs",
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [
+          "Fetch open PRs",
+          "Fetch open issues"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_17",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 589.275332718804,
+        "latency": 1051.4578999999999,
+        "executedTools": [
+          "searchGmail",
+          "readEmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for Stripe emails",
+          "Read specific Stripe invoice email"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_18",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 595.8568768141798,
+        "latency": 1050.0157,
+        "executedTools": [
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search web for next solar eclipse date",
+          "Create task with eclipse date"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_19",
+        "category": "2-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 585.5768034129469,
+        "latency": 700.0362,
+        "executedTools": [
+          "listSkills"
+        ],
+        "completedGoals": [
+          "List existing skills"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_2step_20",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 552.1682692661775,
+        "latency": 1050.0196,
+        "executedTools": [
+          "getTelegramMessages",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Fetch Telegram messages",
+          "Save extracted recommendations to memory"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_01",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 576.8804736285134,
+        "latency": 700.0057,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for finance emails"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_02",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 525.6381857567594,
+        "latency": 700.0046,
+        "executedTools": [
+          "searchNotes"
+        ],
+        "completedGoals": [
+          "Search notes for Reading_List.md"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_03",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 529.8748171067174,
+        "latency": 700.0106,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Get Monday calendar events"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_04",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 544.432085367968,
+        "latency": 700.0083,
+        "executedTools": [
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [
+          "Fetch open GitHub issues"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_05",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 599.1574679245882,
+        "latency": 1050.0091,
+        "executedTools": [
+          "webSearch",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search web for Node.js 24 LTS release",
+          "Summarize finalized features"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_06",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 3,
+        "inputTokens": 39200,
+        "outputTokens": 480,
+        "ttft": 567.2435244466359,
+        "latency": 1400.0102,
+        "executedTools": [
+          "recallMemory",
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall vacation destination from memory",
+          "Search web for attractions in that destination",
+          "Create task to book tickets"
+        ],
+        "stepCount": 4
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_07",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 590.0954905725253,
+        "latency": 700.0031,
+        "executedTools": [
+          "listTasks"
+        ],
+        "completedGoals": [
+          "List existing tasks"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_08",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 3,
+        "inputTokens": 39200,
+        "outputTokens": 480,
+        "ttft": 578.0490116908521,
+        "latency": 1400.0101,
+        "executedTools": [
+          "searchGmail",
+          "createTask",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search Gmail for emails from Alex",
+          "Create task to review contract by Thursday",
+          "Save memory about Alex's updated agreement"
+        ],
+        "stepCount": 4
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_09",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 533.5931512927077,
+        "latency": 1050.0426,
+        "executedTools": [
+          "getGithubNotifications",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch GitHub notifications",
+          "Inspect PR #42 notification"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_10",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 530.7127711701332,
+        "latency": 1050.0063,
+        "executedTools": [
+          "getCalendarEvents",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Get calendar events for tomorrow afternoon",
+          "List tasks due tomorrow"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_11",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 535.4088696163619,
+        "latency": 700.0058,
+        "executedTools": [
+          "getUpdatesFeed"
+        ],
+        "completedGoals": [
+          "Get updates feed for system errors"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_12",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 3,
+        "inputTokens": 39200,
+        "outputTokens": 480,
+        "ttft": 550.6780399000796,
+        "latency": 1400.016,
+        "executedTools": [
+          "recallMemory",
+          "searchNotes",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Recall note formatting preference from memory/prefs",
+          "Search notes for Architecture",
+          "Create new note Arch_v2.md with preferred format"
+        ],
+        "stepCount": 4
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_13",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 532.9580422067643,
+        "latency": 700.005,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for Client X email"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_14",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 596.133649802738,
+        "latency": 700.0059,
+        "executedTools": [
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [
+          "Fetch issue #101"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_3step_15",
+        "category": "3-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 561.4065029122572,
+        "latency": 700.017,
+        "executedTools": [
+          "searchAppleCalendarEvents"
+        ],
+        "completedGoals": [
+          "Search Apple Calendar for Friday events"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_01",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 547.2692592628354,
+        "latency": 700.0047,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for audit email"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_02",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 549.6858983767742,
+        "latency": 700.0054,
+        "executedTools": [
+          "getMyOpenPRs"
+        ],
+        "completedGoals": [
+          "List open PRs"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_03",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 3,
+        "inputTokens": 39200,
+        "outputTokens": 480,
+        "ttft": 542.6193559154939,
+        "latency": 1400.012,
+        "executedTools": [
+          "recallMemory",
+          "webSearch",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Recall framework preference",
+          "Search web for latest release",
+          "Create Obsidian note with update info"
+        ],
+        "stepCount": 4
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_04",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 554.9924956517517,
+        "latency": 700.0038,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Search calendar events at 3 PM"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_05",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 560.4507843439079,
+        "latency": 700.0034,
+        "executedTools": [
+          "getUpdatesFeed"
+        ],
+        "completedGoals": [
+          "Check updates feed"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_06",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 3,
+        "inputTokens": 39200,
+        "outputTokens": 480,
+        "ttft": 549.8526294934662,
+        "latency": 1400.0305,
+        "executedTools": [
+          "listTasks",
+          "updateTask",
+          "completeTask"
+        ],
+        "completedGoals": [
+          "List existing tasks",
+          "Update task 3 due date",
+          "Mark task 2 completed"
+        ],
+        "stepCount": 4
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_07",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 535.334791981818,
+        "latency": 700.0041,
+        "executedTools": [
+          "searchNotes"
+        ],
+        "completedGoals": [
+          "Search notes for TS roadmap"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_08",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 579.137266892918,
+        "latency": 700.0042,
+        "executedTools": [
+          "getGithubNotifications"
+        ],
+        "completedGoals": [
+          "Check GitHub notifications"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_09",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 3,
+        "inputTokens": 39200,
+        "outputTokens": 480,
+        "ttft": 582.0076503990045,
+        "latency": 1400.0084,
+        "executedTools": [
+          "getTelegramMessages",
+          "recallMemory",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Fetch Telegram messages",
+          "Recall project guidelines from memory",
+          "Create Obsidian note with summary"
+        ],
+        "stepCount": 4
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_4step_10",
+        "category": "4-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 580.4922263881705,
+        "latency": 700.0046,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Get Google Calendar events"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_5step_01",
+        "category": "5-or-more-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 568.031049261731,
+        "latency": 700.0028,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Fetch today's Google Calendar events"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_5step_02",
+        "category": "5-or-more-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 595.5190245438865,
+        "latency": 700.0083,
+        "executedTools": [
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [
+          "List open GitHub issues"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_5step_03",
+        "category": "5-or-more-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 528.5600031237458,
+        "latency": 1050.071,
+        "executedTools": [
+          "webSearch",
+          "fetchPage"
+        ],
+        "completedGoals": [
+          "Search web for SolidJS 2.0 changes",
+          "Fetch the official blog post page"
+        ],
+        "stepCount": 3
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_5step_04",
+        "category": "5-or-more-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": true,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 598.9430979984224,
+        "latency": 700.003,
+        "executedTools": [
+          "listTasks"
+        ],
+        "completedGoals": [
+          "List all tasks"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_5step_05",
+        "category": "5-or-more-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 589.2453239377894,
+        "latency": 700.0252,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Fetch Google Calendar events for week"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_01",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 530.9922234251326,
+        "latency": 350.0485,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_02",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 556.6968146620417,
+        "latency": 350.0118,
+        "executedTools": [
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_03",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": true,
+        "llmCalls": 1,
+        "toolCalls": 0,
+        "inputTokens": 9465,
+        "outputTokens": 120,
+        "ttft": 450,
+        "latency": 450.0095,
+        "executedTools": [],
+        "completedGoals": [
+          "Identify underspecified reminder and ask clarifying question"
+        ],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_04",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 541.8015862023793,
+        "latency": 350.0179,
+        "executedTools": [
+          "searchNotes"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_05",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 537.513613411841,
+        "latency": 350.0055,
+        "executedTools": [
+          "sendGmail"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_06",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 577.9527072019434,
+        "latency": 350.0083,
+        "executedTools": [
+          "webSearch"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_07",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 19300,
+        "outputTokens": 240,
+        "ttft": 577.0390391140611,
+        "latency": 700.019,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for specific tracking code"
+        ],
+        "stepCount": 2
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_08",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 576.9779468887515,
+        "latency": 350.01210000000003,
+        "executedTools": [
+          "completeTask"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_09",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 1,
+        "toolCalls": 1,
+        "inputTokens": 9575,
+        "outputTokens": 120,
+        "ttft": 524.6344229076337,
+        "latency": 350.0072,
+        "executedTools": [
+          "deleteTask"
+        ],
+        "completedGoals": [],
+        "stepCount": 1
+      },
+      {
+        "architecture": "A_Baseline",
+        "scenarioId": "scen_fail_10",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 29175,
+        "outputTokens": 360,
+        "ttft": 522.631018511246,
+        "latency": 1050.0135,
+        "executedTools": [
+          "deleteTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Enforce confirmation safety on bulk deletion",
+          "Create task to buy groceries"
+        ],
+        "stepCount": 3
+      }
+    ],
+    "ArchitectureB": [
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_01",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 19750,
+        "outputTokens": 320,
+        "ttft": 320,
+        "latency": 760.1433,
+        "executedTools": [
+          "webSearch"
+        ],
+        "completedGoals": [
+          "Perform web search on quantum computing 2026",
+          "Summarize findings in 3 bullet points"
+        ],
+        "stepCount": 2,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_02",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0327,
+        "executedTools": [
+          "webSearch",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search web for Artemis III scheduled year",
+          "Save the confirmed date into memory"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_03",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0202,
+        "executedTools": [
+          "createTask",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Create task for Q3 financial report",
+          "List tasks to verify creation"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_04",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0191,
+        "executedTools": [
+          "recallMemory",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall preferred programming language from memory",
+          "Create task with the recalled language"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_05",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0313,
+        "executedTools": [
+          "getMyOpenPRs",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch open GitHub PRs",
+          "Create task for reviewing open PR"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_06",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0564,
+        "executedTools": [
+          "webSearch",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Search web for productivity frameworks",
+          "Create Obsidian note with research content"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_07",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 19750,
+        "outputTokens": 320,
+        "ttft": 320,
+        "latency": 760.0131,
+        "executedTools": [
+          "searchCalendarEvents"
+        ],
+        "completedGoals": [
+          "Search calendar for meetings with Sarah",
+          "Synthesize meeting times from results"
+        ],
+        "stepCount": 2,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_08",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 19750,
+        "outputTokens": 320,
+        "ttft": 320,
+        "latency": 760.0057,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search emails for product launch",
+          "Summarize email contents"
+        ],
+        "stepCount": 2,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_09",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.018,
+        "executedTools": [
+          "completeTask",
+          "setPreference"
+        ],
+        "completedGoals": [
+          "Mark task 12 completed",
+          "Set preference for hiding completed tasks"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_10",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0119,
+        "executedTools": [
+          "listWakeWords",
+          "removeWakeWord"
+        ],
+        "completedGoals": [
+          "List existing wake words",
+          "Remove specified wake word"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_11",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.016,
+        "executedTools": [
+          "listTasks",
+          "snoozeTask"
+        ],
+        "completedGoals": [
+          "List pending tasks",
+          "Snooze task 5 until tomorrow"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_12",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0092,
+        "executedTools": [
+          "searchNotes",
+          "appendNote"
+        ],
+        "completedGoals": [
+          "Search Obsidian notes for Project Alpha",
+          "Append milestone update to the note"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_13",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0113,
+        "executedTools": [
+          "getUpdatesFeed",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Get recent system updates feed",
+          "Save summary into memory"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_14",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0042,
+        "executedTools": [
+          "searchCalendarEvents",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search calendar for dentist appointment",
+          "Create task to buy toothpaste before appointment date"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_15",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0085,
+        "executedTools": [
+          "recallMemory",
+          "searchNotes"
+        ],
+        "completedGoals": [
+          "Recall project code name from memory",
+          "Search Obsidian notes with that code name"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_16",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0066,
+        "executedTools": [
+          "getMyOpenPRs",
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [
+          "Fetch open PRs",
+          "Fetch open issues"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_17",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.023,
+        "executedTools": [
+          "searchGmail",
+          "readEmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for Stripe emails",
+          "Read specific Stripe invoice email"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_18",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0039,
+        "executedTools": [
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search web for next solar eclipse date",
+          "Create task with eclipse date"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_19",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0339,
+        "executedTools": [
+          "listSkills",
+          "runSkill"
+        ],
+        "completedGoals": [
+          "List existing skills",
+          "Execute the daily-briefing skill"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_2step_20",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0091,
+        "executedTools": [
+          "getTelegramMessages",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Fetch Telegram messages",
+          "Save extracted recommendations to memory"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_01",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0113,
+        "executedTools": [
+          "searchGmail",
+          "readEmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for finance emails",
+          "Read the specific Q2 Budget email",
+          "Summarize key figures"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_02",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39870,
+        "outputTokens": 620,
+        "ttft": 320,
+        "latency": 1770.0259,
+        "executedTools": [
+          "searchNotes",
+          "appendNote",
+          "readNote"
+        ],
+        "completedGoals": [
+          "Search notes for Reading_List.md",
+          "Append book to note",
+          "Read note to verify update"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_03",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 19750,
+        "outputTokens": 320,
+        "ttft": 320,
+        "latency": 760.0241,
+        "executedTools": [
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Get Monday calendar events",
+          "Get Tuesday calendar events",
+          "Compare schedules and synthesize recommendation"
+        ],
+        "stepCount": 2,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_04",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0105,
+        "executedTools": [
+          "getMyOpenIssues",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch open GitHub issues",
+          "Identify critical-bug issue",
+          "Create local task for that bug"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_05",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0052,
+        "executedTools": [
+          "webSearch",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search web for Node.js 24 LTS release",
+          "Summarize finalized features",
+          "Save release date into memory"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_06",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 40090,
+        "outputTokens": 680,
+        "ttft": 320,
+        "latency": 2020.0166,
+        "executedTools": [
+          "recallMemory",
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall vacation destination from memory",
+          "Search web for attractions in that destination",
+          "Create task to book tickets"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_07",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0056,
+        "executedTools": [
+          "listTasks",
+          "completeTask"
+        ],
+        "completedGoals": [
+          "List existing tasks",
+          "Complete the Database Migration task",
+          "List remaining active tasks"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_08",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 40090,
+        "outputTokens": 680,
+        "ttft": 320,
+        "latency": 2020.0064,
+        "executedTools": [
+          "searchGmail",
+          "createTask",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search Gmail for emails from Alex",
+          "Create task to review contract by Thursday",
+          "Save memory about Alex's updated agreement"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_09",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0166,
+        "executedTools": [
+          "getGithubNotifications",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch GitHub notifications",
+          "Inspect PR #42 notification",
+          "Create task to review PR #42"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_10",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0043,
+        "executedTools": [
+          "getCalendarEvents",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Get calendar events for tomorrow afternoon",
+          "List tasks due tomorrow",
+          "Cross-reference schedule and identify conflicts"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_11",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39650,
+        "outputTokens": 560,
+        "ttft": 320,
+        "latency": 1520.0109,
+        "executedTools": [
+          "getUpdatesFeed",
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Get updates feed for system errors",
+          "Search web for error fix",
+          "Create task to patch the error"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_12",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39870,
+        "outputTokens": 620,
+        "ttft": 320,
+        "latency": 1770.0069,
+        "executedTools": [
+          "recallMemory",
+          "searchNotes",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Recall note formatting preference from memory/prefs",
+          "Search notes for Architecture",
+          "Create new note Arch_v2.md with preferred format"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_13",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39650,
+        "outputTokens": 560,
+        "ttft": 320,
+        "latency": 1520.0341,
+        "executedTools": [
+          "searchGmail",
+          "replyToEmail",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search Gmail for Client X email",
+          "Draft reply preview with confirmed: false",
+          "Create task to follow up on Monday"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_14",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39870,
+        "outputTokens": 620,
+        "ttft": 320,
+        "latency": 1770.0572,
+        "executedTools": [
+          "getMyOpenIssues",
+          "commentOnGithubIssue",
+          "sendTelegram"
+        ],
+        "completedGoals": [
+          "Fetch issue #101",
+          "Generate issue comment preview",
+          "Draft Telegram notification"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_3step_15",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.039,
+        "executedTools": [
+          "searchAppleCalendarEvents",
+          "createAppleCalendarEvent"
+        ],
+        "completedGoals": [
+          "Search Apple Calendar for Friday events",
+          "Analyze free slots between 1 PM and 5 PM",
+          "Draft createAppleCalendarEvent preview"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_01",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39650,
+        "outputTokens": 560,
+        "ttft": 320,
+        "latency": 1520.0085,
+        "executedTools": [
+          "searchGmail",
+          "readEmail",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search Gmail for audit email",
+          "Read the audit email",
+          "Summarize 3 action items",
+          "Create task for action items"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_02",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 40090,
+        "outputTokens": 680,
+        "ttft": 320,
+        "latency": 2020.009,
+        "executedTools": [
+          "getMyOpenPRs",
+          "getMyOpenIssues",
+          "createTask"
+        ],
+        "completedGoals": [
+          "List open PRs",
+          "Fetch related open issue",
+          "Summarize proposed changes",
+          "Create local testing task"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_03",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50265,
+        "outputTokens": 800,
+        "ttft": 320,
+        "latency": 2400.0086,
+        "executedTools": [
+          "recallMemory",
+          "webSearch",
+          "createNote",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall framework preference",
+          "Search web for latest release",
+          "Create Obsidian note with update info",
+          "Add task to test it"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_04",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50265,
+        "outputTokens": 800,
+        "ttft": 320,
+        "latency": 2400.0092999999997,
+        "executedTools": [
+          "getCalendarEvents",
+          "listTasks",
+          "snoozeTask",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search calendar events at 3 PM",
+          "List tasks due at 3 PM",
+          "Snooze conflicting task to 6 PM",
+          "Save schedule shift memory"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_05",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50265,
+        "outputTokens": 800,
+        "ttft": 320,
+        "latency": 2400.0068,
+        "executedTools": [
+          "getUpdatesFeed",
+          "searchGmail",
+          "readEmail",
+          "replyToEmail"
+        ],
+        "completedGoals": [
+          "Check updates feed",
+          "Search Gmail for error alerts",
+          "Read the latest alert email",
+          "Draft reply preview"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_06",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39870,
+        "outputTokens": 620,
+        "ttft": 320,
+        "latency": 1770.0099,
+        "executedTools": [
+          "listTasks",
+          "updateTask",
+          "completeTask"
+        ],
+        "completedGoals": [
+          "List existing tasks",
+          "Update task 3 due date",
+          "Mark task 2 completed",
+          "List tasks to verify"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_07",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50045,
+        "outputTokens": 740,
+        "ttft": 320,
+        "latency": 2150.0078000000003,
+        "executedTools": [
+          "searchNotes",
+          "readNote",
+          "webSearch",
+          "appendNote"
+        ],
+        "completedGoals": [
+          "Search notes for TS roadmap",
+          "Read existing note",
+          "Search web for release status",
+          "Append status to note"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_08",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39870,
+        "outputTokens": 620,
+        "ttft": 320,
+        "latency": 1770.0245,
+        "executedTools": [
+          "getGithubNotifications",
+          "createGithubIssue",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Check GitHub notifications",
+          "Inspect PR details",
+          "Draft createGithubIssue preview",
+          "Create task to conduct code review"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_09",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50265,
+        "outputTokens": 800,
+        "ttft": 320,
+        "latency": 2400.0061,
+        "executedTools": [
+          "getTelegramMessages",
+          "recallMemory",
+          "createNote",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch Telegram messages",
+          "Recall project guidelines from memory",
+          "Create Obsidian note with summary",
+          "Create task to reply tomorrow"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_4step_10",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 5,
+        "toolCalls": 3,
+        "inputTokens": 39650,
+        "outputTokens": 560,
+        "ttft": 320,
+        "latency": 1520.0134,
+        "executedTools": [
+          "getCalendarEvents",
+          "getAppleCalendarEvents",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Get Google Calendar events",
+          "Get Apple Calendar events",
+          "Compare and identify missing events",
+          "Create task to fix sync"
+        ],
+        "stepCount": 4,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_5step_01",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50045,
+        "outputTokens": 740,
+        "ttft": 320,
+        "latency": 2150.0139,
+        "executedTools": [
+          "getCalendarEvents",
+          "getRecentEmails",
+          "listTasks",
+          "getUpdatesFeed"
+        ],
+        "completedGoals": [
+          "Fetch today's Google Calendar events",
+          "Fetch recent unread emails",
+          "List pending tasks",
+          "Check system updates feed",
+          "Synthesize unified hourly day plan"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_5step_02",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50265,
+        "outputTokens": 800,
+        "ttft": 320,
+        "latency": 2400.017,
+        "executedTools": [
+          "getMyOpenIssues",
+          "searchNotes",
+          "createTask",
+          "commentOnGithubIssue"
+        ],
+        "completedGoals": [
+          "List open GitHub issues",
+          "Inspect recent issue details",
+          "Search Obsidian notes for architecture docs",
+          "Create local task to fix issue",
+          "Generate preview for issue comment"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_5step_03",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 7,
+        "toolCalls": 5,
+        "inputTokens": 60810,
+        "outputTokens": 980,
+        "ttft": 320,
+        "latency": 3030.0246,
+        "executedTools": [
+          "webSearch",
+          "fetchPage",
+          "createNote",
+          "saveMemory",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search web for SolidJS 2.0 changes",
+          "Fetch the official blog post page",
+          "Summarize architectural differences",
+          "Create Obsidian note with research",
+          "Save key takeaway to memory",
+          "Create task to evaluate SolidJS in Q4"
+        ],
+        "stepCount": 6,
+        "nudgeCount": 3
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_5step_04",
+        "category": "5-or-more-step",
+        "success": false,
+        "partial": true,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 6,
+        "toolCalls": 4,
+        "inputTokens": 50485,
+        "outputTokens": 860,
+        "ttft": 320,
+        "latency": 2650.026,
+        "executedTools": [
+          "listTasks",
+          "completeTask",
+          "snoozeTask",
+          "listMemories"
+        ],
+        "completedGoals": [
+          "List all tasks",
+          "Complete task 7",
+          "Snooze task 9 to next Monday",
+          "List stored memories"
+        ],
+        "stepCount": 5,
+        "nudgeCount": 3
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_5step_05",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 7,
+        "toolCalls": 5,
+        "inputTokens": 60590,
+        "outputTokens": 920,
+        "ttft": 320,
+        "latency": 2780.1108,
+        "executedTools": [
+          "getCalendarEvents",
+          "getAppleCalendarEvents",
+          "listTasks",
+          "createTask",
+          "sendGmail"
+        ],
+        "completedGoals": [
+          "Fetch Google Calendar events for week",
+          "Fetch Apple Calendar events for week",
+          "List pending tasks",
+          "Identify scheduling conflicts",
+          "Create resolution task",
+          "Draft email preview with availability"
+        ],
+        "stepCount": 6,
+        "nudgeCount": 2
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_01",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0169,
+        "executedTools": [
+          "getCalendarEvents",
+          "webSearch"
+        ],
+        "completedGoals": [
+          "Check Google Calendar events",
+          "Search web for New York weather forecast"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_02",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29625,
+        "outputTokens": 440,
+        "ttft": 320,
+        "latency": 1140.0251,
+        "executedTools": [
+          "getMyOpenIssues",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Fetch GitHub issues",
+          "List local pending tasks"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_03",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": true,
+        "llmCalls": 1,
+        "toolCalls": 0,
+        "inputTokens": 450,
+        "outputTokens": 80,
+        "ttft": 320,
+        "latency": 320.0029,
+        "executedTools": [],
+        "completedGoals": [
+          "Identify underspecified reminder and ask clarifying question"
+        ],
+        "stepCount": 1,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_04",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0129,
+        "executedTools": [
+          "searchNotes",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search Obsidian notes",
+          "Save memory of search"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_05",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 19750,
+        "outputTokens": 320,
+        "ttft": 320,
+        "latency": 760.006,
+        "executedTools": [
+          "sendGmail"
+        ],
+        "completedGoals": [
+          "Detect missing OAuth credentials and provide clear configuration steps"
+        ],
+        "stepCount": 2,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_06",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0082,
+        "executedTools": [
+          "webSearch",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Search web for Hubble updates",
+          "List local tasks"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_07",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 19750,
+        "outputTokens": 320,
+        "ttft": 320,
+        "latency": 760.004,
+        "executedTools": [
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for specific tracking code",
+          "Honestly report 0 results found without hallucinating delivery details"
+        ],
+        "stepCount": 2,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_08",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.0092,
+        "executedTools": [
+          "completeTask",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Handle invalid task ID with clean error",
+          "List remaining tasks"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_09",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": true,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 1,
+        "inputTokens": 10025,
+        "outputTokens": 200,
+        "ttft": 320,
+        "latency": 380.0067,
+        "executedTools": [
+          "deleteTask"
+        ],
+        "completedGoals": [],
+        "stepCount": 1,
+        "nudgeCount": 0
+      },
+      {
+        "architecture": "B_Verifier",
+        "scenarioId": "scen_fail_10",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 4,
+        "toolCalls": 2,
+        "inputTokens": 29845,
+        "outputTokens": 500,
+        "ttft": 320,
+        "latency": 1390.005,
+        "executedTools": [
+          "deleteTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Enforce confirmation safety on bulk deletion",
+          "Create task to buy groceries"
+        ],
+        "stepCount": 3,
+        "nudgeCount": 1
+      }
+    ],
+    "ArchitectureC": [
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_01",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.281,
+        "executedTools": [
+          "webSearch",
+          "webSearch"
+        ],
+        "completedGoals": [
+          "Perform web search on quantum computing 2026",
+          "Summarize findings in 3 bullet points"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_02",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.3912,
+        "executedTools": [
+          "webSearch",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search web for Artemis III scheduled year",
+          "Save the confirmed date into memory"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_03",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0442,
+        "executedTools": [
+          "createTask",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Create task for Q3 financial report",
+          "List tasks to verify creation"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_04",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.079,
+        "executedTools": [
+          "recallMemory",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall preferred programming language from memory",
+          "Create task with the recalled language"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "recallMemory"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_05",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.05219999999997,
+        "executedTools": [
+          "getMyOpenPRs",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch open GitHub PRs",
+          "Create task for reviewing open PR"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getMyOpenPRs"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_06",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0409,
+        "executedTools": [
+          "webSearch",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Search web for productivity frameworks",
+          "Create Obsidian note with research content"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createNote"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_07",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0268,
+        "executedTools": [
+          "searchCalendarEvents",
+          "searchCalendarEvents"
+        ],
+        "completedGoals": [
+          "Search calendar for meetings with Sarah",
+          "Synthesize meeting times from results"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchCalendarEvents"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_08",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0488,
+        "executedTools": [
+          "searchGmail",
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search emails for product launch",
+          "Summarize email contents"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_09",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0148,
+        "executedTools": [
+          "completeTask",
+          "setPreference"
+        ],
+        "completedGoals": [
+          "Mark task 12 completed",
+          "Set preference for hiding completed tasks"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "completeTask"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "setPreference"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_10",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0114,
+        "executedTools": [
+          "listWakeWords",
+          "removeWakeWord"
+        ],
+        "completedGoals": [
+          "List existing wake words",
+          "Remove specified wake word"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "listWakeWords"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "removeWakeWord"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_11",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0131,
+        "executedTools": [
+          "listTasks",
+          "snoozeTask"
+        ],
+        "completedGoals": [
+          "List pending tasks",
+          "Snooze task 5 until tomorrow"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "snoozeTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_12",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0131,
+        "executedTools": [
+          "searchNotes",
+          "appendNote"
+        ],
+        "completedGoals": [
+          "Search Obsidian notes for Project Alpha",
+          "Append milestone update to the note"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchNotes"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "appendNote"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_13",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.01120000000003,
+        "executedTools": [
+          "getUpdatesFeed",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Get recent system updates feed",
+          "Save summary into memory"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getUpdatesFeed"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_14",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0062,
+        "executedTools": [
+          "searchCalendarEvents",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search calendar for dentist appointment",
+          "Create task to buy toothpaste before appointment date"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_15",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0098,
+        "executedTools": [
+          "recallMemory",
+          "searchNotes"
+        ],
+        "completedGoals": [
+          "Recall project code name from memory",
+          "Search Obsidian notes with that code name"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "recallMemory"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchNotes"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_16",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0077,
+        "executedTools": [
+          "getMyOpenPRs",
+          "getMyOpenIssues"
+        ],
+        "completedGoals": [
+          "Fetch open PRs",
+          "Fetch open issues"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getMyOpenPRs"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "getMyOpenIssues"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_17",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0466,
+        "executedTools": [
+          "searchGmail",
+          "readEmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for Stripe emails",
+          "Read specific Stripe invoice email"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "readEmail"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_18",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0312,
+        "executedTools": [
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search web for next solar eclipse date",
+          "Create task with eclipse date"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_19",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0121,
+        "executedTools": [
+          "listSkills",
+          "runSkill"
+        ],
+        "completedGoals": [
+          "List existing skills",
+          "Execute the daily-briefing skill"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "listSkills"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "runSkill"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_2step_20",
+        "category": "2-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0126,
+        "executedTools": [
+          "getTelegramMessages",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Fetch Telegram messages",
+          "Save extracted recommendations to memory"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getTelegramMessages"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_01",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0237,
+        "executedTools": [
+          "searchGmail",
+          "readEmail",
+          "readEmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for finance emails",
+          "Read the specific Q2 Budget email",
+          "Summarize key figures"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "readEmail"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "readEmail"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_02",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0294,
+        "executedTools": [
+          "searchNotes",
+          "appendNote",
+          "readNote"
+        ],
+        "completedGoals": [
+          "Search notes for Reading_List.md",
+          "Append book to note",
+          "Read note to verify update"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchNotes"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "appendNote"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "readNote"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_03",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0174,
+        "executedTools": [
+          "getCalendarEvents",
+          "getCalendarEvents",
+          "getCalendarEvents"
+        ],
+        "completedGoals": [
+          "Get Monday calendar events",
+          "Get Tuesday calendar events",
+          "Compare schedules and synthesize recommendation"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_04",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.015,
+        "executedTools": [
+          "getMyOpenIssues",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch open GitHub issues",
+          "Identify critical-bug issue",
+          "Create local task for that bug"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getMyOpenIssues"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_05",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.083,
+        "executedTools": [
+          "webSearch",
+          "saveMemory",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search web for Node.js 24 LTS release",
+          "Summarize finalized features",
+          "Save release date into memory"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_06",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0115,
+        "executedTools": [
+          "recallMemory",
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall vacation destination from memory",
+          "Search web for attractions in that destination",
+          "Create task to book tickets"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "recallMemory"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_07",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0139,
+        "executedTools": [
+          "listTasks",
+          "completeTask",
+          "completeTask"
+        ],
+        "completedGoals": [
+          "List existing tasks",
+          "Complete the Database Migration task",
+          "List remaining active tasks"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "completeTask"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "completeTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_08",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0136,
+        "executedTools": [
+          "searchGmail",
+          "createTask",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search Gmail for emails from Alex",
+          "Create task to review contract by Thursday",
+          "Save memory about Alex's updated agreement"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_09",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0185,
+        "executedTools": [
+          "getGithubNotifications",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch GitHub notifications",
+          "Inspect PR #42 notification",
+          "Create task to review PR #42"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getGithubNotifications"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_10",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0245,
+        "executedTools": [
+          "getCalendarEvents",
+          "listTasks",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "Get calendar events for tomorrow afternoon",
+          "List tasks due tomorrow",
+          "Cross-reference schedule and identify conflicts"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_11",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0151,
+        "executedTools": [
+          "getUpdatesFeed",
+          "webSearch",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Get updates feed for system errors",
+          "Search web for error fix",
+          "Create task to patch the error"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getUpdatesFeed"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_12",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0204,
+        "executedTools": [
+          "recallMemory",
+          "searchNotes",
+          "createNote"
+        ],
+        "completedGoals": [
+          "Recall note formatting preference from memory/prefs",
+          "Search notes for Architecture",
+          "Create new note Arch_v2.md with preferred format"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "recallMemory"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchNotes"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createNote"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_13",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0245,
+        "executedTools": [
+          "searchGmail",
+          "replyToEmail",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search Gmail for Client X email",
+          "Draft reply preview with confirmed: false",
+          "Create task to follow up on Monday"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "replyToEmail"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_14",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0294,
+        "executedTools": [
+          "getMyOpenIssues",
+          "commentOnGithubIssue",
+          "sendTelegram"
+        ],
+        "completedGoals": [
+          "Fetch issue #101",
+          "Generate issue comment preview",
+          "Draft Telegram notification"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getMyOpenIssues"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "commentOnGithubIssue"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "sendTelegram"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_3step_15",
+        "category": "3-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 3,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 660.0223,
+        "executedTools": [
+          "searchAppleCalendarEvents",
+          "createAppleCalendarEvent",
+          "createAppleCalendarEvent"
+        ],
+        "completedGoals": [
+          "Search Apple Calendar for Friday events",
+          "Analyze free slots between 1 PM and 5 PM",
+          "Draft createAppleCalendarEvent preview"
+        ],
+        "stepCount": 3,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchAppleCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createAppleCalendarEvent"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createAppleCalendarEvent"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_01",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0164,
+        "executedTools": [
+          "searchGmail",
+          "readEmail",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search Gmail for audit email",
+          "Read the audit email",
+          "Summarize 3 action items",
+          "Create task for action items"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "readEmail"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_02",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.1777,
+        "executedTools": [
+          "getMyOpenPRs",
+          "getMyOpenIssues",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "List open PRs",
+          "Fetch related open issue",
+          "Summarize proposed changes",
+          "Create local testing task"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getMyOpenPRs"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "getMyOpenIssues"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_03",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0162,
+        "executedTools": [
+          "recallMemory",
+          "webSearch",
+          "createNote",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Recall framework preference",
+          "Search web for latest release",
+          "Create Obsidian note with update info",
+          "Add task to test it"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "recallMemory"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createNote"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_04",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.012,
+        "executedTools": [
+          "getCalendarEvents",
+          "listTasks",
+          "snoozeTask",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Search calendar events at 3 PM",
+          "List tasks due at 3 PM",
+          "Snooze conflicting task to 6 PM",
+          "Save schedule shift memory"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "snoozeTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_05",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0213,
+        "executedTools": [
+          "getUpdatesFeed",
+          "searchGmail",
+          "readEmail",
+          "replyToEmail"
+        ],
+        "completedGoals": [
+          "Check updates feed",
+          "Search Gmail for error alerts",
+          "Read the latest alert email",
+          "Draft reply preview"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getUpdatesFeed"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "readEmail"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "replyToEmail"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_06",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0175,
+        "executedTools": [
+          "listTasks",
+          "updateTask",
+          "completeTask",
+          "completeTask"
+        ],
+        "completedGoals": [
+          "List existing tasks",
+          "Update task 3 due date",
+          "Mark task 2 completed",
+          "List tasks to verify"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "updateTask"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "completeTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "completeTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_07",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0133,
+        "executedTools": [
+          "searchNotes",
+          "readNote",
+          "webSearch",
+          "appendNote"
+        ],
+        "completedGoals": [
+          "Search notes for TS roadmap",
+          "Read existing note",
+          "Search web for release status",
+          "Append status to note"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchNotes"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "readNote"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "appendNote"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_08",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0196,
+        "executedTools": [
+          "getGithubNotifications",
+          "createGithubIssue",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Check GitHub notifications",
+          "Inspect PR details",
+          "Draft createGithubIssue preview",
+          "Create task to conduct code review"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getGithubNotifications"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createGithubIssue"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_09",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0137,
+        "executedTools": [
+          "getTelegramMessages",
+          "recallMemory",
+          "createNote",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Fetch Telegram messages",
+          "Recall project guidelines from memory",
+          "Create Obsidian note with summary",
+          "Create task to reply tomorrow"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getTelegramMessages"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "recallMemory"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createNote"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_4step_10",
+        "category": "4-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 4,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 880.0182,
+        "executedTools": [
+          "getCalendarEvents",
+          "getAppleCalendarEvents",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Get Google Calendar events",
+          "Get Apple Calendar events",
+          "Compare and identify missing events",
+          "Create task to fix sync"
+        ],
+        "stepCount": 4,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "getAppleCalendarEvents"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_5step_01",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 5,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 1100.0166,
+        "executedTools": [
+          "getCalendarEvents",
+          "getRecentEmails",
+          "listTasks",
+          "getUpdatesFeed",
+          "getUpdatesFeed"
+        ],
+        "completedGoals": [
+          "Fetch today's Google Calendar events",
+          "Fetch recent unread emails",
+          "List pending tasks",
+          "Check system updates feed",
+          "Synthesize unified hourly day plan"
+        ],
+        "stepCount": 5,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "getRecentEmails"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "getUpdatesFeed"
+          },
+          {
+            "id": "step-5",
+            "status": "COMPLETED",
+            "capability": "getUpdatesFeed"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_5step_02",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 5,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 1100.051,
+        "executedTools": [
+          "getMyOpenIssues",
+          "searchNotes",
+          "createTask",
+          "commentOnGithubIssue",
+          "commentOnGithubIssue"
+        ],
+        "completedGoals": [
+          "List open GitHub issues",
+          "Inspect recent issue details",
+          "Search Obsidian notes for architecture docs",
+          "Create local task to fix issue",
+          "Generate preview for issue comment"
+        ],
+        "stepCount": 5,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getMyOpenIssues"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchNotes"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "commentOnGithubIssue"
+          },
+          {
+            "id": "step-5",
+            "status": "COMPLETED",
+            "capability": "commentOnGithubIssue"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_5step_03",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 6,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 1320.1308,
+        "executedTools": [
+          "webSearch",
+          "fetchPage",
+          "createNote",
+          "saveMemory",
+          "createTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Search web for SolidJS 2.0 changes",
+          "Fetch the official blog post page",
+          "Summarize architectural differences",
+          "Create Obsidian note with research",
+          "Save key takeaway to memory",
+          "Create task to evaluate SolidJS in Q4"
+        ],
+        "stepCount": 6,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "fetchPage"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "createNote"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          },
+          {
+            "id": "step-5",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-6",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_5step_04",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 5,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 1100.1153,
+        "executedTools": [
+          "listTasks",
+          "completeTask",
+          "snoozeTask",
+          "listMemories",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "List all tasks",
+          "Complete task 7",
+          "Snooze task 9 to next Monday",
+          "List stored memories",
+          "Save summary memory of progress"
+        ],
+        "stepCount": 5,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "completeTask"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "snoozeTask"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "listMemories"
+          },
+          {
+            "id": "step-5",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_5step_05",
+        "category": "5-or-more-step",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 6,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 1320.0392,
+        "executedTools": [
+          "getCalendarEvents",
+          "getAppleCalendarEvents",
+          "listTasks",
+          "createTask",
+          "sendGmail",
+          "sendGmail"
+        ],
+        "completedGoals": [
+          "Fetch Google Calendar events for week",
+          "Fetch Apple Calendar events for week",
+          "List pending tasks",
+          "Identify scheduling conflicts",
+          "Create resolution task",
+          "Draft email preview with availability"
+        ],
+        "stepCount": 6,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "getCalendarEvents"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "getAppleCalendarEvents"
+          },
+          {
+            "id": "step-3",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          },
+          {
+            "id": "step-4",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          },
+          {
+            "id": "step-5",
+            "status": "COMPLETED",
+            "capability": "sendGmail"
+          },
+          {
+            "id": "step-6",
+            "status": "COMPLETED",
+            "capability": "sendGmail"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_01",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0394,
+        "executedTools": [
+          "getCalendarEvents",
+          "webSearch"
+        ],
+        "completedGoals": [
+          "Search web for New York weather forecast"
+        ],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "getCalendarEvents",
+            "error": "Unauthorized / token refresh failed"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "webSearch"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_02",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0106000000001,
+        "executedTools": [
+          "getMyOpenIssues",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "List local pending tasks"
+        ],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "getMyOpenIssues",
+            "error": "getMyOpenIssues requires authentication token which is not configured"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_03",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": true,
+        "llmCalls": 1,
+        "toolCalls": 0,
+        "inputTokens": 2550,
+        "outputTokens": 350,
+        "ttft": 410,
+        "latency": 410.0018,
+        "executedTools": [],
+        "completedGoals": [
+          "Identify underspecified reminder and ask clarifying question"
+        ],
+        "stepCount": 1,
+        "replanCount": 0
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_04",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0128,
+        "executedTools": [
+          "searchNotes",
+          "saveMemory"
+        ],
+        "completedGoals": [
+          "Save memory of search"
+        ],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "searchNotes",
+            "error": "Service unavailable or internal server error"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "saveMemory"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_05",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0067,
+        "executedTools": [
+          "sendGmail"
+        ],
+        "completedGoals": [],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "sendGmail",
+            "error": "sendGmail requires authentication token which is not configured"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_06",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0076,
+        "executedTools": [
+          "webSearch",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "List local tasks"
+        ],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "webSearch",
+            "error": "Request timed out after 10000ms"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_07",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 440.0107,
+        "executedTools": [
+          "searchGmail",
+          "searchGmail"
+        ],
+        "completedGoals": [
+          "Search Gmail for specific tracking code",
+          "Honestly report 0 results found without hallucinating delivery details"
+        ],
+        "stepCount": 2,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "searchGmail"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_08",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": true,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 2,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0101,
+        "executedTools": [
+          "completeTask",
+          "listTasks"
+        ],
+        "completedGoals": [
+          "List remaining tasks"
+        ],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "completeTask",
+            "error": "Invalid parameter: expected integer id"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "listTasks"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_09",
+        "category": "failure-ambiguity",
+        "success": false,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 3550,
+        "outputTokens": 700,
+        "ttft": 410,
+        "latency": 520.0077,
+        "executedTools": [
+          "deleteTask"
+        ],
+        "completedGoals": [],
+        "stepCount": 1,
+        "replanCount": 1,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "BLOCKED_WITH_REASON",
+            "capability": "deleteTask",
+            "error": "Entity not found"
+          }
+        ]
+      },
+      {
+        "architecture": "C_PlannerExecutor",
+        "scenarioId": "scen_fail_10",
+        "category": "failure-ambiguity",
+        "success": true,
+        "partial": false,
+        "prematureTermination": false,
+        "wrongTools": 0,
+        "unnecessaryTools": 0,
+        "validArguments": true,
+        "duplicateMutations": 0,
+        "hallucinatedSuccess": false,
+        "clarificationCorrect": false,
+        "llmCalls": 2,
+        "toolCalls": 2,
+        "inputTokens": 3150,
+        "outputTokens": 550,
+        "ttft": 410,
+        "latency": 220.0052,
+        "executedTools": [
+          "deleteTask",
+          "createTask"
+        ],
+        "completedGoals": [
+          "Enforce confirmation safety on bulk deletion",
+          "Create task to buy groceries"
+        ],
+        "stepCount": 1,
+        "replanCount": 0,
+        "planSteps": [
+          {
+            "id": "step-1",
+            "status": "COMPLETED",
+            "capability": "deleteTask"
+          },
+          {
+            "id": "step-2",
+            "status": "COMPLETED",
+            "capability": "createTask"
+          }
+        ]
+      }
+    ]
+  }
+}

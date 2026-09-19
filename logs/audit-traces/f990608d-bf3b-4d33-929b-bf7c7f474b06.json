@@ -1,0 +1,52 @@
+{
+  "traceId": "f990608d-bf3b-4d33-929b-bf7c7f474b06",
+  "testName": "C2_Create_Task",
+  "expectedTools": [
+    "createTask"
+  ],
+  "expectedBehavior": "",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Remind me to submit the tax return by next Friday at 5pm."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789718968646,
+    "REQUEST_SENT": 1789718968646,
+    "SERVER_RECEIVED": 1789719011988,
+    "SSE_FIRST_CHUNK": 1789719011996,
+    "FINAL_GENERATION_END": 1789719057128
+  },
+  "toolInvocations": [
+    {
+      "toolName": "createTask",
+      "toolCallId": "fc_62617a47-f4f8-4241-a69d-fcb78d5bfe5f",
+      "args": {
+        "title": "Submit tax return",
+        "notes": "Submit tax return",
+        "dueAt": "2026-09-25T17:00:00+00:00",
+        "remindAt": "2026-09-25T17:00:00+00:00"
+      },
+      "timestamp": 1789719012106
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "fc_62617a47-f4f8-4241-a69d-fcb78d5bfe5f",
+      "output": {
+        "id": 22,
+        "title": "Submit tax return",
+        "status": "open"
+      },
+      "timestamp": 1789719012137
+    }
+  ],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "groq",
+  "error": "Groq GPT-OSS 20B stalled (no response for 45s)",
+  "totalLatencyMs": 88478,
+  "pass": false,
+  "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+}

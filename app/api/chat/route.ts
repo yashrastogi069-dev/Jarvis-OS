@@ -39,7 +39,20 @@ export async function POST(request: Request) {
     )
   }
 
-  const messages = (parsed.data.messages as unknown as UIMessage[]).slice(-MAX_MESSAGES)
+  const rawMessages = parsed.data.messages.slice(-MAX_MESSAGES)
+  const messages: UIMessage[] = rawMessages.map((m, idx) => {
+    const id = typeof m.id === "string" && m.id.trim() ? m.id : `msg-${Date.now()}-${idx}`
+    const role = (m.role === "assistant" || m.role === "user") ? m.role : "user"
+    if (Array.isArray(m.parts)) {
+      return { ...m, id, role } as unknown as UIMessage
+    }
+    const content = typeof m.content === "string" ? m.content : ""
+    return {
+      id,
+      role,
+      parts: [{ type: "text", text: content }],
+    } as unknown as UIMessage
+  })
 
   const sessionId = parsed.data.sessionId ?? createSession()
 
@@ -80,6 +93,7 @@ export async function POST(request: Request) {
   try {
     const response = await streamOsAgentResponse(messages, {
       extraContext,
+      signal: request.signal,
       onSessionPersist: ({ text, brain, uiParts }) => {
         try {
           appendMessage(sessionId, "assistant", text, { uiParts, brain: brain ?? undefined })

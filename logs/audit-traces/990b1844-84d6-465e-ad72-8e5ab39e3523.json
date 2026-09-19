@@ -1,0 +1,117 @@
+{
+  "traceId": "990b1844-84d6-465e-ad72-8e5ab39e3523",
+  "testName": "C3_Web_Search",
+  "expectedTools": [
+    "webSearch"
+  ],
+  "expectedBehavior": "Calls webSearch with query",
+  "messages": [
+    {
+      "id": "audit-1789717875187",
+      "role": "user",
+      "content": "Search the web: what is the latest stable version of Next.js?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789717875187,
+    "REQUEST_SENT": 1789717875187,
+    "SERVER_RECEIVED": 1789717885355,
+    "SSE_FIRST_CHUNK": 1789717885366,
+    "FINAL_GENERATION_END": 1789717933032
+  },
+  "toolInvocations": [
+    {
+      "toolName": "webSearch",
+      "toolCallId": "fc_b484356b-4f20-44b1-869d-8b9cda65a9c4",
+      "args": {
+        "query": "latest stable version of Next.js"
+      },
+      "timestamp": 1789717885435
+    },
+    {
+      "toolName": "webSearch",
+      "toolCallId": "fc_d0b5beb0-2393-4d89-b040-fa221ddd6e9b",
+      "args": {
+        "query": "Next.js latest stable version 2026"
+      },
+      "timestamp": 1789717930420
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "fc_b484356b-4f20-44b1-869d-8b9cda65a9c4",
+      "output": {
+        "source": "tavily",
+        "results": [
+          {
+            "title": "Next.js by Vercel - The React Framework",
+            "url": "https://nextjs.org/blog",
+            "snippet": "App Router (Stable)\n Turbopack (Beta)\n Server Actions (Alpha)\n\nRead More\n\nApril 6th, 2023\n\nNext.js 13.3\n\nNext.js 13.3 adds popular community-requested features and is the last release before the App Router is stable, including:\n\n File-Based Metadata API\n Dynamic Open Graph Images\n Static Export for App Router\n Parallel Routes and Interception\n\nRead More\n\nFebruary 23rd, 2023\n\n+1\n\nNext.js 13.2\n\nNext.js 13.2 includes major improvements to the App Router (`app`) in preparation for stability: [...] Next.js 15 RC\n\nThe Next.js 15 Release Candidate (RC) is now available. This early version allows you to test the latest features before the upcoming stable release.\n\n React RC\n Caching defaults changes\n Incremental Partial Prerendering adoption\n next/after (Experimental)\n New create-next-app design\n Bundling external packages (Stable)\n\nRead More\n\nApril 11th, 2024\n\nNext.js 14.2\n\nNext.js 14.2 includes development, production, and caching improvements. [...] Read More\n\nAugust 18th, 2025\n\nNext.js 15.5\n\nNext.js 15.5 includes Turbopack builds in beta, stable Node.js middleware, TypeScript improvements, `next lint` deprecation, and deprecation warnings for Next.js 16. Highlights for this release include:"
+          },
+          {
+            "title": "Current recommended version? : r/nextjs",
+            "url": "https://www.reddit.com/r/nextjs/comments/1p6mipm/current_recommended_version",
+            "snippet": "Skip to main contentCurrent recommended version? : r/nextjs\n\nOpen menu Open navigation which currently runs 14.2.3.\n\nI know the latest version is 16.0.4 but is it stable? Has anyone had an issue with upgrading? Worried about breaking other dependencies - tossing up whether to go to 15 or straight to 16, or better to wait for 16.1.\n\n Share \n\nImage 2: u/Roblox avatarRoblox•Ad\n\nOs melhores jogos de esporte são jogados juntos. Monte seu time com amigos e conquiste vitórias épicas.\n\nPlay Now [...] Sort by: \n\nBest\n\nOpen comment sort options\n\n   Best \n   Top \n   New \n   Controversial \n   Old \n   Q&A \n\n# Comments Section\n\n, etc, while 15->16 was pretty minor, mainly changes to linting configuration\n\n[](\n\nLast-Daikon945\n\n•10mo ago\n\nHello from ver 13 Page router 😃\n\n[](\n\nAlexDjangoX\n\n•10mo ago\n\nOn a monolithic, multi-tenant application I upgraded:\n\nNextJS 14 to NextJS 16. Clerk 5 to Clerk 6. Tailwind 3 to Tailwind 4. Prisma 6 to Prisma 7. Also bumped up Lexical editor to latest. Why not? [...] •10mo ago\n\nMy experience... Don't go to v16.... Stick to v15 max and wait for v16 to be more stable for production...\n\n[Edit] you'll have to do enough code sorting with v15 from your current version if your project is medium sized or larger\n\n[](\n\nnlvogel\n\n•10mo ago"
+          },
+          {
+            "title": "A newer version is available | Next.js",
+            "url": "https://nextjs.org/docs/messages/version-staleness",
+            "snippet": "Stale (patch or minor): A newer stable release is available with bug fixes or new features.\n Stale (prerelease): You are on a canary release and a newer canary is available. Canary versions are published frequently, so this is expected.\n Outdated (major): Your installed version is behind by a major version. Upgrading is recommended to get security fixes and new features.\n\n## Upgrading\n\nLatest stable version:\n\nTo upgrade to the latest stable release: [...] ```\npnpm add next@latest pnpm  add  next@latest\n```\n\nTo upgrade to the latest canary release:\n\nTerminal\n\n```\npnpm add next@canary pnpm  add  next@canary\n```\n\nIf you are coming from an older major version, check out the upgrade guides.\n\n## Contributing\n\nNext.js is open source and welcomes contributions. If you have identified a bug and want to fix it yourself, see the contributing guide or watch How to Contribute to Open Source (Next.js) to get started. [...] Skip to content\n\n# A newer version is available\n\n## What this notice means\n\nThe development overlay shows that your installed version of Next.js is not the latest available. During development, Next.js checks the npm registry and compares your installed version against the latest release. If a newer version is available, Next.js displays a notice in the overlay.\n\nNewer versions contain bug fixes and improved error tracing capabilities. Upgrade before investigating further."
+          },
+          {
+            "title": "Progress Unveils Native Next.js Support in Sitefinity, Offering Maximum Flexibility to Create and Scale Digital Experiences",
+            "url": "https://finance.yahoo.com/news/progress-unveils-native-next-js-140000162.html",
+            "snippet": "BURLINGTON, Mass., Nov. 21, 2024 (GLOBE NEWSWIRE) -- Progress (Nasdaq: PRGS), the trusted provider of AI-powered infrastructure software, today announced new powerful capabilities and enhancements in the latest release of Progress® Sitefinity®. With this release, Sitefinity introduces native support for Next.js, a React framework, enabling organizations to leverage one of the fastest growing frontend frameworks for developers to create modern, state-of-the-art digital experiences. [...] Latest Sitefinity release offers out-of-the-box native support for Next.js and Gen AI-powered content workflows--accelerating the delivery of digital experiences [...] Additional Sitefinity 15.2 highlights include:"
+          },
+          {
+            "title": "Getting Started: Installation | Next.js",
+            "url": "https://nextjs.org/docs/app/getting-started/installation",
+            "snippet": "Keep your Next.js version up to date. Each release ships security patches, bug fixes, and performance optimizations alongside new features, and staying current keeps every individual upgrade small. Run the `upgrade` command:\n\nTerminal\n\n```\npnpm next upgrade pnpm  next  upgrade\n``` [...] > Good to know:\n>\n>  The `App Router` uses React canary releases built-in, which include all the stable React 19 changes, as well as newer features being validated in frameworks, but you should still declare react and react-dom in package.json for tooling and ecosystem compatibility.\n>  The `Pages Router` uses the React version from your `package.json`.\n\nThen, add the following scripts to your `package.json` file:\n\npackage.json [...] Skip to content\n\nNextjsLogotypeNextjsLogotype\n\n to guide coding agents to write up-to-date Next.js code.\n\n## System requirements\n\nBefore you begin, make sure your development environment meets the following requirements:\n\n Minimum Node.js version: 20.9\n Operating systems: macOS, Windows (including WSL), and Linux.\n\n## Supported browsers\n\nNext.js supports modern browsers with zero configuration.\n\n Chrome 111+\n Edge 111+\n Firefox 111+\n Safari 16.4+"
+          }
+        ]
+      },
+      "timestamp": 1789717887870
+    },
+    {
+      "toolCallId": "fc_d0b5beb0-2393-4d89-b040-fa221ddd6e9b",
+      "output": {
+        "source": "tavily",
+        "results": [
+          {
+            "title": "Next.js by Vercel - The React Framework",
+            "url": "https://nextjs.org/blog",
+            "snippet": "Security\n\nUpdate: August Next.js Security Release\n\nNext.js is moving the August security release forward to August 25, 2026.\n\n The release includes Next.js 16.3.3 and 15.5.24.\n It will address two critical severity vulnerabilities.\n\nRead More\n\nAugust 20th, 2026\n\nSecurity\n\nUpcoming Next.js August Security Release\n\nNext.js is preparing a scheduled security release for August 26, 2026.\n\n The release includes patches for Next.js 16.3 and 15.5.\n It will address one critical severity vulnerability. [...] Server Fast Refresh: Fine-grained server-side hot reloading\n Web Worker Origin: Increasing support for WASM libraries in Workers\n Subresource Integrity Support: Subresource Integrity for JavaScript files\n Tree Shaking of Dynamic Imports: Unused exports removed from dynamic `import()`\n Performance Improvements and Bug Fixes: Over 200 changes and bug fixes\n\nRead More\n\nMarch 18th, 2026\n\nNext.js 16.2\n\nNext.js 16.2 is now available. Highlights include: [...] Next.js runs across platforms. 16.2 brings a stable Adapter API, shared tests, and a new model of collaboration across providers.\n\nRead More\n\nMarch 18th, 2026\n\nNext.js 16.2: AI Improvements\n\nAI improvements shipping with Next.js 16.2:"
+          },
+          {
+            "title": "July 2026 Security Release",
+            "url": "https://nextjs.org/blog/july-2026-security-release",
+            "snippet": "These fixes are also available in the latest Next.js 16.3 canary (`v16.3.0-canary.92`) and preview (`v16.3.0-preview.7`) releases, and will be included in `v16.3.0` once it reaches a stable release.\n\nTerminal\n\n```\nnpm install next@16.3.0-canary.92 # canary npm  install next@16.3.0-canary.92  # canarynpm install next@16.3.0-preview.7 # preview npm  install next@16.3.0-preview.7  # preview\n```\n\n## Impact\n\n### Denial of Service in App Router using Server Actions (High Severity)\n\nCVE-2026-64641 [...] Skip to content\n\nNextjsLogotypeNextjsLogotype\n\n and v15.5.21 (Maintenance LTS) to address these issues. Please patch your Next.js dependencies to maintain the security of your applications.\n\nTerminal\n\n```\nnpm install next@15.5.21 # for 15.5 npm  install next@15.5.21 # for 15.5npm install next@16.2.11 # for 16.2 npm  install next@16.2.11 # for 16.2\n``` [...] CVE-2026-64642\n\nNext.js applications using App Router built with Turbopack and a single entry in `config.i18n.locales` are vulnerable to a middleware/proxy bypass. Accordingly, any authentication or security checks that a middleware/proxy may perform are bypassed.\n\n### Server-Side Request Forgery in rewrites via attacker-controlled destination hostname (High Severity)\n\nCVE-2026-64645"
+          },
+          {
+            "title": "Next.js - endoflife.date",
+            "url": "https://endoflife.date/nextjs",
+            "snippet": "| Release | Released | Security Support | Latest |\n ---  --- |\n| 16 (LTS) | 10 months ago (22 Oct 2025) | Yes | 16.3.1 (13 Aug 2026) |\n| 15 (LTS) | 1 year and 10 months ago (21 Oct 2024) | Ends in 2 months (21 Oct 2026) | 15.5.23 (06 Aug 2026) |\n| 14 (LTS) | 2 years and 10 months ago (26 Oct 2023) | Ended 9 months ago (26 Oct 2025) | 14.2.35 (11 Dec 2025) |\n| 13 | 3 years and 10 months ago (25 Oct 2022) | Ended 1 year and 8 months ago (21 Dec 2024) | 13.5.11 (27 Mar 2025) |"
+          },
+          {
+            "title": "Latest Stable News - (STABLE) Future Outlook, Trends & Market Insights",
+            "url": "https://coinmarketcap.com/cmc-ai/stable/latest-updates",
+            "snippet": "1.   Mainnet v1.8.0 Upgrade (26 August 2026) – Introduces parallel execution and guaranteed blockspace for higher throughput and predictable payments.\n\n2.   Mainnet v1.3.0 Upgrade (13 May 2026) – A mandatory security-focused upgrade that tightens transaction validation and RPC safety.\n\n3.   Mainnet v1.2.0 Upgrade (4 February 2026) – Simplified user experience by making USDT0 the native gas asset and improved developer observability.\n\n## Deep Dive\n\n### 1. Mainnet v1.8.0 Upgrade (26 August 2026) [...] What this means: This is bullish for STABLE because it directly strengthens the network's core value proposition for enterprise payments. Users will experience more consistent transaction speeds and lower chances of delays during busy periods, making Stable a more reliable settlement layer for critical financial activity. (Source)\n\n### 2. Mainnet v1.3.0 Upgrade (13 May 2026) [...] What this means: This is neutral to bullish for STABLE. While it doesn't add new features, it significantly reduces technical risks and edge-case failures. This enhances the network's production-grade reliability, which is crucial for attracting and retaining institutional partners and complex dApps. (Source)\n\n### 3. Mainnet v1.2.0 Upgrade (4 February 2026)"
+          },
+          {
+            "title": "Next.js - 2026 Company Profile, Team, Funding, Competitors & Financials - Tracxn",
+            "url": "https://tracxn.com/d/companies/next.js/__mJaaYH12LOUkxv6UShkT6DRt0J0bc55TjwK1INYxzVs",
+            "snippet": "Next.js has raised funding over 5 rounds. Its first funding round was on May 01, 2021. Its latest funding round was a Grant (prize money) round on Feb 01, 2022 for  $\\\\\\\\\\. 1 investor participated in its latest round.  Next.js has 1 institutional investor.\n\nlock [...] | 6th | Logo for Leaflet  Leaflet 2012, Panama City  (Panama), Unfunded | JavaScript library for interactive maps  - | 31/100 |\n| 7th | Logo for SIX LABORS  SIX LABORS 2017, Birkenhead  (United Kingdom), Unfunded | Provider of cross-platform graphics processing libraries  - | 27/100 |\n| 8th | Logo for Appscio  Appscio 2006, Freedom  (United States), Deadpooled | Open source media processing framework | $5M | In-Q-Tel, Red Rock Ventures  & 1 others | 27/100 | [...] | Legal Entity Name | Date of Incorporation | Revenue | Latest Employee Count | Documents |\n ---  --- \n| JS Route CIN: 40003761060 , Latvia, Active | Aug 11, 2005 | €0 - €1M (As on Dec 31, 2024) | 3 (As on Dec 31, 2022) \n| Next Project CIN: 40103435521 , Latvia, Deadpooled | Jul 08, 2011 | €0 - €1M (As on Dec 31, 2018) | 3 (As on Dec 31, 2018) \n\nPDF Illustration Image\n\n## Next.js's funding and investors"
+          }
+        ]
+      },
+      "timestamp": 1789717932734
+    }
+  ],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "groq",
+  "error": "An error occurred.",
+  "totalLatencyMs": 57839,
+  "pass": false,
+  "failureReason": "Stream error: An error occurred."
+}

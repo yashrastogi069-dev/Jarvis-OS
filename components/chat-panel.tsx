@@ -27,6 +27,11 @@ export function ChatPanel({
         .map((part) => part.text)
         .join(' ')
     : ''
+  // The voice controller needs the message *identity*, not just its text: until
+  // a new turn's reply starts streaming, lastAssistantMessage is still the
+  // PREVIOUS turn's reply, and without an id to distinguish them the previous
+  // answer gets re-spoken on the next turn (the "voice is one reply behind" bug).
+  const latestAssistantMessageId = lastAssistantMessage?.id ?? null
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
@@ -166,6 +171,7 @@ export function ChatPanel({
           onSendMessage={(text) => sendMessage({ text, metadata: { voice: true } })}
           isAssistantStreaming={busy}
           latestAssistantText={latestAssistantText}
+          latestAssistantMessageId={latestAssistantMessageId}
         />
         <button
           type="submit"

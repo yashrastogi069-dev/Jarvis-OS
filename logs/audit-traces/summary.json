@@ -1,0 +1,370 @@
+{
+  "results": [
+    {
+      "category": "A. Conversation",
+      "testName": "A1_Greeting",
+      "prompt": "Hello Jarvis.",
+      "expectedTools": [],
+      "expectedBehavior": "Polite concise greeting, no tools invoked",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [],
+      "brain": "gemini",
+      "latencyMs": 5028,
+      "fullText": "Hello! How can I help you today?",
+      "error": null,
+      "traceId": "748b6486-e770-479b-a465-0383f0054f39"
+    },
+    {
+      "category": "A. Conversation",
+      "testName": "A2_General_Question",
+      "prompt": "What is 25 * 4?",
+      "expectedTools": [],
+      "expectedBehavior": "Direct answer 100, no tools",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [],
+      "brain": "gemini",
+      "latencyMs": 3254,
+      "fullText": "25 * 4 = 100",
+      "error": null,
+      "traceId": "f0f6cf60-c9c3-48e4-b0d5-a02cb6a8c49e"
+    },
+    {
+      "category": "A. Conversation",
+      "testName": "A3_Project_Explanation",
+      "prompt": "Explain what this project does in two sentences.",
+      "expectedTools": [],
+      "expectedBehavior": "Explains Agentic OS concisely, no tools",
+      "pass": false,
+      "failureReason": "Over-triggered tools: expected none, got [searchNotes, listMemories, getUpdatesFeed]",
+      "actualTools": [
+        "searchNotes",
+        "listMemories",
+        "getUpdatesFeed"
+      ],
+      "brain": "gemini",
+      "latencyMs": 22837,
+      "fullText": "Agentic OS is a local-first personal AI operating system that unifies your email, calendar, tasks, notes, GitHub, and messaging services into a central intelligence hub. It leverages long-term memory and tool integrations to manage schedules, track context, and execute daily personal and software workflows directly from your local machine.",
+      "error": null,
+      "traceId": "4aab07fb-eadd-450a-91f0-8fe5635ac372"
+    },
+    {
+      "category": "B. Intent Recognition",
+      "testName": "B1_Direct_Remember",
+      "prompt": "Remember that I prefer dark roast coffee.",
+      "expectedTools": [
+        "saveMemory"
+      ],
+      "expectedBehavior": "Calls saveMemory with dark roast preference",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "saveMemory"
+      ],
+      "brain": "groq",
+      "latencyMs": 47216,
+      "fullText": "Memory saved.",
+      "error": null,
+      "traceId": "87b9f8e9-e5a7-4f00-90d9-127e57aa0dfd"
+    },
+    {
+      "category": "B. Intent Recognition",
+      "testName": "B2_Casual_KeepInMind",
+      "prompt": "Keep in mind that my dog's name is Buster.",
+      "expectedTools": [
+        "saveMemory"
+      ],
+      "expectedBehavior": "Calls saveMemory with dog's name",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "saveMemory"
+      ],
+      "brain": "gemini",
+      "latencyMs": 7265,
+      "fullText": "I've noted that your dog's name is Buster.",
+      "error": null,
+      "traceId": "f8412fa1-dd33-4cb1-bd5f-c8332f08d590"
+    },
+    {
+      "category": "B. Intent Recognition",
+      "testName": "B3_NoteDown_Fact",
+      "prompt": "Please note down: I work as a systems engineer.",
+      "expectedTools": [
+        "saveMemory"
+      ],
+      "expectedBehavior": "Calls saveMemory with profession",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "saveMemory"
+      ],
+      "brain": "gemini",
+      "latencyMs": 5507,
+      "fullText": "Saved to long-term memory: \"User works as a systems engineer.\"",
+      "error": null,
+      "traceId": "ddeef494-dd65-4837-9dbf-467421880dcf"
+    },
+    {
+      "category": "C. Single Tool",
+      "testName": "C1_List_Tasks",
+      "prompt": "What tasks do I have open right now?",
+      "expectedTools": [
+        "listTasks"
+      ],
+      "expectedBehavior": "Calls listTasks",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "listTasks"
+      ],
+      "brain": "gemini",
+      "latencyMs": 8631,
+      "fullText": "You have 12 open tasks:\n\n1. **Check email** (ID: 3) – Recurs weekdays at 8:00 AM\n2. **Meeting: New Consultation** (ID: 4) – Notes: Yash Rastogi (Zoho Meet link attached)\n3. **Buy milk** (ID: 21)\n4. **Submit tax return** (ID: 20) – Due: Sept 25, 2026, 5:00 PM\n5. **Submit tax return** (ID: 22) – Due: Sept 25, 2026, 10:30 PM\n\n**Recurring Audit Tasks:**\n- Audit Task 1789645045938 (ID: 6)\n- Audit Task 1789645130952 (ID: 8)\n- Audit Task 1789645149859 (ID: 10)\n- Audit Task 1789645314600 (ID: 12)\n- Audit Task 1789645367038 (ID: 14)\n- Audit Task 1789645700513 (ID: 17)\n- Audit Task 1789717128858 (ID: 19)",
+      "error": null,
+      "traceId": "d2c7772c-d470-42bb-afe6-03c52955a444"
+    },
+    {
+      "category": "C. Single Tool",
+      "testName": "C2_Create_Task",
+      "prompt": "Remind me to submit the tax return by next Friday at 5pm.",
+      "expectedTools": [
+        "createTask"
+      ],
+      "expectedBehavior": "Calls createTask with due date and title",
+      "pass": false,
+      "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)",
+      "actualTools": [
+        "createTask"
+      ],
+      "brain": "groq",
+      "latencyMs": 61818,
+      "fullText": "",
+      "error": "Groq GPT-OSS 20B stalled (no response for 45s)",
+      "traceId": "de034f9a-0abb-4609-8065-d115f88f03f9"
+    },
+    {
+      "category": "C. Single Tool",
+      "testName": "C3_Web_Search",
+      "prompt": "Search the web: what is the latest stable version of Next.js?",
+      "expectedTools": [
+        "webSearch"
+      ],
+      "expectedBehavior": "Calls webSearch with query",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "webSearch",
+        "webSearch",
+        "webSearch"
+      ],
+      "brain": "gemini",
+      "latencyMs": 20469,
+      "fullText": "As of late August / September 2026:\n\n* **Latest Stable Version:** **`v16.3.3`** (released August 25, 2026)\n* **Active Major Line:** **Next.js 16** (Active LTS)\n* **Maintenance Line:** **`v15.5.24`** (Maintenance LTS)\n\nIf you're using `npm` or `pnpm`, you can install or upgrade to the latest stable release with:\n\n```bash\npnpm add next@latest react@latest react-dom@latest\n```",
+      "error": null,
+      "traceId": "32c422f9-9e66-4c20-8442-0e2d60258f8b"
+    },
+    {
+      "category": "C. Single Tool",
+      "testName": "C4_Recall_Memory",
+      "prompt": "What do you remember about my coffee preference?",
+      "expectedTools": [
+        "recallMemory"
+      ],
+      "expectedBehavior": "Calls recallMemory or listMemories",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "recallMemory"
+      ],
+      "brain": "gemini",
+      "latencyMs": 7387,
+      "fullText": "I remember that you prefer **dark roast coffee**.",
+      "error": null,
+      "traceId": "1671e05a-22d7-49f1-a7ae-b5d452c4a214"
+    },
+    {
+      "category": "C. Single Tool",
+      "testName": "C5_Updates_Feed",
+      "prompt": "Brief me: what are the recent updates on my feed?",
+      "expectedTools": [
+        "getUpdatesFeed"
+      ],
+      "expectedBehavior": "Calls getUpdatesFeed",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "getUpdatesFeed"
+      ],
+      "brain": "groq",
+      "latencyMs": 50545,
+      "fullText": "**Feed updates (latest 5)**  \n\n| # | Source | Title | From | Date |\n|---|--------|-------|------|------|\n| 229 | Gmail | *Personal Assistant at PPP group limited and 8 more new jobs* | Indeed | 23 Jul 2026 14:02 |\n| 230 | Gmail | *Finding Alpha: What's Worth Consuming in the Age of AI* | Building a Second Brain | 23 Jul 2026 13:13 |\n| 231 | Gmail | *blurry to sharp* | Actionable AI | 23 Jul 2026 13:02 |\n| 232 | Gmail | *Hurry!! Enhance Your Skills with NPTEL+ Certified Masterclass – Negotiation and AI Practical Business* | NPTEL | 23 Jul 2026 09:50 |\n| 233 | Gmail | *The real reason AI disappoints most people* | Justyn The AI Guy | 23 Jul 2026 07:23 |\n\nNo other feeds (GitHub, Obsidian, calendar, etc.) have new events beyond the above five emails. Let me know if you’d like details on any of these or a different set of updates.",
+      "error": null,
+      "traceId": "f0e64ca6-0565-4f0a-87ed-f71bffebe840"
+    },
+    {
+      "category": "C. Single Tool",
+      "testName": "C6_List_Skills",
+      "prompt": "What skills are currently registered in the system?",
+      "expectedTools": [
+        "listSkills"
+      ],
+      "expectedBehavior": "Calls listSkills",
+      "pass": false,
+      "failureReason": "Stream error: An error occurred.",
+      "actualTools": [
+        "listSkills"
+      ],
+      "brain": "gemini",
+      "latencyMs": 11491,
+      "fullText": "",
+      "error": "An error occurred.",
+      "traceId": "65e16a1d-ca62-4b6a-adb4-b14951e49806"
+    },
+    {
+      "category": "D. Multi-Tool",
+      "testName": "D1_Create_Verify_Task",
+      "prompt": "Create a task called 'Buy milk', and then list my open tasks to confirm it was created.",
+      "expectedTools": [
+        "createTask",
+        "listTasks"
+      ],
+      "expectedBehavior": "Calls createTask, then listTasks sequentially",
+      "pass": false,
+      "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)",
+      "actualTools": [
+        "createTask",
+        "listTasks"
+      ],
+      "brain": "groq",
+      "latencyMs": 123380,
+      "fullText": "",
+      "error": "Groq GPT-OSS 20B stalled (no response for 45s)",
+      "traceId": "48e066f3-4b6a-4c09-bad6-32bdcf45d7b8"
+    },
+    {
+      "category": "D. Multi-Tool",
+      "testName": "D2_Search_And_Save",
+      "prompt": "Find the release date of Next.js 15 on the web, and save that date into my long-term memory.",
+      "expectedTools": [
+        "webSearch",
+        "saveMemory"
+      ],
+      "expectedBehavior": "Calls webSearch, then saveMemory with found date",
+      "pass": false,
+      "failureReason": "Under-triggered: expected [webSearch, saveMemory], got [webSearch]",
+      "actualTools": [
+        "webSearch"
+      ],
+      "brain": "groq",
+      "latencyMs": 11937,
+      "fullText": "",
+      "error": "An error occurred.",
+      "traceId": "2b7e7809-651a-4595-bd38-610d43daecb8"
+    },
+    {
+      "category": "E. Unavailable Tool",
+      "testName": "E1_GitHub_Notifications_NoKey",
+      "prompt": "Check my GitHub notifications.",
+      "expectedTools": [
+        "getGithubNotifications"
+      ],
+      "expectedBehavior": "Invokes tool, catches missing token, informs user GITHUB_TOKEN is required",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [
+        "getGithubNotifications"
+      ],
+      "brain": "groq",
+      "latencyMs": 78715,
+      "fullText": "I don’t have permission to read your GitHub notifications.  \nAdd a GitHub personal access token to the `.env.local` file (or set `GITHUB_TOKEN` in the environment) and I can fetch them for you.",
+      "error": null,
+      "traceId": "eba82384-8747-442d-bd3f-bfec66df1c2b"
+    },
+    {
+      "category": "E. Unavailable Tool",
+      "testName": "E2_Obsidian_Notes_NoVault",
+      "prompt": "Read my Obsidian note titled 'Daily.md'.",
+      "expectedTools": [
+        "readNote"
+      ],
+      "expectedBehavior": "Invokes tool, catches unconfigured Obsidian, informs user plainly",
+      "pass": false,
+      "failureReason": "Stream error: An error occurred.",
+      "actualTools": [
+        "readNote"
+      ],
+      "brain": "gemini",
+      "latencyMs": 15317,
+      "fullText": "",
+      "error": "An error occurred.",
+      "traceId": "4cbfd2f6-bd43-4324-b86c-99a15280734d"
+    },
+    {
+      "category": "F. Adversarial No-Tool",
+      "testName": "F1_Task_Topic_Discussion",
+      "prompt": "I am writing a blog post about how people organize tasks and reminders. Can you suggest 3 engaging talking points?",
+      "expectedTools": [],
+      "expectedBehavior": "No createTask or listTasks called; provides discussion outline",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [],
+      "brain": "groq",
+      "latencyMs": 30080,
+      "fullText": "1. **The “Two‑Lists” Myth** – Explore why many productivity systems claim you only need a *to‑do* list and a *waiting‑for* list, and examine real‑world scenarios where that model breaks down.  \n\n2. **Context‑Based vs. Time‑Based Organization** – Contrast habit‑driven, location‑or‑moment triggers (e.g., “when I’m in the kitchen”) with strict calendar blocks, and show how blending the two can reduce overwhelm and boost focus.  \n\n3. **Digital “Mind‑Dump” vs. Physical Brain‑Dump** – Compare the psychological benefits of jotting everything on a paper notebook versus instantly capturing it in a digital task manager, and discuss hybrid workflows that keep the speed of handwriting with the power of search.",
+      "error": null,
+      "traceId": "146acde7-4c12-450f-b955-726fade70602"
+    },
+    {
+      "category": "F. Adversarial No-Tool",
+      "testName": "F2_Poem_About_Memory",
+      "prompt": "Write a short 4-line poem about human memory.",
+      "expectedTools": [],
+      "expectedBehavior": "No memory tools called; writes poem",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [],
+      "brain": "groq",
+      "latencyMs": 44322,
+      "fullText": "Memory's fleeting ink writes tales in silent rooms—  \nIt holds the laughter, stains the quiet gloom.  \nLike tides of thought that rise and softly fall,  \nEach fleeting wave remembers one and all.",
+      "error": null,
+      "traceId": "2c350cbf-da84-4d38-88fc-df4b1a14a969"
+    },
+    {
+      "category": "F. Adversarial No-Tool",
+      "testName": "F3_General_GitHub_Question",
+      "prompt": "What is the difference between a Git branch and a GitHub fork in software development?",
+      "expectedTools": [],
+      "expectedBehavior": "No GitHub tools called; explains Git concept",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [],
+      "brain": "groq",
+      "latencyMs": 45697,
+      "fullText": "A **Git branch** is a lightweight pointer to a sequence of commits inside a single Git repository.  \n- You create it locally (or on a shared repo) to develop a feature or fix a bug.  \n- All collaborators work on the same repository; branches are merged back into the main branch (often `main`/`master`) when finished.\n\nA **GitHub fork** is a *full copy* of an entire repository, hosted in a separate GitHub account.  \n- It includes every branch and commit from the original repository.  \n- It is useful when you don’t have write access to the original repo or want to maintain a completely isolated development history.  \n- You usually push your changes to branches inside your fork and then submit a pull request to merge them back into the upstream repo.\n\nIn short: a branch is an internal branch inside a repo; a fork is a separate clone of the whole repo on GitHub, often used for contributing to projects you don’t own.",
+      "error": null,
+      "traceId": "d6b15031-bedd-491d-aff6-432a3f50bd79"
+    },
+    {
+      "category": "G. Ambiguity",
+      "testName": "G1_Vague_Reminder",
+      "prompt": "Remind me later.",
+      "expectedTools": [],
+      "expectedBehavior": "Asks user WHAT to remind and WHEN, rather than inventing random tasks",
+      "pass": true,
+      "failureReason": null,
+      "actualTools": [],
+      "brain": "groq",
+      "latencyMs": 44725,
+      "fullText": "I’ll set a reminder for you. When would you like me to remind you?",
+      "error": null,
+      "traceId": "bfcf7c5d-9cae-41a8-a4b9-af5709721ea3"
+    }
+  ],
+  "p50": 22837,
+  "p95": 123380,
+  "max": 123380,
+  "passed": 14,
+  "failed": 6
+}

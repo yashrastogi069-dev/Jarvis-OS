@@ -18,12 +18,13 @@ import {
   resolveModel,
   getResolutionChain,
   markProviderCooldown,
+  getProviderStatus,
   type ResolvedProvider,
 } from "@/lib/providers"
 import { researchTools } from "@/lib/research"
 import { connectorTools, connectorPromptLines } from "@/lib/connectors/registry"
 import { getRecentEvents } from "@/lib/events"
-import { createTask, listTasks, completeTask, snoozeTask, updateTask } from "@/lib/tasks"
+import { createTask, listTasks, completeTask, snoozeTask, updateTask, deleteTask } from "@/lib/tasks"
 import { setAssistantPreference } from "@/lib/assistant/prompt"
 import { addWakeWord, listWakeWords, removeWakeWord } from "@/lib/wake-words"
 
@@ -41,7 +42,7 @@ export function getChatModel(): LanguageModel {
 const memoryTools = {
   saveMemory: tool({
     description:
-      "Save important information about the user to long-term memory. Use when the user shares preferences, facts about themselves, decisions, or explicitly asks you to remember something.",
+      "Save important information about the user to long-term memory. REQUIRED whenever the user shares facts about themselves (name, pet, job, family, preferences) or explicitly asks you to 'remember', 'keep in mind', 'note down', or 'save' something. You MUST execute this tool to write the fact to the database — do not just reply that you remembered it without executing this tool.",
     inputSchema: z.object({
       content: z.string().describe("The information to remember, written as a clear standalone statement."),
       category: z
@@ -60,7 +61,7 @@ const memoryTools = {
   }),
   recallMemory: tool({
     description:
-      "Search long-term memory for relevant context about the user. Use before answering questions that may depend on the user's preferences, projects, or history.",
+      "Search long-term memory for relevant context about the user using semantic search. Use when the user ASKS what you remember, or before answering questions that depend on past preferences or history. DO NOT use when the user is giving you a new fact to remember (use saveMemory instead).",
     inputSchema: z.object({
       query: z.string().describe("What to search for, phrased as a natural language query."),
       category: z.string().optional().describe("Optionally restrict to one category."),
@@ -298,6 +299,16 @@ const taskTools = {
       }
     },
   }),
+  deleteTask: tool({
+    description: "Permanently delete a task by its numeric id. Use when the user asks to delete or remove a task.",
+    inputSchema: z.object({
+      id: z.number().int().describe("The task id to delete."),
+    }),
+    execute: async ({ id }) => {
+      deleteTask(id)
+      return { deleted: true, id }
+    },
+  }),
 }
 
 const wakeWordTools = {
@@ -346,10 +357,10 @@ const wakeWordTools = {
 const preferenceTools = {
   setPreference: tool({
     description:
-      "Persist how the user wants the assistant to behave — tone, verbosity, or how to address them. This PERSISTS across sessions: when the user says 'be more casual' or 'call me boss', use this so it sticks instead of complying for one turn only.",
+      "Persist how the user wants the assistant to behave — tone, verbosity, or what name to call the user. Use ONLY when the user explicitly requests a change in behavior, such as 'be more casual' or 'call me boss'. NEVER call this tool when the user merely greets the assistant by its name (e.g. 'Hello Jarvis').",
     inputSchema: z.object({
       key: z.enum(["tone", "verbosity", "address"]),
-      value: z.string().describe("For tone: professional/casual/warm/direct. For verbosity: brief/balanced/detailed. For address: any short name."),
+      value: z.string().describe("For tone: professional/casual/warm/direct. For verbosity: brief/balanced/detailed. For address: what the assistant should call the USER (e.g. 'Boss', 'Alex'). NOT the assistant's name."),
     }),
     execute: async ({ key, value }) => {
       const prefs = setAssistantPreference(key, value)
@@ -382,7 +393,7 @@ Behavior:
 - If a tool fails because a local service is offline (Ollama, Obsidian), say so plainly and continue with what works.
 - Never invent memory contents or note contents — only report what tools return.`
 
-const allTools = {
+export const allTools = {
   ...memoryTools,
   ...feedTools,
   ...skillTools,
@@ -425,7 +436,41 @@ export type OsAgent = ReturnType<typeof createOsAgent>
  */
 
 // Chunk types that are pure message framing (safe to buffer before commit).
-const FRAMING_TYPES = new Set(["start", "start-step", "finish-step", "message-metadata"])
+const FRAMING_TYPES = new Set([
+  "start",
+  "start-step",
+  "finish-step",
+  "finish",
+  "abort",
+  "message-metadata",
+])
+
+// Tool lifecycle chunks. We buffer these before commit as well, so a provider
+// that stalls DURING a tool loop — e.g. the generation step right after a web
+// search returns — stays failover-eligible and is silently swapped for the next
+// brain instead of surfacing an error. A turn only "commits" once real answer
+// content (text/reasoning) arrives, or, for a tool-only turn, when the stream
+// ends cleanly (see the flush in streamOsAgentResponse).
+const TOOL_LIFECYCLE_TYPES = new Set([
+  "tool-input-start",
+  "tool-input-delta",
+  "tool-input-available",
+  "tool-input-error",
+  "tool-output-available",
+  "tool-output-error",
+  "tool-output-denied",
+  "tool-approval-request",
+  "tool-approval-response",
+])
+
+// If a provider emits nothing for this long mid-stream, treat it as stalled:
+// abort the attempt and fail over. This is what turns the old "web search spins
+// forever" hang into either a transparent brain-swap or an honest error.
+const STREAM_INACTIVITY_TIMEOUT_MS = 45_000
+// Ollama gets a much longer budget: on CPU, the first request after a cold
+// start must load the whole model into RAM before the first token. Slow is
+// normal there — only genuinely dead counts.
+const OLLAMA_INACTIVITY_TIMEOUT_MS = 150_000
 
 function chunkErrText(error: unknown): string {
   if (error instanceof Error) return error.message
@@ -436,8 +481,39 @@ function chunkErrText(error: unknown): string {
 export interface StreamOsAgentOptions {
   /** Appended to the fixed INSTRUCTIONS for this call — per-turn context (time, summary, tasks, memories). */
   extraContext?: string
+  /** Request abort signal: when the client disconnects, tear down the upstream provider stream. */
+  signal?: AbortSignal
   /** Invoked once the stream finishes with the assistant's final text, which provider answered, and its UI parts. */
   onSessionPersist?: (result: { text: string; brain: string | null; uiParts: unknown[] }) => void
+}
+
+/**
+ * Build a human, unmasked explanation for a total chain failure. The AI SDK
+ * masks error-CHUNK text to a generic "An error occurred.", so we surface this
+ * as an assistant TEXT message instead — the user gets the real reason (which
+ * brains are rate-limited / offline) and how to fix it.
+ */
+function buildChainFailureMessage(lastError: string): string {
+  const now = Date.now()
+  const lines = getProviderStatus().map((s) => {
+    if (s.status === "down") return `- ${s.label}: ${s.hasKey ? "unavailable" : "no API key"}`
+    if (s.status === "cooling") {
+      const mins = s.cooldownUntil ? Math.max(1, Math.ceil((s.cooldownUntil - now) / 60_000)) : null
+      return `- ${s.label}: rate-limited${mins ? ` (retry in ~${mins}m)` : ""}`
+    }
+    return `- ${s.label}: ${s.status}`
+  })
+  return [
+    "I couldn't reach any AI brain right now \u2014 every provider in the failover chain is unavailable. This is a capacity issue, not a problem with your message:",
+    "",
+    ...lines,
+    "",
+    "Fixes: wait for the free-tier limits to reset, or run an always-on local brain \u2014 make sure Ollama is running and the chat model is pulled:",
+    "    ollama serve",
+    "    ollama pull llama3.2:3b",
+    "",
+    `(last error: ${lastError})`,
+  ].join("\n")
 }
 
 export async function streamOsAgentResponse(
@@ -471,10 +547,25 @@ export async function streamOsAgentResponse(
       let lastError = "No AI provider is currently available. Check API keys in Settings."
 
       for (const cand of candidates) {
+        // Client already gave up — don't spin up further providers.
+        if (opts.signal?.aborted) return
+
+        // One controller per attempt: fires on client disconnect OR the
+        // inactivity watchdog. Passed into .stream() so aborting actually tears
+        // down the upstream provider fetch (no orphaned request left hanging).
+        const controller = new AbortController()
+        const onClientAbort = () => controller.abort()
+        opts.signal?.addEventListener("abort", onClientAbort, { once: true })
+
         let result
         try {
-          result = await buildAgent(cand.model, opts.extraContext).stream({ prompt: modelMessages })
+          result = await buildAgent(cand.model, opts.extraContext).stream({
+            prompt: modelMessages,
+            abortSignal: controller.signal,
+          })
         } catch (error) {
+          opts.signal?.removeEventListener("abort", onClientAbort)
+          if (opts.signal?.aborted) return
           lastError = chunkErrText(error)
           markProviderCooldown(cand.id, error)
           continue
@@ -487,13 +578,65 @@ export async function streamOsAgentResponse(
           sendFinish: true,
         }).getReader()
 
+        const stallTimeoutMs =
+          cand.id === "ollama" ? OLLAMA_INACTIVITY_TIMEOUT_MS : STREAM_INACTIVITY_TIMEOUT_MS
+        const stallError = `${cand.label} stalled (no response for ${stallTimeoutMs / 1000}s)`
         let committed = false
         const buffer: UIMessageChunk[] = []
+        let sawToolActivity = false
         let failedPreCommit = false
+        let committedError = false
+        let clientAborted = false
+
+        let watchdog: ReturnType<typeof setTimeout> | null = null
+        const clearWatchdog = () => {
+          if (watchdog) {
+            clearTimeout(watchdog)
+            watchdog = null
+          }
+        }
+        const armWatchdog = () => {
+          clearWatchdog()
+          watchdog = setTimeout(() => controller.abort(), stallTimeoutMs)
+        }
+
+        // Flush buffered framing/tool chunks, tag the brain, and mark committed.
+        const commit = (first?: UIMessageChunk) => {
+          committed = true
+          committedBrain = cand.id
+          writer.write({
+            type: "data-brain",
+            data: { provider: cand.id, label: cand.label },
+            transient: true,
+          } as UIMessageChunk)
+          for (const buffered of buffer) writer.write(buffered)
+          buffer.length = 0
+          if (first) writer.write(first)
+        }
 
         try {
           while (true) {
+            armWatchdog()
             const { done, value } = await reader.read()
+            clearWatchdog()
+
+            // Client disconnected: stop everything, no failover.
+            if (opts.signal?.aborted) {
+              clientAborted = true
+              break
+            }
+            // Watchdog tripped: this provider went silent mid-stream.
+            if (controller.signal.aborted) {
+              if (committed) {
+                writer.write({ type: "error", errorText: stallError })
+                committedError = true
+              } else {
+                failedPreCommit = true
+                lastError = stallError
+                markProviderCooldown(cand.id, stallError)
+              }
+              break
+            }
             if (done) break
 
             if (!committed && value.type === "error") {
@@ -513,39 +656,66 @@ export async function streamOsAgentResponse(
               continue
             }
 
-            // First real content chunk — commit to this provider.
-            committed = true
-            committedBrain = cand.id
-            writer.write({
-              type: "data-brain",
-              data: { provider: cand.id, label: cand.label },
-              transient: true,
-            } as UIMessageChunk)
-            for (const buffered of buffer) writer.write(buffered)
-            buffer.length = 0
-            writer.write(value)
+            // Tool call/result: commit immediately so the user sees real-time tool activity in the UI
+            // and mutation tools are not re-executed from scratch on another provider.
+            if (TOOL_LIFECYCLE_TYPES.has(value.type)) {
+              sawToolActivity = true
+              commit(value)
+              continue
+            }
+
+            // First real answer chunk (text / reasoning / source / file) — commit.
+            commit(value)
           }
         } catch (error) {
-          if (!committed) {
+          clearWatchdog()
+          if (opts.signal?.aborted) {
+            clientAborted = true
+          } else if (controller.signal.aborted && !committed) {
+            failedPreCommit = true
+            lastError = stallError
+            markProviderCooldown(cand.id, stallError)
+          } else if (!committed) {
             failedPreCommit = true
             lastError = chunkErrText(error)
             markProviderCooldown(cand.id, error)
           } else {
             // Honest mid-stream failure after we already started answering.
             writer.write({ type: "error", errorText: chunkErrText(error) })
-            return
+            committedError = true
           }
         } finally {
+          clearWatchdog()
           reader.releaseLock()
+          opts.signal?.removeEventListener("abort", onClientAbort)
         }
 
+        if (clientAborted) return
+        if (committedError) return
         if (committed) return
+        // Tool-only turn: the model ran tools but ended before emitting text.
+        // Flush the buffered tool chunks so the turn isn't silently dropped.
+        if (!failedPreCommit && sawToolActivity) {
+          commit()
+          return
+        }
         if (failedPreCommit) continue
         // Stream ended cleanly with no content and no error — nothing to retry.
         return
       }
 
-      writer.write({ type: "error", errorText: lastError })
+      // Whole chain exhausted. Emit an honest assistant message (error CHUNKS
+      // get masked to "An error occurred." by the SDK, hiding the real cause).
+      const failId = "chain-exhausted"
+      writer.write({ type: "start-step" })
+      writer.write({ type: "text-start", id: failId })
+      writer.write({
+        type: "text-delta",
+        id: failId,
+        delta: buildChainFailureMessage(lastError),
+      })
+      writer.write({ type: "text-end", id: failId })
+      writer.write({ type: "finish-step" })
     },
     onError: (error) => chunkErrText(error),
   })

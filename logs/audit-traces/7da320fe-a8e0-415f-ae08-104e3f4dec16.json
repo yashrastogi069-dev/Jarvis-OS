@@ -1,0 +1,42 @@
+{
+  "traceId": "7da320fe-a8e0-415f-ae08-104e3f4dec16",
+  "testName": "E2_Obsidian_Notes_NoVault",
+  "expectedTools": [
+    "readNote"
+  ],
+  "expectedBehavior": "Invokes tool, catches unconfigured Obsidian, informs user plainly",
+  "messages": [
+    {
+      "id": "audit-1789715305151",
+      "role": "user",
+      "content": "Read my Obsidian note titled 'Daily.md'."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715305151,
+    "REQUEST_SENT": 1789715305151,
+    "SERVER_RECEIVED": 1789715311229,
+    "SSE_FIRST_CHUNK": 1789715311239,
+    "FINAL_GENERATION_END": 1789715311413
+  },
+  "toolInvocations": [
+    {
+      "toolName": "readNote",
+      "toolCallId": "L2aKSLhGehPEMZVW",
+      "args": {
+        "path": "Daily.md"
+      },
+      "timestamp": 1789715311240
+    }
+  ],
+  "toolResults": [],
+  "textDeltas": [
+    "Obsidian is not configured. Please add the Local REST API plugin key in Settings, and make sure Obsidian is running with the plugin's HTTP server enabled on port 27123."
+  ],
+  "fullText": "Obsidian is not configured. Please add the Local REST API plugin key in Settings, and make sure Obsidian is running with the plugin's HTTP server enabled on port 27123.",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 6262,
+  "pass": true,
+  "failureReason": null
+}

@@ -36,15 +36,15 @@ import { OLLAMA_URL, OLLAMA_CHAT_MODEL } from "@/lib/ollama"
 
 export type ProviderId = "gemini" | "groq" | "openrouter" | "nvidia" | "ollama"
 
-const GEMINI_MODEL = "gemini-2.5-flash"
-const GROQ_MODEL = "llama-3.3-70b-versatile"
-const NVIDIA_MODEL = "meta/llama-3.3-70b-instruct"
+const GEMINI_MODEL = "gemini-3.6-flash"
+const GROQ_MODEL = "openai/gpt-oss-20b"
+const NVIDIA_MODEL = "meta/llama-3.2-11b-vision-instruct"
 
 /** Free OpenRouter models with tool support, in preference order. */
 const OPENROUTER_MODELS = [
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "qwen/qwen3-next-80b-a3b-instruct:free",
-  "openai/gpt-oss-120b:free",
+  "deepseek/deepseek-v4-flash-0731:free",
+  "google/gemma-4-26b-a4b-it:free",
+  "qwen/qwen3.8-27b:free",
 ]
 
 interface Cooldown {
@@ -89,7 +89,7 @@ interface ProviderDef {
 const PROVIDERS: ProviderDef[] = [
   {
     id: "gemini",
-    label: "Gemini 2.5 Flash",
+    label: "Gemini 3.6 Flash",
     keyVar: "GOOGLE_GENERATIVE_AI_API_KEY",
     hasKey: () => Boolean(process.env.GOOGLE_GENERATIVE_AI_API_KEY),
     createModel: () =>
@@ -99,7 +99,7 @@ const PROVIDERS: ProviderDef[] = [
   },
   {
     id: "groq",
-    label: "Groq Llama 3.3 70B",
+    label: "Groq GPT-OSS 20B",
     keyVar: "GROQ_API_KEY",
     hasKey: () => Boolean(process.env.GROQ_API_KEY),
     createModel: () => createGroq({ apiKey: process.env.GROQ_API_KEY })(GROQ_MODEL),
@@ -117,7 +117,7 @@ const PROVIDERS: ProviderDef[] = [
   },
   {
     id: "nvidia",
-    label: "NVIDIA NIM Llama 3.3 70B",
+    label: "NVIDIA NIM Llama 3.2 11B",
     keyVar: "NVIDIA_API_KEY",
     hasKey: () => Boolean(process.env.NVIDIA_API_KEY),
     createModel: () =>
@@ -188,12 +188,13 @@ export function getActiveProviderId(): ProviderId {
 
 /**
  * Put a provider on cooldown after a failure and advance the chain.
- * 429 / quota / rate-limit -> 10 min; everything else (5xx, network) -> 60s.
+ * 429 / quota / rate-limit -> 45s (prevents 10-minute system freeze on transient burst limits);
+ * everything else (5xx, network) -> 30s.
  */
 export function markProviderCooldown(id: ProviderId, error: unknown): void {
   const msg = errText(error)
   const isQuota = /\b429\b|quota|rate.?limit|resource.?exhausted|too many requests/i.test(msg)
-  const durationMs = isQuota ? 10 * 60_000 : 60_000
+  const durationMs = isQuota ? 45_000 : 30_000
   cooldowns.set(id, { until: Date.now() + durationMs, reason: msg.slice(0, 200) })
   if (id === "openrouter") openRouterIndex += 1
 }

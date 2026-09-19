@@ -1,0 +1,74 @@
+[
+  {
+    "pairName": "saveMemory vs setPreference",
+    "toolA": "saveMemory",
+    "toolB": "setPreference",
+    "evaluatedPromptCount": 9,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "User requests changing assistant behavior ('be more casual') vs durable personal fact ('I prefer dark roast')",
+    "recommendedRoutingRule": "Route to setPreference only on explicit imperative 'be/call me'; route to saveMemory on 'remember/keep in mind'"
+  },
+  {
+    "pairName": "recallMemory vs listMemories",
+    "toolA": "recallMemory",
+    "toolB": "listMemories",
+    "evaluatedPromptCount": 8,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "Query-based semantic lookup vs complete unfiltered audit / listing all rows",
+    "recommendedRoutingRule": "Route to listMemories on 'all/audit/everything'; recallMemory on specific topic question"
+  },
+  {
+    "pairName": "createTask vs createCalendarEvent",
+    "toolA": "createTask",
+    "toolB": "createCalendarEvent",
+    "evaluatedPromptCount": 35,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "Simple reminder / task deadline vs calendar meeting with startISO and endISO blocks",
+    "recommendedRoutingRule": "Route to createCalendarEvent only when explicit calendar or start/end time specified"
+  },
+  {
+    "pairName": "searchCalendarEvents vs getCalendarEvents",
+    "toolA": "searchCalendarEvents",
+    "toolB": "getCalendarEvents",
+    "evaluatedPromptCount": 26,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "Specific text/title search vs date range horizon query (next N days)",
+    "recommendedRoutingRule": "Route to searchCalendarEvents on search/query; getCalendarEvents on week/agenda/upcoming"
+  },
+  {
+    "pairName": "searchGmail vs getRecentEmails",
+    "toolA": "searchGmail",
+    "toolB": "getRecentEmails",
+    "evaluatedPromptCount": 19,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "Filtered search with query syntax (from:, subject:) vs latest inbox messages",
+    "recommendedRoutingRule": "Route to searchGmail on 'from/subject/find'; getRecentEmails on 'check/latest inbox'"
+  },
+  {
+    "pairName": "searchNotes vs webSearch",
+    "toolA": "searchNotes",
+    "toolB": "webSearch",
+    "evaluatedPromptCount": 30,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "Local Obsidian vault query vs external live internet search",
+    "recommendedRoutingRule": "Route to searchNotes on 'vault/notes'; webSearch on 'web/internet/latest version'"
+  },
+  {
+    "pairName": "createNote vs saveMemory",
+    "toolA": "createNote",
+    "toolB": "saveMemory",
+    "evaluatedPromptCount": 21,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "Markdown file document in vault vs atomic fact string in long-term memory db",
+    "recommendedRoutingRule": "Route to createNote on 'note at path/.md'; saveMemory on personal fact/preference"
+  },
+  {
+    "pairName": "GitHub questions vs GitHub account actions",
+    "toolA": "Conversation (None)",
+    "toolB": "getGithubNotifications / getMyOpenPRs",
+    "evaluatedPromptCount": 16,
+    "confusionRisk": "HIGH",
+    "distinguishingBoundary": "General conceptual question about Git/GitHub vs active query on user's own repository/account",
+    "recommendedRoutingRule": "Suppress GitHub tools if prompt contains 'difference between', 'how does', or 'explain'"
+  }
+]

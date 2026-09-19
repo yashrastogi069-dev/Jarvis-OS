@@ -195,7 +195,7 @@ each → honest gray dot + badge.
 setup-voice.ps1 (pinned prebuilt URLs); paths.ts .exe handling; Windows Piper
 stdout verification + temp-file fallback; VAD; sentence-chunk TTS queue +
 barge-in; Kokoro eval behind toggle; Arc Reactor = live voice surface.
-GATE: spoken question → first audio ≤~1.5s after end-of-speech (measured);
+GATE: spoken question → first audio ≤~1s after end-of-speech (measured);
 barge-in works; voice turn triggering a tool call completes; voice dots green.
 
 ### Phase 7 — Global dictation companion (Sonnet xhigh)

@@ -1,0 +1,912 @@
+[
+  {
+    "scenarioId": "A3",
+    "testName": "A3_Unnecessary_Tool_Invocation",
+    "runNumber": 1,
+    "traceId": "6374414e-d882-44cb-9f1e-4259896ab155",
+    "provider": "gemini",
+    "tokenCounts": {
+      "totalInputTokens": 9340,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 13
+    },
+    "timestamps": {
+      "request_received": 1789726110595,
+      "provider_req_start": 1789726110595,
+      "provider_first_token": 1789726114795,
+      "ttft_ms": 4200,
+      "tool_call_requested": 1789726114795,
+      "tool_exec_start": 1789726114795,
+      "tool_exec_end": null,
+      "tool_exec_duration_ms": null,
+      "post_tool_req_start": null,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": 1789726120738,
+      "stream_finished": 1789726120826
+    },
+    "metrics": {
+      "totalLatencyMs": 10231,
+      "llmCallsCount": 1,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "searchNotes"
+    ],
+    "toolResults": [],
+    "watchdogEvents": [],
+    "fullTextSnippet": "Agentic OS is a local AI operating system that connects with your calendar, email, tasks, memory, and developer tools to serve as an integrated personal assistant. Running directly on your machine, it",
+    "pass": false,
+    "failureReason": "Over-triggered tools: expected none, got [searchNotes]"
+  },
+  {
+    "scenarioId": "A3",
+    "testName": "A3_Unnecessary_Tool_Invocation",
+    "runNumber": 2,
+    "traceId": "19216d5a-ad6b-43c9-889f-83990bbf6b6a",
+    "provider": "gemini",
+    "tokenCounts": {
+      "totalInputTokens": 9340,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 13
+    },
+    "timestamps": {
+      "request_received": 1789726123831,
+      "provider_req_start": 1789726123831,
+      "provider_first_token": 1789726132208,
+      "ttft_ms": 8377,
+      "tool_call_requested": 1789726132208,
+      "tool_exec_start": 1789726132208,
+      "tool_exec_end": null,
+      "tool_exec_duration_ms": null,
+      "post_tool_req_start": null,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": 1789726137478,
+      "stream_finished": 1789726137501
+    },
+    "metrics": {
+      "totalLatencyMs": 13670,
+      "llmCallsCount": 1,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "searchNotes"
+    ],
+    "toolResults": [],
+    "watchdogEvents": [],
+    "fullTextSnippet": "Agentic OS is a local personal AI operating system that unifies long-term memory, task tracking, email, calendar, and notes into a central intelligence hub. It coordinates your connected services and ",
+    "pass": false,
+    "failureReason": "Over-triggered tools: expected none, got [searchNotes]"
+  },
+  {
+    "scenarioId": "A3",
+    "testName": "A3_Unnecessary_Tool_Invocation",
+    "runNumber": 3,
+    "traceId": "b1352471-13a2-4c42-aac5-cbad67355ac7",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9340,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 13
+    },
+    "timestamps": {
+      "request_received": 1789726140521,
+      "provider_req_start": 1789726140521,
+      "provider_first_token": 1789726150688,
+      "ttft_ms": 10167,
+      "tool_call_requested": null,
+      "tool_exec_start": null,
+      "tool_exec_end": null,
+      "tool_exec_duration_ms": null,
+      "post_tool_req_start": null,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": 1789726150799,
+      "stream_finished": 1789726150806
+    },
+    "metrics": {
+      "totalLatencyMs": 10285,
+      "llmCallsCount": 1,
+      "toolCallsCount": 0,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [],
+    "toolResults": [],
+    "watchdogEvents": [],
+    "fullTextSnippet": "Agentic OS is a local, task‑centric AI operating system that manages your workflow by handling long‑term memory, task creation, calendar events, and note editing across Obsidian, GitHub, Google, Apple",
+    "pass": true,
+    "failureReason": null
+  },
+  {
+    "scenarioId": "C2",
+    "testName": "C2_Create_Task_Post_Tool_Stall",
+    "runNumber": 1,
+    "traceId": "bc1e82f2-e990-4bf9-83ec-78f303a1ac00",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9342,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 15
+    },
+    "timestamps": {
+      "request_received": 1789726153819,
+      "provider_req_start": 1789726153819,
+      "provider_first_token": 1789726186063,
+      "ttft_ms": 32244,
+      "tool_call_requested": 1789726186063,
+      "tool_exec_start": 1789726186063,
+      "tool_exec_end": 1789726186073,
+      "tool_exec_duration_ms": 10,
+      "post_tool_req_start": 1789726186073,
+      "post_tool_first_token": 1789726230982,
+      "post_tool_ttft_ms": 44909,
+      "final_text_received": 1789726231043,
+      "stream_finished": 1789726231048
+    },
+    "metrics": {
+      "totalLatencyMs": 77229,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "createTask"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 53,
+        "outputPreview": "{\"id\":25,\"title\":\"Submit tax return\",\"status\":\"open\"}"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "Reminder set for **Submit tax return** due on **Friday, 25 Sep 2026 at 5:00 pm (Asia/Calcutta)**.  \nTask ID: **25**.",
+    "pass": true,
+    "failureReason": null
+  },
+  {
+    "scenarioId": "C2",
+    "testName": "C2_Create_Task_Post_Tool_Stall",
+    "runNumber": 2,
+    "traceId": "4ab915e8-f745-4447-92a4-6eefa6221142",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9342,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 15
+    },
+    "timestamps": {
+      "request_received": 1789726234053,
+      "provider_req_start": 1789726234053,
+      "provider_first_token": 1789726274380,
+      "ttft_ms": 40327,
+      "tool_call_requested": 1789726274380,
+      "tool_exec_start": 1789726274380,
+      "tool_exec_end": 1789726274394,
+      "tool_exec_duration_ms": 14,
+      "post_tool_req_start": 1789726274394,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726319393
+    },
+    "metrics": {
+      "totalLatencyMs": 85340,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 1
+    },
+    "toolInvocations": [
+      "createTask"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 53,
+        "outputPreview": "{\"id\":26,\"title\":\"Submit tax return\",\"status\":\"open\"}"
+      }
+    ],
+    "watchdogEvents": [
+      {
+        "type": "WATCHDOG_TIMEOUT",
+        "time": 1789726319393,
+        "msg": "Groq GPT-OSS 20B stalled (no response for 45s)"
+      }
+    ],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+  },
+  {
+    "scenarioId": "C2",
+    "testName": "C2_Create_Task_Post_Tool_Stall",
+    "runNumber": 3,
+    "traceId": "1955e0ce-d0ad-470d-90ce-b7a7e06fc908",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9342,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 15
+    },
+    "timestamps": {
+      "request_received": 1789726322404,
+      "provider_req_start": 1789726322404,
+      "provider_first_token": 1789726334106,
+      "ttft_ms": 11702,
+      "tool_call_requested": 1789726334106,
+      "tool_exec_start": 1789726334106,
+      "tool_exec_end": 1789726334120,
+      "tool_exec_duration_ms": 14,
+      "post_tool_req_start": 1789726334120,
+      "post_tool_first_token": 1789726370286,
+      "post_tool_ttft_ms": 36166,
+      "final_text_received": 1789726370331,
+      "stream_finished": 1789726370336
+    },
+    "metrics": {
+      "totalLatencyMs": 47932,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "createTask"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 53,
+        "outputPreview": "{\"id\":27,\"title\":\"Submit tax return\",\"status\":\"open\"}"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "Task created: **Submit tax return** (due 25 Sep 2026 5 pm). I’ll remind you at that time.",
+    "pass": true,
+    "failureReason": null
+  },
+  {
+    "scenarioId": "C6",
+    "testName": "C6_List_Skills_Stream_Error",
+    "runNumber": 1,
+    "traceId": "5206778b-7bb0-4d46-ae01-7aead0821a38",
+    "provider": "gemini",
+    "tokenCounts": {
+      "totalInputTokens": 9341,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 14
+    },
+    "timestamps": {
+      "request_received": 1789726373340,
+      "provider_req_start": 1789726373340,
+      "provider_first_token": 1789726376202,
+      "ttft_ms": 2862,
+      "tool_call_requested": 1789726376202,
+      "tool_exec_start": 1789726376202,
+      "tool_exec_end": 1789726376270,
+      "tool_exec_duration_ms": 68,
+      "post_tool_req_start": 1789726376270,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726385051
+    },
+    "metrics": {
+      "totalLatencyMs": 11711,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "listSkills"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 570,
+        "outputPreview": "{\"skills\":[{\"id\":4,\"name\":\"store-user-preference\",\"description\":\"Stores or updates a specific preference or piece of information about the user in the"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: An error occurred."
+  },
+  {
+    "scenarioId": "C6",
+    "testName": "C6_List_Skills_Stream_Error",
+    "runNumber": 2,
+    "traceId": "4198e5fa-92d3-483b-ad40-54c74215f2c3",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9341,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 14
+    },
+    "timestamps": {
+      "request_received": 1789726388057,
+      "provider_req_start": 1789726388058,
+      "provider_first_token": 1789726415277,
+      "ttft_ms": 27219,
+      "tool_call_requested": 1789726415277,
+      "tool_exec_start": 1789726415277,
+      "tool_exec_end": 1789726415306,
+      "tool_exec_duration_ms": 29,
+      "post_tool_req_start": 1789726415306,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726460295
+    },
+    "metrics": {
+      "totalLatencyMs": 72238,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 1
+    },
+    "toolInvocations": [
+      "listSkills"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 570,
+        "outputPreview": "{\"skills\":[{\"id\":4,\"name\":\"store-user-preference\",\"description\":\"Stores or updates a specific preference or piece of information about the user in the"
+      }
+    ],
+    "watchdogEvents": [
+      {
+        "type": "WATCHDOG_TIMEOUT",
+        "time": 1789726460295,
+        "msg": "Groq GPT-OSS 20B stalled (no response for 45s)"
+      }
+    ],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+  },
+  {
+    "scenarioId": "C6",
+    "testName": "C6_List_Skills_Stream_Error",
+    "runNumber": 3,
+    "traceId": "3e49b26e-b961-44bd-a19e-cd0b2262d32d",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9341,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 14
+    },
+    "timestamps": {
+      "request_received": 1789726463312,
+      "provider_req_start": 1789726463312,
+      "provider_first_token": 1789726473893,
+      "ttft_ms": 10581,
+      "tool_call_requested": 1789726473893,
+      "tool_exec_start": 1789726473893,
+      "tool_exec_end": 1789726473912,
+      "tool_exec_duration_ms": 19,
+      "post_tool_req_start": 1789726473912,
+      "post_tool_first_token": 1789726507370,
+      "post_tool_ttft_ms": 33458,
+      "final_text_received": 1789726507564,
+      "stream_finished": 1789726507570
+    },
+    "metrics": {
+      "totalLatencyMs": 44258,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "listSkills"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 570,
+        "outputPreview": "{\"skills\":[{\"id\":4,\"name\":\"store-user-preference\",\"description\":\"Stores or updates a specific preference or piece of information about the user in the"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "**Registered skills**\n\n| ID | Name | Description | Status |\n|----|------|-------------|--------|\n| 4 | `store-user-preference` | Stores or updates a specific preference or piece of information about t",
+    "pass": true,
+    "failureReason": null
+  },
+  {
+    "scenarioId": "D1",
+    "testName": "D1_Multi_Tool_Post_Tool_Stall",
+    "runNumber": 1,
+    "traceId": "157bef4c-4af5-4eb5-ba1b-1ef4b89ced0b",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9350,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 23
+    },
+    "timestamps": {
+      "request_received": 1789726510577,
+      "provider_req_start": 1789726510577,
+      "provider_first_token": 1789726554428,
+      "ttft_ms": 43851,
+      "tool_call_requested": 1789726554428,
+      "tool_exec_start": 1789726599946,
+      "tool_exec_end": 1789726599957,
+      "tool_exec_duration_ms": 11,
+      "post_tool_req_start": 1789726599957,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726644958
+    },
+    "metrics": {
+      "totalLatencyMs": 134381,
+      "llmCallsCount": 3,
+      "toolCallsCount": 2,
+      "failoversCount": 0,
+      "watchdogEventsCount": 1
+    },
+    "toolInvocations": [
+      "createTask",
+      "listTasks"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 44,
+        "outputPreview": "{\"id\":28,\"title\":\"Buy milk\",\"status\":\"open\"}"
+      },
+      {
+        "toolName": "tool",
+        "outputSize": 2874,
+        "outputPreview": "{\"tasks\":[{\"id\":3,\"title\":\"Check email\",\"notes\":\"Check email every weekday at 8am\",\"status\":\"open\",\"dueAt\":null,\"remindAt\":null,\"recurrence\":\"weekdays"
+      }
+    ],
+    "watchdogEvents": [
+      {
+        "type": "WATCHDOG_TIMEOUT",
+        "time": 1789726644957,
+        "msg": "Groq GPT-OSS 20B stalled (no response for 45s)"
+      }
+    ],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+  },
+  {
+    "scenarioId": "D1",
+    "testName": "D1_Multi_Tool_Post_Tool_Stall",
+    "runNumber": 2,
+    "traceId": "0577d03f-0e5b-4855-bef4-c25399bdd023",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9350,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 23
+    },
+    "timestamps": {
+      "request_received": 1789726647965,
+      "provider_req_start": 1789726647965,
+      "provider_first_token": 1789726658396,
+      "ttft_ms": 10431,
+      "tool_call_requested": 1789726658396,
+      "tool_exec_start": 1789726690976,
+      "tool_exec_end": 1789726690989,
+      "tool_exec_duration_ms": 13,
+      "post_tool_req_start": 1789726690989,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726735994
+    },
+    "metrics": {
+      "totalLatencyMs": 88029,
+      "llmCallsCount": 3,
+      "toolCallsCount": 2,
+      "failoversCount": 0,
+      "watchdogEventsCount": 1
+    },
+    "toolInvocations": [
+      "createTask",
+      "listTasks"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 44,
+        "outputPreview": "{\"id\":29,\"title\":\"Buy milk\",\"status\":\"open\"}"
+      },
+      {
+        "toolName": "tool",
+        "outputSize": 2979,
+        "outputPreview": "{\"tasks\":[{\"id\":3,\"title\":\"Check email\",\"notes\":\"Check email every weekday at 8am\",\"status\":\"open\",\"dueAt\":null,\"remindAt\":null,\"recurrence\":\"weekdays"
+      }
+    ],
+    "watchdogEvents": [
+      {
+        "type": "WATCHDOG_TIMEOUT",
+        "time": 1789726735994,
+        "msg": "Groq GPT-OSS 20B stalled (no response for 45s)"
+      }
+    ],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+  },
+  {
+    "scenarioId": "D1",
+    "testName": "D1_Multi_Tool_Post_Tool_Stall",
+    "runNumber": 3,
+    "traceId": "41b63fe0-ffeb-461d-8bd5-b05ff10828fc",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9350,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 23
+    },
+    "timestamps": {
+      "request_received": 1789726738997,
+      "provider_req_start": 1789726738998,
+      "provider_first_token": 1789726749332,
+      "ttft_ms": 10334,
+      "tool_call_requested": 1789726749332,
+      "tool_exec_start": 1789726781621,
+      "tool_exec_end": 1789726781636,
+      "tool_exec_duration_ms": 15,
+      "post_tool_req_start": 1789726781636,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726826630
+    },
+    "metrics": {
+      "totalLatencyMs": 87633,
+      "llmCallsCount": 3,
+      "toolCallsCount": 2,
+      "failoversCount": 0,
+      "watchdogEventsCount": 1
+    },
+    "toolInvocations": [
+      "createTask",
+      "listTasks"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 44,
+        "outputPreview": "{\"id\":30,\"title\":\"Buy milk\",\"status\":\"open\"}"
+      },
+      {
+        "toolName": "tool",
+        "outputSize": 3084,
+        "outputPreview": "{\"tasks\":[{\"id\":3,\"title\":\"Check email\",\"notes\":\"Check email every weekday at 8am\",\"status\":\"open\",\"dueAt\":null,\"remindAt\":null,\"recurrence\":\"weekdays"
+      }
+    ],
+    "watchdogEvents": [
+      {
+        "type": "WATCHDOG_TIMEOUT",
+        "time": 1789726826629,
+        "msg": "Groq GPT-OSS 20B stalled (no response for 45s)"
+      }
+    ],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: Groq GPT-OSS 20B stalled (no response for 45s)"
+  },
+  {
+    "scenarioId": "D2",
+    "testName": "D2_Search_And_Save_Skipped",
+    "runNumber": 1,
+    "traceId": "5494a8b3-6413-476e-9784-a8682ec9a313",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9352,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 25
+    },
+    "timestamps": {
+      "request_received": 1789726829643,
+      "provider_req_start": 1789726829643,
+      "provider_first_token": 1789726840602,
+      "ttft_ms": 10959,
+      "tool_call_requested": 1789726840602,
+      "tool_exec_start": 1789726840602,
+      "tool_exec_end": 1789726843021,
+      "tool_exec_duration_ms": 2419,
+      "post_tool_req_start": 1789726843021,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726843312
+    },
+    "metrics": {
+      "totalLatencyMs": 13669,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "webSearch"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 6557,
+        "outputPreview": "{\"source\":\"tavily\",\"results\":[{\"title\":\"Next.js 15\",\"url\":\"https://nextjs.org/blog/next-15\",\"snippet\":\"Skip to content\\n\\nSkip to content\\n\\nBack to B"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: An error occurred."
+  },
+  {
+    "scenarioId": "D2",
+    "testName": "D2_Search_And_Save_Skipped",
+    "runNumber": 2,
+    "traceId": "aaf1d082-7033-4460-9875-9bc0b6119599",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9352,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 25
+    },
+    "timestamps": {
+      "request_received": 1789726846323,
+      "provider_req_start": 1789726846323,
+      "provider_first_token": 1789726872524,
+      "ttft_ms": 26201,
+      "tool_call_requested": 1789726872524,
+      "tool_exec_start": 1789726872524,
+      "tool_exec_end": 1789726873972,
+      "tool_exec_duration_ms": 1448,
+      "post_tool_req_start": 1789726873972,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726874237
+    },
+    "metrics": {
+      "totalLatencyMs": 27914,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "webSearch"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 6557,
+        "outputPreview": "{\"source\":\"tavily\",\"results\":[{\"title\":\"Next.js 15\",\"url\":\"https://nextjs.org/blog/next-15\",\"snippet\":\"Skip to content\\n\\nSkip to content\\n\\nBack to B"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: An error occurred."
+  },
+  {
+    "scenarioId": "D2",
+    "testName": "D2_Search_And_Save_Skipped",
+    "runNumber": 3,
+    "traceId": "01a9b92f-4181-4521-947b-8166d81542a6",
+    "provider": "groq",
+    "tokenCounts": {
+      "totalInputTokens": 9352,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 25
+    },
+    "timestamps": {
+      "request_received": 1789726877249,
+      "provider_req_start": 1789726877250,
+      "provider_first_token": 1789726919019,
+      "ttft_ms": 41769,
+      "tool_call_requested": 1789726919019,
+      "tool_exec_start": 1789726919019,
+      "tool_exec_end": 1789726921315,
+      "tool_exec_duration_ms": 2296,
+      "post_tool_req_start": 1789726921315,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": null,
+      "stream_finished": 1789726928331
+    },
+    "metrics": {
+      "totalLatencyMs": 51082,
+      "llmCallsCount": 2,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "webSearch"
+    ],
+    "toolResults": [
+      {
+        "toolName": "tool",
+        "outputSize": 6644,
+        "outputPreview": "{\"source\":\"tavily\",\"results\":[{\"title\":\"Next.js 15\",\"url\":\"https://nextjs.org/blog/next-15\",\"snippet\":\"Skip to content\\n\\nSkip to content\\n\\nBack to B"
+      }
+    ],
+    "watchdogEvents": [],
+    "fullTextSnippet": "",
+    "pass": false,
+    "failureReason": "Stream error: An error occurred."
+  },
+  {
+    "scenarioId": "E2",
+    "testName": "E2_Obsidian_Error_Masked",
+    "runNumber": 1,
+    "traceId": "fe922ba6-8397-499a-b9fc-8f84984a419e",
+    "provider": "openrouter",
+    "tokenCounts": {
+      "totalInputTokens": 9338,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 11
+    },
+    "timestamps": {
+      "request_received": 1789726931346,
+      "provider_req_start": 1789726931346,
+      "provider_first_token": 1789726952046,
+      "ttft_ms": 20700,
+      "tool_call_requested": 1789726952737,
+      "tool_exec_start": 1789726952737,
+      "tool_exec_end": null,
+      "tool_exec_duration_ms": null,
+      "post_tool_req_start": null,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": 1789726957734,
+      "stream_finished": 1789726957749
+    },
+    "metrics": {
+      "totalLatencyMs": 26403,
+      "llmCallsCount": 1,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "searchNotes"
+    ],
+    "toolResults": [],
+    "watchdogEvents": [],
+    "fullTextSnippet": "I'll find and read that note for you.\n\nI couldn't read that note — **Obsidian isn't configured** right now.\n\nThe Local REST API plugin either isn't set up yet or the HTTP server isn't running. To fix ",
+    "pass": false,
+    "failureReason": "Under-triggered: expected [readNote], got [searchNotes]"
+  },
+  {
+    "scenarioId": "E2",
+    "testName": "E2_Obsidian_Error_Masked",
+    "runNumber": 2,
+    "traceId": "8c1f110b-b451-4586-a909-733470c75c85",
+    "provider": "openrouter",
+    "tokenCounts": {
+      "totalInputTokens": 9338,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 11
+    },
+    "timestamps": {
+      "request_received": 1789726960751,
+      "provider_req_start": 1789726960751,
+      "provider_first_token": 1789726963346,
+      "ttft_ms": 2595,
+      "tool_call_requested": 1789726964910,
+      "tool_exec_start": 1789726964910,
+      "tool_exec_end": null,
+      "tool_exec_duration_ms": null,
+      "post_tool_req_start": null,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": 1789726969942,
+      "stream_finished": 1789726969952
+    },
+    "metrics": {
+      "totalLatencyMs": 9201,
+      "llmCallsCount": 1,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "searchNotes"
+    ],
+    "toolResults": [],
+    "watchdogEvents": [],
+    "fullTextSnippet": " I couldn't read the note — the Obsidian connector isn't set up or Obsidian isn't running.\n\nTo fix this:\n1. Make sure Obsidian is open on this machine.\n2. Install/enable the **Local REST API** plugin ",
+    "pass": false,
+    "failureReason": "Under-triggered: expected [readNote], got [searchNotes]"
+  },
+  {
+    "scenarioId": "E2",
+    "testName": "E2_Obsidian_Error_Masked",
+    "runNumber": 3,
+    "traceId": "82a52890-887d-46ac-bfc2-2e71cdc2ac62",
+    "provider": "openrouter",
+    "tokenCounts": {
+      "totalInputTokens": 9338,
+      "toolSchemaTokens": 8232,
+      "instructionsTokens": 945,
+      "conversationContextTokens": 150,
+      "promptTokens": 11
+    },
+    "timestamps": {
+      "request_received": 1789726972954,
+      "provider_req_start": 1789726972954,
+      "provider_first_token": 1789726986191,
+      "ttft_ms": 13237,
+      "tool_call_requested": 1789726986191,
+      "tool_exec_start": 1789726986191,
+      "tool_exec_end": null,
+      "tool_exec_duration_ms": null,
+      "post_tool_req_start": null,
+      "post_tool_first_token": null,
+      "post_tool_ttft_ms": null,
+      "final_text_received": 1789726990854,
+      "stream_finished": 1789726990872
+    },
+    "metrics": {
+      "totalLatencyMs": 17918,
+      "llmCallsCount": 1,
+      "toolCallsCount": 1,
+      "failoversCount": 0,
+      "watchdogEventsCount": 0
+    },
+    "toolInvocations": [
+      "readNote"
+    ],
+    "toolResults": [],
+    "watchdogEvents": [],
+    "fullTextSnippet": "The Obsidian connector isn't available right now — the Local REST API plugin isn't configured or Obsidian isn't running with its HTTP server enabled (port 27123).\n\nTo fix it:\n1. Open Obsidian and inst",
+    "pass": true,
+    "failureReason": null
+  }
+]

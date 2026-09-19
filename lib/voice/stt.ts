@@ -107,12 +107,16 @@ async function ensureSidecarStarted(): Promise<boolean> {
     if (!existsSync(STT_PYTHON)) return false
     g.__jarvisSttStarting = true
     g.__jarvisSttLastStartAttempt = now
+    let port = "8976"
+    try {
+      port = new URL(STT_SIDECAR_URL).port || "8976"
+    } catch {}
     try {
       spawn(STT_PYTHON, [STT_SERVER_SCRIPT], {
         detached: true,
         stdio: "ignore",
         windowsHide: true,
-        env: { ...process.env, STT_PRELOAD: "0" },
+        env: { ...process.env, STT_PORT: process.env.STT_PORT ?? port, STT_PRELOAD: "0" },
       }).unref()
     } catch {
       g.__jarvisSttStarting = false

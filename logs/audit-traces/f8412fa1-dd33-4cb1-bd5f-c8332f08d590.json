@@ -1,0 +1,56 @@
+{
+  "traceId": "f8412fa1-dd33-4cb1-bd5f-c8332f08d590",
+  "testName": "B2_Casual_KeepInMind",
+  "expectedTools": [
+    "saveMemory"
+  ],
+  "expectedBehavior": "Calls saveMemory with dog's name",
+  "messages": [
+    {
+      "id": "audit-1789719476426",
+      "role": "user",
+      "content": "Keep in mind that my dog's name is Buster."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719476426,
+    "REQUEST_SENT": 1789719476426,
+    "SERVER_RECEIVED": 1789719480686,
+    "SSE_FIRST_CHUNK": 1789719480692,
+    "FINAL_GENERATION_END": 1789719483691
+  },
+  "toolInvocations": [
+    {
+      "toolName": "saveMemory",
+      "toolCallId": "call_30049",
+      "args": {
+        "content": "The user's dog's name is Buster.",
+        "category": "fact"
+      },
+      "timestamp": 1789719480692
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "call_30049",
+      "output": {
+        "saved": true,
+        "memoryIds": [
+          20
+        ],
+        "semanticIndex": false
+      },
+      "timestamp": 1789719480767
+    }
+  ],
+  "textDeltas": [
+    "I've noted that your dog",
+    "'s name is Buster."
+  ],
+  "fullText": "I've noted that your dog's name is Buster.",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 7265,
+  "pass": true,
+  "failureReason": null
+}

@@ -1,0 +1,40 @@
+{
+  "traceId": "4cbfd2f6-bd43-4324-b86c-99a15280734d",
+  "testName": "E2_Obsidian_Notes_NoVault",
+  "expectedTools": [
+    "readNote"
+  ],
+  "expectedBehavior": "Invokes tool, catches unconfigured Obsidian, informs user plainly",
+  "messages": [
+    {
+      "id": "audit-1789719869164",
+      "role": "user",
+      "content": "Read my Obsidian note titled 'Daily.md'."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719869164,
+    "REQUEST_SENT": 1789719869164,
+    "SERVER_RECEIVED": 1789719874797,
+    "SSE_FIRST_CHUNK": 1789719874811,
+    "FINAL_GENERATION_END": 1789719884482
+  },
+  "toolInvocations": [
+    {
+      "toolName": "readNote",
+      "toolCallId": "call_411813",
+      "args": {
+        "path": "Daily.md"
+      },
+      "timestamp": 1789719874811
+    }
+  ],
+  "toolResults": [],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "gemini",
+  "error": "An error occurred.",
+  "totalLatencyMs": 15317,
+  "pass": false,
+  "failureReason": "Stream error: An error occurred."
+}

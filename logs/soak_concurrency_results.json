@@ -1,0 +1,67 @@
+{
+  "totalTurns": 100,
+  "totalDurationMs": "3229.4",
+  "turnLatencyMs": {
+    "p50": "17.17",
+    "p95": "30.49",
+    "avgFirst10": "21.07",
+    "avgLast10": "18.24",
+    "drift": "-13.4%"
+  },
+  "memoryUsage": {
+    "initialHeapUsedMb": "8.29",
+    "finalHeapUsedMb": "7.75",
+    "heapGrowthMb": "-0.53",
+    "rssMb": "68.54"
+  },
+  "cpuUsage": {
+    "userMs": 31,
+    "systemMs": 47
+  },
+  "concurrencyResults": {
+    "burstRequests": 15,
+    "burstErrors": 0,
+    "burstDurationMs": "6.6",
+    "sqliteLockCollisions": 0,
+    "voiceConcurrentOk": true,
+    "voiceConcurrentMs": "1296.4"
+  },
+  "memorySnapshots": [
+    {
+      "turn": 1,
+      "heapUsedMb": "8.32",
+      "rssMb": "65.85",
+      "turnMs": "27.5"
+    },
+    {
+      "turn": 20,
+      "heapUsedMb": "7.63",
+      "rssMb": "66.45",
+      "turnMs": "16.1"
+    },
+    {
+      "turn": 40,
+      "heapUsedMb": "7.88",
+      "rssMb": "66.77",
+      "turnMs": "15.8"
+    },
+    {
+      "turn": 60,
+      "heapUsedMb": "8.11",
+      "rssMb": "67.23",
+      "turnMs": "17.3"
+    },
+    {
+      "turn": 80,
+      "heapUsedMb": "8.34",
+      "rssMb": "67.68",
+      "turnMs": "30.1"
+    },
+    {
+      "turn": 100,
+      "heapUsedMb": "8.57",
+      "rssMb": "68.15",
+      "turnMs": "16.5"
+    }
+  ]
+}

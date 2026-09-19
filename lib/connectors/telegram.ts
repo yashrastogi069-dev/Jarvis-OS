@@ -82,6 +82,9 @@ export async function syncTelegramToFeed(): Promise<{ added: number }> {
   let added = 0
   let maxUpdateId = (settings.offset ?? 1) - 1
   let chatId = settings.defaultChatId
+  // Newly-seen inbound messages, acted on AFTER the offset is persisted so the
+  // poller can never replay (and re-execute) the same command twice.
+  const inbound: { chatId: number; text: string }[] = []
 
   for (const update of updates) {
     maxUpdateId = Math.max(maxUpdateId, update.update_id)
@@ -89,24 +92,67 @@ export async function syncTelegramToFeed(): Promise<{ added: number }> {
     if (!msg?.text) continue
     chatId = chatId ?? msg.chat.id
     const sender = msg.from?.username ?? msg.from?.first_name ?? "unknown"
-    if (
-      addEvent({
-        source: "telegram",
-        title: `@${sender}: ${msg.text.slice(0, 160)}`,
-        payload: { kind: "message", chatId: msg.chat.id, sender, text: msg.text },
-        externalId: `msg-${msg.chat.id}-${msg.message_id}`,
-        createdAt: msg.date * 1000,
-      })
-    )
+    const isNew = addEvent({
+      source: "telegram",
+      title: `@${sender}: ${msg.text.slice(0, 160)}`,
+      payload: { kind: "message", chatId: msg.chat.id, sender, text: msg.text },
+      externalId: `msg-${msg.chat.id}-${msg.message_id}`,
+      createdAt: msg.date * 1000,
+    })
+    if (isNew) {
       added++
+      inbound.push({ chatId: msg.chat.id, text: msg.text })
+    }
   }
 
+  // Persist the advanced offset BEFORE acting, so a command that fails mid-run
+  // can never wedge the poller into replaying the same message forever.
   setConnectorConfig("telegram", {
     ...settings,
     offset: maxUpdateId + 1,
     defaultChatId: chatId,
   })
+
+  // Treat each NEW inbound message as a command to Jarvis: run it through the
+  // agent (with all its tools) and reply back to the sender's chat. Previously
+  // inbound messages only landed in the feed as passive text and were never
+  // acted on — this is the inbound command pipeline.
+  for (const item of inbound) {
+    await handleInboundTelegramCommand(item.chatId, item.text)
+  }
+
   return { added }
+}
+
+/**
+ * Run one inbound Telegram message through the agent as a command, then reply to
+ * the sender's chat with the result. Best-effort: any failure is caught and a
+ * short apology is sent back instead, so it never breaks feed sync. Uses a
+ * dynamic import of the agent to avoid a static import cycle
+ * (agent -> connector registry -> telegram).
+ */
+async function handleInboundTelegramCommand(chatId: number, text: string): Promise<void> {
+  try {
+    const { collectOsAgentResponse } = await import("@/lib/agent")
+    const { text: reply } = await collectOsAgentResponse(text, {
+      extraContext:
+        "This message arrived over Telegram from the user's phone. Treat it as a command: " +
+        "act on it with your tools (create tasks/reminders, save memory, search, etc.), then " +
+        "reply with a short, phone-friendly confirmation of what you did. If you couldn't do " +
+        "it, say so plainly in one line.",
+    })
+    await sendTelegramMessage((reply.trim() || "Done.").slice(0, 4000), chatId)
+  } catch (error) {
+    console.error("[telegram] inbound command failed:", error)
+    try {
+      await sendTelegramMessage(
+        "Sorry — I couldn't process that just now. Please try again.",
+        chatId,
+      )
+    } catch {
+      // Nothing more we can do if even the error reply fails.
+    }
+  }
 }
 
 /** Send a message from the bot to the user's chat. */

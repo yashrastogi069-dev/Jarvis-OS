@@ -81,11 +81,13 @@ export function VoiceController({
   onSendMessage,
   isAssistantStreaming,
   latestAssistantText,
+  latestAssistantMessageId,
 }: {
   onStateChange?: (state: CoreState) => void
   onSendMessage: (text: string) => void
   isAssistantStreaming: boolean
   latestAssistantText: string
+  latestAssistantMessageId: string | null
 }) {
   const [state, setState] = useState<VoiceControllerState>('idle')
   const [error, setError] = useState('')
@@ -101,6 +103,15 @@ export function VoiceController({
   const seenTextLengthRef = useRef(0)
   const wasStreamingRef = useRef(false)
   const turnMarksRef = useRef<TurnLatencyMarks | null>(null)
+  // Live mirror of the latest assistant message id (read imperatively).
+  const latestMessageIdRef = useRef(latestAssistantMessageId)
+  latestMessageIdRef.current = latestAssistantMessageId
+  // Id of the reply from a PREVIOUS, already-finished turn. It stays "latest"
+  // in the message list during the gap before this turn's reply streams;
+  // text carrying this id must never be (re)spoken.
+  const previousMessageIdRef = useRef<string | null>(null)
+  // Id of the message the chunker is currently consuming.
+  const activeMessageIdRef = useRef<string | null>(null)
 
   // Report coreState transitions upward.
   useEffect(() => {
@@ -205,6 +216,11 @@ export function VoiceController({
       chunkerRef.current.reset()
       seenTextLengthRef.current = 0
       wasStreamingRef.current = false
+      // Mark whatever reply is currently "latest" as belonging to the turn that
+      // just ended, so the chunking effect ignores it until THIS turn's reply
+      // (a new message id) begins streaming.
+      previousMessageIdRef.current = latestMessageIdRef.current
+      activeMessageIdRef.current = latestMessageIdRef.current
       setState('thinking')
       onSendMessage(json.text)
     } catch (err) {
@@ -266,6 +282,24 @@ export function VoiceController({
   useEffect(() => {
     if (stateRef.current !== 'thinking' && stateRef.current !== 'speaking') return
 
+    // Ignore the previous turn's reply, which remains the "latest" assistant
+    // message until this turn's reply starts streaming. Speaking it here is the
+    // root cause of the "voice replies one turn behind" bug.
+    if (
+      latestAssistantMessageId !== null &&
+      latestAssistantMessageId === previousMessageIdRef.current
+    ) {
+      return
+    }
+
+    // A genuinely new assistant message became the latest: chunk it from its
+    // start, not from the previous message's text offset.
+    if (latestAssistantMessageId !== activeMessageIdRef.current) {
+      activeMessageIdRef.current = latestAssistantMessageId
+      chunkerRef.current.reset()
+      seenTextLengthRef.current = 0
+    }
+
     const total = latestAssistantText.length
     const prevLength = seenTextLengthRef.current
     if (total > prevLength) {
@@ -301,7 +335,7 @@ export function VoiceController({
     }
     wasStreamingRef.current = isAssistantStreaming
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [latestAssistantText, isAssistantStreaming])
+  }, [latestAssistantText, latestAssistantMessageId, isAssistantStreaming])
 
   // Full teardown on unmount.
   useEffect(() => {

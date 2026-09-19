@@ -1,0 +1,532 @@
+[
+  {
+    "provider": "Gemini",
+    "modelId": "gemini-3.6-flash",
+    "classifications": {
+      "CHAT_CAPABLE": false,
+      "STRUCTURED_OUTPUT_CAPABLE": false,
+      "SINGLE_TOOL_CAPABLE": false,
+      "MULTI_TOOL_CAPABLE": false,
+      "LONG_CONTEXT_CAPABLE": false,
+      "AGENT_FAILOVER_SAFE": false
+    },
+    "tests": {
+      "A_SimpleText": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 13.362733859s."
+      },
+      "B_StructuredJson": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 3.134917736s."
+      },
+      "C_ToolSelection": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 53.415026727s."
+      },
+      "D_ToolArgumentGeneration": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 43.687502699s."
+      },
+      "E_ToolResultConsumption": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 33.861736753s."
+      },
+      "F_PostToolContinuation": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 22.252429532s."
+      },
+      "G_TwoSequentialToolCalls": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 12.429538736s."
+      },
+      "H_ThreeSequentialToolCalls": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 696.783942ms."
+      },
+      "I_LongToolResult": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 50.992849676s."
+      },
+      "J_ToolErrorRecovery": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 40.480010314s."
+      },
+      "K_StreamingToolLifecycle": {
+        "pass": false,
+        "latency": 9409,
+        "ttft": 19,
+        "toolStart": null,
+        "toolEnd": null
+      },
+      "L_20kTokenContext": {
+        "pass": false,
+        "latency": 13148,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\nPlease retry in 13.910794803s."
+      }
+    }
+  },
+  {
+    "provider": "Groq (gpt-oss-20b)",
+    "modelId": "openai/gpt-oss-20b",
+    "classifications": {
+      "CHAT_CAPABLE": true,
+      "STRUCTURED_OUTPUT_CAPABLE": true,
+      "SINGLE_TOOL_CAPABLE": false,
+      "MULTI_TOOL_CAPABLE": false,
+      "LONG_CONTEXT_CAPABLE": false,
+      "AGENT_FAILOVER_SAFE": false
+    },
+    "tests": {
+      "A_SimpleText": {
+        "pass": true,
+        "latency": 654,
+        "output": "PONG"
+      },
+      "B_StructuredJson": {
+        "pass": true,
+        "latency": 511,
+        "output": "{\"status\":\"ok\",\"code\":200}"
+      },
+      "C_ToolSelection": {
+        "pass": true,
+        "latency": 1104,
+        "calledTools": [
+          "getWeather"
+        ],
+        "toolCalls": [
+          {
+            "type": "tool-call",
+            "toolCallId": "fc_f4597d09-a812-4e80-895d-74b37ed8b616",
+            "toolName": "getWeather",
+            "input": {
+              "location": "Paris"
+            }
+          }
+        ]
+      },
+      "D_ToolArgumentGeneration": {
+        "pass": false,
+        "latency": 1394
+      },
+      "E_ToolResultConsumption": {
+        "pass": false,
+        "latency": 736,
+        "toolExecuted": true,
+        "finalText": ""
+      },
+      "F_PostToolContinuation": {
+        "pass": false,
+        "latency": 563,
+        "toolExecuted": true,
+        "words": 1,
+        "finalText": ""
+      },
+      "G_TwoSequentialToolCalls": {
+        "pass": false,
+        "latency": 210,
+        "executionOrder": [
+          "getUserCity"
+        ],
+        "finalText": ""
+      },
+      "H_ThreeSequentialToolCalls": {
+        "pass": false,
+        "latency": 309,
+        "executionOrder": [
+          "getUserEmail"
+        ],
+        "finalText": ""
+      },
+      "I_LongToolResult": {
+        "pass": false,
+        "latency": 1280,
+        "textSnippet": ""
+      },
+      "J_ToolErrorRecovery": {
+        "pass": false,
+        "latency": 742,
+        "textSnippet": ""
+      },
+      "K_StreamingToolLifecycle": {
+        "pass": true,
+        "latency": 506,
+        "ttft": 4,
+        "toolStart": 496,
+        "toolEnd": 501
+      },
+      "L_20kTokenContext": {
+        "pass": false,
+        "latency": 9654,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kx1ay720ftgrzwsmf9ndd4yt` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 195673, Requested 20172. Please try again in 1h54m5.04s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+      }
+    }
+  },
+  {
+    "provider": "Groq (gpt-oss-120b)",
+    "modelId": "openai/gpt-oss-120b",
+    "classifications": {
+      "CHAT_CAPABLE": true,
+      "STRUCTURED_OUTPUT_CAPABLE": true,
+      "SINGLE_TOOL_CAPABLE": false,
+      "MULTI_TOOL_CAPABLE": false,
+      "LONG_CONTEXT_CAPABLE": false,
+      "AGENT_FAILOVER_SAFE": false
+    },
+    "tests": {
+      "A_SimpleText": {
+        "pass": true,
+        "latency": 494,
+        "output": "PONG"
+      },
+      "B_StructuredJson": {
+        "pass": true,
+        "latency": 549,
+        "output": "{\n  \"status\": \"ok\",\n  \"code\": 200\n}"
+      },
+      "C_ToolSelection": {
+        "pass": true,
+        "latency": 465,
+        "calledTools": [
+          "getWeather"
+        ],
+        "toolCalls": [
+          {
+            "type": "tool-call",
+            "toolCallId": "fc_0965e679-6a0b-4dbb-904e-5640bf30aca3",
+            "toolName": "getWeather",
+            "input": {
+              "location": "Paris"
+            }
+          }
+        ]
+      },
+      "D_ToolArgumentGeneration": {
+        "pass": false,
+        "latency": 337
+      },
+      "E_ToolResultConsumption": {
+        "pass": false,
+        "latency": 558,
+        "toolExecuted": true,
+        "finalText": ""
+      },
+      "F_PostToolContinuation": {
+        "pass": false,
+        "latency": 1086,
+        "toolExecuted": true,
+        "words": 1,
+        "finalText": ""
+      },
+      "G_TwoSequentialToolCalls": {
+        "pass": false,
+        "latency": 785,
+        "executionOrder": [
+          "getUserCity"
+        ],
+        "finalText": ""
+      },
+      "H_ThreeSequentialToolCalls": {
+        "pass": false,
+        "latency": 298,
+        "executionOrder": [
+          "getUserEmail"
+        ],
+        "finalText": ""
+      },
+      "I_LongToolResult": {
+        "pass": false,
+        "latency": 258,
+        "textSnippet": ""
+      },
+      "J_ToolErrorRecovery": {
+        "pass": false,
+        "latency": 427,
+        "textSnippet": ""
+      },
+      "K_StreamingToolLifecycle": {
+        "pass": true,
+        "latency": 490,
+        "ttft": 2,
+        "toolStart": 489,
+        "toolEnd": 490
+      },
+      "L_20kTokenContext": {
+        "pass": false,
+        "latency": 469,
+        "error": "Request too large for model `openai/gpt-oss-120b` in organization `org_01kx1ay720ftgrzwsmf9ndd4yt` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 20144, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing"
+      }
+    }
+  },
+  {
+    "provider": "OpenRouter (deepseek-free)",
+    "modelId": "deepseek/deepseek-v4-flash-0731:free",
+    "classifications": {
+      "CHAT_CAPABLE": true,
+      "STRUCTURED_OUTPUT_CAPABLE": true,
+      "SINGLE_TOOL_CAPABLE": false,
+      "MULTI_TOOL_CAPABLE": false,
+      "LONG_CONTEXT_CAPABLE": true,
+      "AGENT_FAILOVER_SAFE": false
+    },
+    "tests": {
+      "A_SimpleText": {
+        "pass": true,
+        "latency": 2273,
+        "output": "PONG"
+      },
+      "B_StructuredJson": {
+        "pass": true,
+        "latency": 2158,
+        "output": "{\"status\":\"ok\",\"code\":200}"
+      },
+      "C_ToolSelection": {
+        "pass": true,
+        "latency": 2482,
+        "calledTools": [
+          "getWeather"
+        ],
+        "toolCalls": [
+          {
+            "type": "tool-call",
+            "toolCallId": "chatcmpl-tool-ab7c316e745a4205",
+            "toolName": "getWeather",
+            "input": {
+              "location": "Paris"
+            },
+            "providerMetadata": {
+              "openrouter": {
+                "reasoning_details": [
+                  {
+                    "type": "reasoning.text",
+                    "text": "The user wants the weather in Paris. I should call the getWeather tool.",
+                    "format": "unknown",
+                    "index": 0
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "D_ToolArgumentGeneration": {
+        "pass": false,
+        "latency": 3462
+      },
+      "E_ToolResultConsumption": {
+        "pass": false,
+        "latency": 4318,
+        "toolExecuted": true,
+        "finalText": "I'll check the stock price for ACME."
+      },
+      "F_PostToolContinuation": {
+        "pass": false,
+        "latency": 2823,
+        "toolExecuted": true,
+        "words": 10,
+        "finalText": "I'll check the device's battery status for you."
+      },
+      "G_TwoSequentialToolCalls": {
+        "pass": false,
+        "latency": 2946,
+        "executionOrder": [
+          "getUserCity"
+        ],
+        "finalText": "I'll look up your city first, then get the weather for it."
+      },
+      "H_ThreeSequentialToolCalls": {
+        "pass": false,
+        "latency": 3401,
+        "executionOrder": [
+          "getUserEmail"
+        ],
+        "finalText": "I'll help you with those steps. Let me start by getting the user email.\n\n**Step 1: Get the user email**"
+      },
+      "I_LongToolResult": {
+        "pass": true,
+        "latency": 2057,
+        "textSnippet": "I'll fetch the server log for you.\n\n"
+      },
+      "J_ToolErrorRecovery": {
+        "pass": false,
+        "latency": 2703,
+        "textSnippet": ""
+      },
+      "K_StreamingToolLifecycle": {
+        "pass": true,
+        "latency": 4277,
+        "ttft": 1,
+        "toolStart": 4131,
+        "toolEnd": 4276
+      },
+      "L_20kTokenContext": {
+        "pass": true,
+        "latency": 3174,
+        "output": "SECRET_ALPHA_99"
+      }
+    }
+  },
+  {
+    "provider": "NVIDIA NIM",
+    "modelId": "meta/llama-3.2-11b-vision-instruct",
+    "classifications": {
+      "CHAT_CAPABLE": true,
+      "STRUCTURED_OUTPUT_CAPABLE": false,
+      "SINGLE_TOOL_CAPABLE": false,
+      "MULTI_TOOL_CAPABLE": false,
+      "LONG_CONTEXT_CAPABLE": true,
+      "AGENT_FAILOVER_SAFE": false
+    },
+    "tests": {
+      "A_SimpleText": {
+        "pass": true,
+        "latency": 18684,
+        "output": "PONG"
+      },
+      "B_StructuredJson": {
+        "pass": false,
+        "latency": 12296,
+        "output": "```python\nimport json\n\ndef return_json():\n    \"\"\"\n    Returns a JSON object with keys \"status\" and \"code\".\n    \"\"\"\n    data = {\n        \"status\": \"ok\",\n        \"code\": 200\n    }\n    return json.dumps(data)\n\n# Example usage:\nprint(return_json())\n```\n\nWhen you run this code, it will output:\n```json\n{\"status\": \"ok\", \"code\": 200}\n```\n\nThis is a valid JSON object. Note that `json.dumps()` is used to convert the Python dictionary into a JSON string. This is necessary because JSON is a text format, and Python dictionaries are not inherently JSON-compatible."
+      },
+      "C_ToolSelection": {
+        "pass": true,
+        "latency": 1134,
+        "calledTools": [
+          "getWeather"
+        ],
+        "toolCalls": [
+          {
+            "type": "tool-call",
+            "toolCallId": "chatcmpl-tool-2bc265a55f194bb0907e9669abec0197",
+            "toolName": "getWeather",
+            "input": {
+              "location": "Paris"
+            }
+          }
+        ]
+      },
+      "D_ToolArgumentGeneration": {
+        "pass": false,
+        "latency": 18957
+      },
+      "E_ToolResultConsumption": {
+        "pass": false,
+        "latency": 2665,
+        "toolExecuted": true,
+        "finalText": ""
+      },
+      "F_PostToolContinuation": {
+        "pass": false,
+        "latency": 1192,
+        "toolExecuted": true,
+        "words": 1,
+        "finalText": ""
+      },
+      "G_TwoSequentialToolCalls": {
+        "pass": false,
+        "latency": 6360,
+        "executionOrder": [
+          "getWeatherForCity:getUserCity"
+        ],
+        "finalText": ""
+      },
+      "H_ThreeSequentialToolCalls": {
+        "pass": false,
+        "latency": 17423,
+        "executionOrder": [
+          "getUserEmail",
+          "getUserId:user_email",
+          "getUserProfile:user_id"
+        ],
+        "finalText": ""
+      },
+      "I_LongToolResult": {
+        "pass": false,
+        "latency": 2183,
+        "textSnippet": ""
+      },
+      "J_ToolErrorRecovery": {
+        "pass": false,
+        "latency": 1510,
+        "textSnippet": ""
+      },
+      "K_StreamingToolLifecycle": {
+        "pass": true,
+        "latency": 8019,
+        "ttft": 2,
+        "toolStart": 7983,
+        "toolEnd": 8018
+      },
+      "L_20kTokenContext": {
+        "pass": true,
+        "latency": 5377,
+        "output": "SECRET_ALPHA_99"
+      }
+    }
+  },
+  {
+    "provider": "Ollama (local)",
+    "modelId": "llama3.2:3b",
+    "classifications": {
+      "CHAT_CAPABLE": false,
+      "STRUCTURED_OUTPUT_CAPABLE": false,
+      "SINGLE_TOOL_CAPABLE": false,
+      "MULTI_TOOL_CAPABLE": false,
+      "LONG_CONTEXT_CAPABLE": false,
+      "AGENT_FAILOVER_SAFE": false
+    },
+    "tests": {
+      "A_SimpleText": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "B_StructuredJson": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "C_ToolSelection": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "D_ToolArgumentGeneration": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "E_ToolResultConsumption": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "F_PostToolContinuation": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "G_TwoSequentialToolCalls": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "H_ThreeSequentialToolCalls": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "I_LongToolResult": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "J_ToolErrorRecovery": {
+        "pass": false,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      },
+      "K_StreamingToolLifecycle": {
+        "pass": false,
+        "latency": 6036,
+        "ttft": 2,
+        "toolStart": null,
+        "toolEnd": null
+      },
+      "L_20kTokenContext": {
+        "pass": false,
+        "latency": 6035,
+        "error": "Failed after 3 attempts. Last error: AI_APICallError: Cannot connect to API: connect ECONNREFUSED 127.0.0.1:11434"
+      }
+    }
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "traceId": "65e16a1d-ca62-4b6a-adb4-b14951e49806",
+  "testName": "C6_List_Skills",
+  "expectedTools": [
+    "listSkills"
+  ],
+  "expectedBehavior": "Calls listSkills",
+  "messages": [
+    {
+      "id": "audit-1789719641601",
+      "role": "user",
+      "content": "What skills are currently registered in the system?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719641601,
+    "REQUEST_SENT": 1789719641601,
+    "SERVER_RECEIVED": 1789719644195,
+    "SSE_FIRST_CHUNK": 1789719644198,
+    "FINAL_GENERATION_END": 1789719653091
+  },
+  "toolInvocations": [
+    {
+      "toolName": "listSkills",
+      "toolCallId": "call_33310",
+      "args": {},
+      "timestamp": 1789719644198
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "call_33310",
+      "output": {
+        "skills": [
+          {
+            "id": 4,
+            "name": "store-user-preference",
+            "description": "Stores or updates a specific preference or piece of information about the user in their profile.",
+            "status": "candidate",
+            "version": 1,
+            "deployedTo": null
+          },
+          {
+            "id": 3,
+            "name": "find-latest-info",
+            "description": "Searches the web for the most recent information or updates on a specified topic.",
+            "status": "candidate",
+            "version": 1,
+            "deployedTo": null
+          },
+          {
+            "id": 2,
+            "name": "recall-user-info",
+            "description": "Recalls information previously shared by the user about themselves.",
+            "status": "candidate",
+            "version": 1,
+            "deployedTo": null
+          }
+        ]
+      },
+      "timestamp": 1789719644273
+    }
+  ],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "gemini",
+  "error": "An error occurred.",
+  "totalLatencyMs": 11491,
+  "pass": false,
+  "failureReason": "Stream error: An error occurred."
+}

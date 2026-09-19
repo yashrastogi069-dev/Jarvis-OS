@@ -1,0 +1,53 @@
+{
+  "traceId": "d44e1d45-96fa-4a9e-93ff-36f7b94d6e78",
+  "testName": "B3_NoteDown_Fact",
+  "expectedTools": [
+    "saveMemory"
+  ],
+  "expectedBehavior": "Calls saveMemory with profession",
+  "messages": [
+    {
+      "id": "audit-1789717658310",
+      "role": "user",
+      "content": "Please note down: I work as a systems engineer."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789717658311,
+    "REQUEST_SENT": 1789717658311,
+    "SERVER_RECEIVED": 1789717692424,
+    "SSE_FIRST_CHUNK": 1789717692427,
+    "FINAL_GENERATION_END": 1789717737615
+  },
+  "toolInvocations": [
+    {
+      "toolName": "saveMemory",
+      "toolCallId": "fc_55cb41a9-b906-457d-bada-58e27e5f85ec",
+      "args": {
+        "content": "User works as a systems engineer.",
+        "category": "fact"
+      },
+      "timestamp": 1789717692593
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "fc_55cb41a9-b906-457d-bada-58e27e5f85ec",
+      "output": {
+        "saved": true,
+        "memoryIds": [
+          17
+        ],
+        "semanticIndex": false
+      },
+      "timestamp": 1789717692617
+    }
+  ],
+  "textDeltas": [],
+  "fullText": "",
+  "brain": "groq",
+  "error": "Groq GPT-OSS 120B stalled (no response for 45s)",
+  "totalLatencyMs": 79303,
+  "pass": false,
+  "failureReason": "Stream error: Groq GPT-OSS 120B stalled (no response for 45s)"
+}

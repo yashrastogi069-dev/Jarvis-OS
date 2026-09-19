@@ -1,9 +1,11 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-07-16**. This is the authoritative "where are we right
-now" map. For the forward plan (Phases 4-9, reconciled) see
-`tasks/MASTER_PLAN_V2.md`; for the standing rules see `CLAUDE.md` and
-`tasks/lessons.md`.
+Status as of **2026-09-18**. Authoritative state of the codebase following the comprehensive adversarial reliability, tool contract, and orchestration architecture audits. For audit details see:
+- `JARVIS_COMPREHENSIVE_AUDIT_REPORT.md`
+- `JARVIS_PRE_FIX_FAILURE_ISOLATION_REPORT.md`
+- `JARVIS_TOOL_CONTRACT_ROUTING_AUDIT.md`
+- `JARVIS_ORCHESTRATOR_AB_PRODUCTION_GATE.md`
+For the forward plan see `tasks/MASTER_PLAN_V2.md`; for standing rules see `CLAUDE.md` and `tasks/lessons.md`.
 
 **Project:** a local-first personal AI operating system — "Jarvis." SQLite +
 sqlite-vec for memory, a multi-provider AI brain (no single-vendor lock-in),

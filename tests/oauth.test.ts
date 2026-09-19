@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 
 /**
  * Covers the generic OAuth module (lib/connectors/oauth.ts) — specifically the
@@ -15,10 +15,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
  * network call is made.
  */
 
-process.env.AGENTIC_OS_DB_PATH = ":memory:"
+let buildAuthUrl: typeof import("@/lib/connectors/oauth").buildAuthUrl
+let handleOAuthCallback: typeof import("@/lib/connectors/oauth").handleOAuthCallback
+let getAccessToken: typeof import("@/lib/connectors/oauth").getAccessToken
+let getConnectorConfig: typeof import("@/lib/settings").getConnectorConfig
+let setConnectorConfig: typeof import("@/lib/settings").setConnectorConfig
 
-const { buildAuthUrl, handleOAuthCallback, getAccessToken } = await import("@/lib/connectors/oauth")
-const { getConnectorConfig, setConnectorConfig } = await import("@/lib/settings")
+beforeAll(async () => {
+  process.env.AGENTIC_OS_DB_PATH = ":memory:"
+  ;({ buildAuthUrl, handleOAuthCallback, getAccessToken } = await import("@/lib/connectors/oauth"))
+  ;({ getConnectorConfig, setConnectorConfig } = await import("@/lib/settings"))
+})
 
 const descriptor = {
   settingsKey: "test-oauth",

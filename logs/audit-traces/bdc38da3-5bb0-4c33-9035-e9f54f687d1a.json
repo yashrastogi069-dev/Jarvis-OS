@@ -1,0 +1,33 @@
+{
+  "traceId": "bdc38da3-5bb0-4c33-9035-e9f54f687d1a",
+  "testName": "C3_Web_Search",
+  "expectedTools": [
+    "webSearch"
+  ],
+  "expectedBehavior": "Calls webSearch with query",
+  "messages": [
+    {
+      "id": "audit-1789715248505",
+      "role": "user",
+      "content": "Search the web: what is the latest stable version of Next.js?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715248506,
+    "REQUEST_SENT": 1789715248506,
+    "SERVER_RECEIVED": 1789715255872,
+    "SSE_FIRST_CHUNK": 1789715255884,
+    "FINAL_GENERATION_END": 1789715255884
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [
+    "I couldn't reach any AI brain right now — every provider in the failover chain is unavailable. This is a capacity issue, not a problem with your message:\n\n- Gemini 2.5 Flash: rate-limited (retry in ~1m)\n- Groq Llama 3.3 70B: rate-limited (retry in ~1m)\n- OpenRouter (free): rate-limited (retry in ~1m)\n- NVIDIA NIM Llama 3.3 70B: rate-limited (retry in ~1m)\n- Ollama (local): rate-limited (retry in ~1m)\n\nFixes: wait for the free-tier limits to reset, or run an always-on local brain — make sure Ollama is running and the chat model is pulled:\n    ollama serve\n    ollama pull llama3.2:3b\n\n(last error: An error occurred.)"
+  ],
+  "fullText": "I couldn't reach any AI brain right now — every provider in the failover chain is unavailable. This is a capacity issue, not a problem with your message:\n\n- Gemini 2.5 Flash: rate-limited (retry in ~1m)\n- Groq Llama 3.3 70B: rate-limited (retry in ~1m)\n- OpenRouter (free): rate-limited (retry in ~1m)\n- NVIDIA NIM Llama 3.3 70B: rate-limited (retry in ~1m)\n- Ollama (local): rate-limited (retry in ~1m)\n\nFixes: wait for the free-tier limits to reset, or run an always-on local brain — make sure Ollama is running and the chat model is pulled:\n    ollama serve\n    ollama pull llama3.2:3b\n\n(last error: An error occurred.)",
+  "brain": null,
+  "error": null,
+  "totalLatencyMs": 7379,
+  "pass": false,
+  "failureReason": "Under-triggered: expected [webSearch], got []"
+}

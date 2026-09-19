@@ -1,0 +1,172 @@
+{
+  "traceId": "d2c7772c-d470-42bb-afe6-03c52955a444",
+  "testName": "C1_List_Tasks",
+  "expectedTools": [
+    "listTasks"
+  ],
+  "expectedBehavior": "Calls listTasks",
+  "messages": [
+    {
+      "id": "audit-1789719490215",
+      "role": "user",
+      "content": "What tasks do I have open right now?"
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789719490216,
+    "REQUEST_SENT": 1789719490216,
+    "SERVER_RECEIVED": 1789719492802,
+    "SSE_FIRST_CHUNK": 1789719492805,
+    "FINAL_GENERATION_END": 1789719498846
+  },
+  "toolInvocations": [
+    {
+      "toolName": "listTasks",
+      "toolCallId": "call_381988",
+      "args": {
+        "status": "open"
+      },
+      "timestamp": 1789719492806
+    }
+  ],
+  "toolResults": [
+    {
+      "toolCallId": "call_381988",
+      "output": {
+        "tasks": [
+          {
+            "id": 3,
+            "title": "Check email",
+            "notes": "Check email every weekday at 8am",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": null,
+            "recurrence": "weekdays"
+          },
+          {
+            "id": 4,
+            "title": "Meeting: New Consultation",
+            "notes": "New Consultation without BTR Astrologer Code 5031 - Yash Rastogi at https://meet.zoho.in/zwbr-xbc-rjp",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-07-18T12:44:47.349Z",
+            "recurrence": null
+          },
+          {
+            "id": 21,
+            "title": "Buy milk",
+            "notes": null,
+            "status": "open",
+            "dueAt": null,
+            "remindAt": null,
+            "recurrence": null
+          },
+          {
+            "id": 6,
+            "title": "Audit Task 1789645045938",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:47:25.942Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 8,
+            "title": "Audit Task 1789645130952",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:48:50.953Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 10,
+            "title": "Audit Task 1789645149859",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:49:09.860Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 12,
+            "title": "Audit Task 1789645314600",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:51:54.602Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 14,
+            "title": "Audit Task 1789645367038",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:52:47.039Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 17,
+            "title": "Audit Task 1789645700513",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-18T11:58:20.515Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 19,
+            "title": "Audit Task 1789717128858",
+            "notes": "Updated audit notes",
+            "status": "open",
+            "dueAt": null,
+            "remindAt": "2026-09-19T07:48:48.861Z",
+            "recurrence": "daily"
+          },
+          {
+            "id": 20,
+            "title": "Submit tax return",
+            "notes": null,
+            "status": "open",
+            "dueAt": "2026-09-25T11:30:00.000Z",
+            "remindAt": "2026-09-25T11:30:00.000Z",
+            "recurrence": null
+          },
+          {
+            "id": 22,
+            "title": "Submit tax return",
+            "notes": "Submit tax return",
+            "status": "open",
+            "dueAt": "2026-09-25T17:00:00.000Z",
+            "remindAt": "2026-09-25T17:00:00.000Z",
+            "recurrence": null
+          }
+        ]
+      },
+      "timestamp": 1789719492870
+    }
+  ],
+  "textDeltas": [
+    "You have 12 open tasks:\n\n1. **Check email** (ID:",
+    " 3) – Recurs weekdays at 8:00 AM\n2. **Meeting: New Consultation** (",
+    "ID: 4) – Notes: Yash Rastogi (Zoho Meet link attached)\n3. **Buy milk** (ID: ",
+    "21)\n4. **Submit tax return** (ID: 20) – Due: Sept 25, ",
+    "2026, 5:00 PM\n5. **Submit tax return** (ID: 22",
+    ") – Due: Sept 25, 2026, 10:30 PM\n\n**",
+    "Recurring Audit Tasks:**\n- Audit Task 1789645045938 (ID",
+    ": 6)\n- Audit Task 1789645130952 (ID",
+    ": 8)\n- Audit Task 1789645149859 (ID",
+    ": 10)\n- Audit Task 1789645314600 (",
+    "ID: 12)\n- Audit Task 1789645367038",
+    " (ID: 14)\n- Audit Task 178964570051",
+    "3 (ID: 17)\n- Audit Task 17897171288",
+    "58 (ID: 19)"
+  ],
+  "fullText": "You have 12 open tasks:\n\n1. **Check email** (ID: 3) – Recurs weekdays at 8:00 AM\n2. **Meeting: New Consultation** (ID: 4) – Notes: Yash Rastogi (Zoho Meet link attached)\n3. **Buy milk** (ID: 21)\n4. **Submit tax return** (ID: 20) – Due: Sept 25, 2026, 5:00 PM\n5. **Submit tax return** (ID: 22) – Due: Sept 25, 2026, 10:30 PM\n\n**Recurring Audit Tasks:**\n- Audit Task 1789645045938 (ID: 6)\n- Audit Task 1789645130952 (ID: 8)\n- Audit Task 1789645149859 (ID: 10)\n- Audit Task 1789645314600 (ID: 12)\n- Audit Task 1789645367038 (ID: 14)\n- Audit Task 1789645700513 (ID: 17)\n- Audit Task 1789717128858 (ID: 19)",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 8631,
+  "pass": true,
+  "failureReason": null
+}

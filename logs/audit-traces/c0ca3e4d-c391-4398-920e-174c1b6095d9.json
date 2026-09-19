@@ -1,0 +1,34 @@
+{
+  "traceId": "c0ca3e4d-c391-4398-920e-174c1b6095d9",
+  "testName": "A3_Project_Explanation",
+  "expectedTools": [],
+  "expectedBehavior": "Explains Agentic OS concisely, no tools",
+  "messages": [
+    {
+      "id": "audit-1789715177458",
+      "role": "user",
+      "content": "Explain what this project does in two sentences."
+    }
+  ],
+  "timestamps": {
+    "USER_INPUT_RECEIVED": 1789715177458,
+    "REQUEST_SENT": 1789715177458,
+    "SERVER_RECEIVED": 1789715180817,
+    "SSE_FIRST_CHUNK": 1789715180823,
+    "FINAL_GENERATION_END": 1789715182487
+  },
+  "toolInvocations": [],
+  "toolResults": [],
+  "textDeltas": [
+    "Agentic OS is a personal AI operating system designed to manage your digital life. It offers capabilities such as long-term memory, task management, integrations",
+    " with various services like",
+    " Google, GitHub, and Obsidian, and the ability to automate tasks through skills and",
+    " web research."
+  ],
+  "fullText": "Agentic OS is a personal AI operating system designed to manage your digital life. It offers capabilities such as long-term memory, task management, integrations with various services like Google, GitHub, and Obsidian, and the ability to automate tasks through skills and web research.",
+  "brain": "gemini",
+  "error": null,
+  "totalLatencyMs": 5029,
+  "pass": true,
+  "failureReason": null
+}

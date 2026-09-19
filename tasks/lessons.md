@@ -123,3 +123,37 @@ iteration. Add a new entry after ANY correction from Yash.
     @react-three/postprocessing's composer bypassed the default ACES tone
     mapping and the whole scene brightened/oversaturated vs baseline. Any
     composer chain here must end with a ToneMapping (ACES_FILMIC) pass.
+
+## 2026-09-18 (Auditing, Tool Contracts & Orchestration Architecture)
+
+17. **ToolLoopAgent is unviable for multi-step tasks without a supervisor.**
+    Empirical testing across 60 scenarios proved a 53.3% premature termination
+    rate and 21.7% hallucinated action rate. Increasing `maxSteps` (6 -> 12 -> 20)
+    yields 0% improvement because the LLM halts voluntarily to chat after 1-2 steps,
+    not due to step exhaustion. Higher `maxSteps` actually worsened hallucinated
+    actions to 42.5%. An explicit DAG Planner-Executor (Architecture C) is required.
+
+18. **Exposing all tool schemas blows free-tier token budgets.**
+    Injecting 47 tools (8,225 schema tokens) on every step exceeds Groq's
+    free-tier 6,000 TPM limit and triggers 45s watchdog timeouts. Dynamic
+    pruning (Strategy E: 1,159 tokens, 96.4% recall) or DAG planning (3,187
+    tokens, 86% reduction) is mathematically mandatory for sub-second responses.
+
+19. **Raw tool exceptions crash streaming agents.**
+    In Vercel AI SDK, throwing `new Error(...)` from `tool.execute()` causes the
+    SDK to emit `"An error occurred."` and terminate the turn. Tools must NEVER
+    throw on routine connector errors or missing IDs; they must return structured
+    `{ success: false, error: { code, message } }` envelopes so the model can
+    explain the fix to the user.
+
+20. **Destructive tools must enforce confirmation parity.**
+    `deleteMemory` implemented two-phase preview confirmation, but `deleteTask`
+    executed irreversible SQLite deletion on call 1 with zero confirmation.
+    All delete and overwrite tools (`deleteTask`, `createNote`, `sendTelegram`)
+    must require confirmation parameters.
+
+21. **Mid-stream tool chunk committing disables provider failover.**
+    In `lib/agent.ts`, committing on the first tool lifecycle chunk permanently
+    locks the session to that provider. When a subsequent generation step hits
+    a 429 quota error, failover to Gemini/NVIDIA is blocked. Read-only tool
+    chunks should be buffered pre-commit.

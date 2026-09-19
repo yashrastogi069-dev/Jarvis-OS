@@ -1,0 +1,285 @@
+[
+  {
+    "strategyName": "Strategy A: Full 47-Tool Registry",
+    "toolRecallPct": "100.00",
+    "domainRecallPct": "100.00",
+    "avgToolsExposed": "47.0",
+    "avgSchemaTokens": 8225,
+    "tokenReductionPct": "0.0",
+    "avgRoutingLatencyMs": "0.004",
+    "falseExclusionsCount": 0,
+    "falseExclusionsSample": []
+  },
+  {
+    "strategyName": "Strategy B: Domain Classifier",
+    "toolRecallPct": "91.79",
+    "domainRecallPct": "90.80",
+    "avgToolsExposed": "4.7",
+    "avgSchemaTokens": 821,
+    "tokenReductionPct": "90.0",
+    "avgRoutingLatencyMs": "0.018",
+    "falseExclusionsCount": 16,
+    "falseExclusionsSample": [
+      {
+        "promptId": "T004",
+        "prompt": "I need to file my expenses by Friday.",
+        "missingTool": "createTask",
+        "exposedTools": []
+      },
+      {
+        "promptId": "T005",
+        "prompt": "Set a reminder for the team standup on Monday morning.",
+        "missingTool": "createTask",
+        "exposedTools": []
+      },
+      {
+        "promptId": "T009",
+        "prompt": "What is on my pending task list?",
+        "missingTool": "listTasks",
+        "exposedTools": []
+      },
+      {
+        "promptId": "M005",
+        "prompt": "Don't forget that I work as a systems reliability engineer.",
+        "missingTool": "saveMemory",
+        "exposedTools": []
+      },
+      {
+        "promptId": "M007",
+        "prompt": "Do you recall my daughter's birthday?",
+        "missingTool": "recallMemory",
+        "exposedTools": []
+      }
+    ]
+  },
+  {
+    "strategyName": "Strategy C: Lexical / BM25 Shortlist",
+    "toolRecallPct": "87.69",
+    "domainRecallPct": "90.23",
+    "avgToolsExposed": "6.7",
+    "avgSchemaTokens": 1169,
+    "tokenReductionPct": "85.8",
+    "avgRoutingLatencyMs": "0.126",
+    "falseExclusionsCount": 24,
+    "falseExclusionsSample": [
+      {
+        "promptId": "T003",
+        "prompt": "Add to my to-do list: buy groceries tonight.",
+        "missingTool": "createTask",
+        "exposedTools": [
+          "listMemories",
+          "listSkills",
+          "listTasks",
+          "listWakeWords",
+          "addWakeWord",
+          "deleteMemory",
+          "removeWakeWord",
+          "getMyOpenPRs"
+        ]
+      },
+      {
+        "promptId": "M001",
+        "prompt": "Remember that I prefer dark roast coffee.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "setPreference",
+          "addWakeWord"
+        ]
+      },
+      {
+        "promptId": "M002",
+        "prompt": "Keep in mind that my daughter's birthday is June 14.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "createTask",
+          "snoozeTask",
+          "updateTask",
+          "addWakeWord",
+          "sendTelegram"
+        ]
+      },
+      {
+        "promptId": "M003",
+        "prompt": "Please note down: I am allergic to peanuts.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "readNote",
+          "appendNote",
+          "searchNotes",
+          "createNote",
+          "getUpdatesFeed",
+          "updateTask",
+          "fetchPage"
+        ]
+      },
+      {
+        "promptId": "M005",
+        "prompt": "Don't forget that I work as a systems reliability engineer.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "listTasks",
+          "completeTask",
+          "addWakeWord",
+          "commentOnGithubIssue"
+        ]
+      }
+    ]
+  },
+  {
+    "strategyName": "Strategy D: Embedding-based Retrieval",
+    "toolRecallPct": "83.08",
+    "domainRecallPct": "86.78",
+    "avgToolsExposed": "5.0",
+    "avgSchemaTokens": 877,
+    "tokenReductionPct": "89.3",
+    "avgRoutingLatencyMs": "0.208",
+    "falseExclusionsCount": 33,
+    "falseExclusionsSample": [
+      {
+        "promptId": "T003",
+        "prompt": "Add to my to-do list: buy groceries tonight.",
+        "missingTool": "createTask",
+        "exposedTools": [
+          "listTasks",
+          "getMyOpenIssues",
+          "getMyOpenPRs",
+          "listSkills",
+          "listWakeWords",
+          "listMemories"
+        ]
+      },
+      {
+        "promptId": "M001",
+        "prompt": "Remember that I prefer dark roast coffee.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "addWakeWord"
+        ]
+      },
+      {
+        "promptId": "M002",
+        "prompt": "Keep in mind that my daughter's birthday is June 14.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "addWakeWord"
+        ]
+      },
+      {
+        "promptId": "M003",
+        "prompt": "Please note down: I am allergic to peanuts.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "appendNote",
+          "createNote",
+          "readNote"
+        ]
+      },
+      {
+        "promptId": "M005",
+        "prompt": "Don't forget that I work as a systems reliability engineer.",
+        "missingTool": "saveMemory",
+        "exposedTools": [
+          "addWakeWord"
+        ]
+      }
+    ]
+  },
+  {
+    "strategyName": "Strategy E: Hybrid Classifier + Safe Fallback",
+    "toolRecallPct": "96.41",
+    "domainRecallPct": "95.98",
+    "avgToolsExposed": "6.6",
+    "avgSchemaTokens": 1159,
+    "tokenReductionPct": "85.9",
+    "avgRoutingLatencyMs": "0.019",
+    "falseExclusionsCount": 7,
+    "falseExclusionsSample": [
+      {
+        "promptId": "T009",
+        "prompt": "What is on my pending task list?",
+        "missingTool": "listTasks",
+        "exposedTools": []
+      },
+      {
+        "promptId": "W004",
+        "prompt": "List all spoken trigger words.",
+        "missingTool": "listWakeWords",
+        "exposedTools": [
+          "createTask",
+          "listTasks",
+          "completeTask",
+          "snoozeTask",
+          "updateTask",
+          "deleteTask",
+          "saveMemory",
+          "recallMemory",
+          "listMemories",
+          "deleteMemory",
+          "webSearch",
+          "fetchPage",
+          "getUpdatesFeed"
+        ]
+      },
+      {
+        "promptId": "P003",
+        "prompt": "Keep your answers brief and concise.",
+        "missingTool": "setPreference",
+        "exposedTools": [
+          "createTask",
+          "listTasks",
+          "completeTask",
+          "snoozeTask",
+          "updateTask",
+          "deleteTask",
+          "saveMemory",
+          "recallMemory",
+          "listMemories",
+          "deleteMemory",
+          "webSearch",
+          "fetchPage",
+          "getUpdatesFeed"
+        ]
+      },
+      {
+        "promptId": "GH10",
+        "prompt": "File a bug report on 'owner/repo' with title 'Broken STT'.",
+        "missingTool": "createGithubIssue",
+        "exposedTools": [
+          "createTask",
+          "listTasks",
+          "completeTask",
+          "snoozeTask",
+          "updateTask",
+          "deleteTask",
+          "saveMemory",
+          "recallMemory",
+          "listMemories",
+          "deleteMemory",
+          "webSearch",
+          "fetchPage",
+          "getUpdatesFeed"
+        ]
+      },
+      {
+        "promptId": "G012",
+        "prompt": "Send a reply to message 'msg_456'.",
+        "missingTool": "replyToEmail",
+        "exposedTools": [
+          "createTask",
+          "listTasks",
+          "completeTask",
+          "snoozeTask",
+          "updateTask",
+          "deleteTask",
+          "saveMemory",
+          "recallMemory",
+          "listMemories",
+          "deleteMemory",
+          "webSearch",
+          "fetchPage",
+          "getUpdatesFeed"
+        ]
+      }
+    ]
+  }
+]
