@@ -44,17 +44,30 @@ In accordance with Section A of the C1 prompt, the following narrow reconciliati
    - **Authoritative Metrics (N=60)**:
      - **Architecture A (Baseline ToolLoopAgent, maxSteps=12)**: Full Completion: **31.67%** (19/60); Partial Completion: **56.67%**; Premature Termination: **53.33%**; Hallucinated Success: **21.67%**; Average Input Tokens: **23,119**; Turn Latency p50: **700ms**. On tasks with 3+ steps (N=40), full completion is only **7.5%–12.5%**.
      - **Architecture B (Tool Loop + Completion Verifier)**: Full Completion: **96.67%** (58/60); Input Tokens: **33,694** ($5.37/1k turns); Turn Latency p50: **1,390ms**. (High token cost and latency inflation due to repeated unpruned 47-tool schema injection).
-     - **Architecture C (DAG Planner-Executor)**: Full Completion: **88.33%** overall (**100.0%** on executable tasks with valid credentials; remaining 5 scenarios had unrecoverable external service outages where Architecture C honestly reported `BLOCKED_WITH_REASON` instead of hallucinating); Premature Termination: **0.00%**; Hallucinated Success: **0.00%**; Input Tokens: **3,187 (-86.2%)**; Turn Latency p50: **660ms** ($0.816/1k turns).
+     - **Architecture C (DAG Planner-Executor)**: Full Completion: **88.33%** overall (**100.0%** on executable tasks with valid credentials; remaining 5 scenarios had unrecoverable external service outages where Architecture C honestly reported `BLOCKED_WITH_REASON` instead of hallucinating); Premature Termination: **0.00%**; Hallucinated Success: **0.00%**; Input Tokens: **3,187 (-86.2%)**; Architecture Benchmark Latency p50: **660ms** ($0.816/1k turns). *(Note: 660ms p50 is an architecture evaluation benchmark on offline DAG execution passes; it is NOT yet integrated Jarvis V2 production latency, which will measure end-to-end classification, routing, context, planner, persistence, executor, and SSE).*
    - **Discrepancy Explanation**: The earlier numbers in C0 draft (68%, 88%, 96%) were derived from an initial 25-scenario prototype run (`17/25`, `22/25`, `24/25`). The authoritative, comprehensive dataset is the 60-scenario benchmark documented in `JARVIS_ORCHESTRATOR_AB_PRODUCTION_GATE.md`.
 3. **Capability Count Reconciliation**:
-   - **Registered Agent Tools (47 total)**: 4 Memory + 1 Feed + 3 Skills + 6 Tasks + 3 Wake Words + 1 Preferences + 2 Research + 4 Obsidian + 6 GitHub + 2 Telegram + 10 Google + 5 Apple Calendar = **47 tools**.
+   - **Registered Agent Tools (47 tools across 12 logical groups)**:
+     1. Memory: 4 (`saveMemory`, `recallMemory`, `listMemories`, `deleteMemory`)
+     2. Updates Feed: 1 (`getUpdatesFeed`)
+     3. Skill Factory: 3 (`saveAsSkill`, `listSkills`, `runSkill`)
+     4. Tasks & Reminders: 6 (`createTask`, `listTasks`, `completeTask`, `snoozeTask`, `updateTask`, `deleteTask`)
+     5. Wake Words: 3 (`addWakeWord`, `listWakeWords`, `removeWakeWord`)
+     6. Preferences: 1 (`setPreference`)
+     7. Web Research: 2 (`webSearch`, `fetchPage`)
+     8. Obsidian Vault: 4 (`searchNotes`, `readNote`, `appendNote`, `createNote`)
+     9. GitHub: 6 (`getGithubNotifications`, `getMyOpenPRs`, `getMyOpenIssues`, `getRecentCommits`, `createGithubIssue`, `commentOnGithubIssue`)
+     10. Telegram Bot: 2 (`sendTelegram`, `getTelegramMessages`)
+     11. Google: 10 (`getCalendarEvents`, `getRecentEmails`, `createCalendarEvent`, `sendGmail`, `replyToEmail`, `searchGmail`, `readEmail`, `updateCalendarEvent`, `deleteCalendarEvent`, `searchCalendarEvents`)
+     12. Apple Calendar: 5 (`getAppleCalendarEvents`, `createAppleCalendarEvent`, `updateAppleCalendarEvent`, `deleteAppleCalendarEvent`, `searchAppleCalendarEvents`)
+     Total = **47 registered tools across 12 logical capability groups**.
    - **Implemented but Unregistered Candidates (4 functions in `lib/skills.ts`)**: `deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`.
-   - **Internal / Background Functions**: `sweepTriggers`, `runProactiveSweep`, `fireDueReminders`, `requireTask`, `searchByVector`, `extractMemories`, sync routines, voice pipelines.
+   - **Internal / Engine / Background Functions**: `sweepTriggers`, `runProactiveSweep`, `fireDueReminders`, `requireTask`, `searchByVector`, `extractMemories`, sync routines, voice pipelines, auth guards.
    - **Disabled / Deprecated**: `system` connector (Phase 7 unwired), `canva` connector (excluded).
 4. **ISSUE-002 / C2 Governance Correction**:
    - The 4 unregistered skill functions will NOT be automatically registered in C2. Instead, C2 will formally classify each under: `USER_FACING`, `INTERNAL_ENGINE`, `BACKGROUND`, `NOT_READY`, or `DEPRECATED`. Only capabilities classified as `USER_FACING` passing safety/contract review will be exposed to the agent.
 5. **Strategy E Capability Routing Status**:
-   - Strategy E is designated as the **primary routing candidate subject to C7 evaluation**, rather than an immutable mandate. It must run in shadow mode first, achieve ≥99% required-capability recall against `evals/corpora/routing_corpus_227.json`, provide a fail-open fallback on low confidence, and treat "≤12 tools" as a heuristic target rather than an absolute invariant.
+   - Strategy E is designated as the **primary routing candidate subject to C7 evaluation**, rather than an immutable mandate. It must run in shadow mode first, target **≥99.5% required-capability recall** on the fixed corpus (and 100% on known regressions), provide a fail-open fallback on low confidence, and treat "≤12 tools" as a heuristic optimization target rather than an absolute invariant. *(The fail-open fallback is the reliability mechanism; benchmark recall is a quality metric, not an assumption of perfect classification).*
 6. **Provisional UX Budgets**:
    - The 15s voice and 30s text boundaries are provisional UX budgets, not rigid timeout architecture. Specific stage timeouts will be calibrated from empirical V2 runtime measurements in C14.
 
@@ -247,4 +260,53 @@ Representative instances of `Turn`, `Quest`, `Plan`, `PlanStep`, `TraceContext`,
 
 ---
 
-*End of Checkpoint C1 Report.*
+## Checkpoint C1 Review Amendment (Architectural Cleanup & Invariant Hardening)
+
+**Date**: 2026-09-19  
+**Scope**: Invariant hardening, record-keeping initialization, and architectural clarification prior to C2.
+
+### 1. Key Architectural Decisions & Clarifications
+1. **Execution Modes & Ambiguity Model**:
+   - `AMBIGUOUS` was removed from `ExecutionMode`. Ambiguity is an unresolved classification state, not an execution mode.
+   - `ExecutionMode` is now strictly: `"CHAT" | "READ" | "ACTION" | "QUEST"`.
+   - Ambiguous requests are represented via `ClassificationOutcome` (`{ resolved: false, needsClarification: true, clarificationPrompt, options }`) and transition the turn into `TurnStatus.NEEDS_CLARIFICATION`.
+2. **Branched Turn Lifecycles (Non-Linear Fast Paths)**:
+   - Documented that `TurnStatus` represents a set of available states rather than a mandatory linear sequence:
+     - *CHAT Fast Path*: `RECEIVED` → `CLASSIFYING` → `FINALIZING` → `COMPLETED`
+     - *READ Fast Path*: `RECEIVED` → `CLASSIFYING` → `ROUTING` → `EXECUTING` → `FINALIZING` → `COMPLETED`
+     - *ACTION Fast Path*: `RECEIVED` → `CLASSIFYING` → `ROUTING` → `EXECUTING` → `FINALIZING` → `COMPLETED`
+     - *QUEST Graph Path*: `RECEIVED` → `CLASSIFYING` → `ROUTING` → `PLANNING` → `EXECUTING` → `FINALIZING` → `COMPLETED`
+     - *Ambiguity Pause*: `RECEIVED` → `CLASSIFYING` → `NEEDS_CLARIFICATION`
+3. **JSON-Safe Cross-Boundary Types**:
+   - Introduced explicit JSON primitives in `lib/jarvis-core/types.ts`:
+     ```ts
+     export type JsonPrimitive = string | number | boolean | null
+     export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue }
+     export type JsonObject = { [key: string]: JsonValue }
+     ```
+   - Applied `JsonObject` to `PlanStep.arguments`, `TurnInput.clientMetadata`, and `RuntimeErrorEnvelope.details`, replacing loose `Record<string, unknown>`.
+4. **Operation Ledger Terminology**:
+   - Replaced misleading "universal exactly-once" claims with accurate distributed semantics:
+     > Runtime-owned operation ledger providing logical deduplication and replay protection, with UNKNOWN_COMMIT handling for unverifiable external side effects.
+5. **Capability Routing Target**:
+   - Reaffirmed Strategy E as the **primary routing candidate subject to C7 evaluation**.
+   - Set quality target to **≥99.5% required-capability recall** on fixed corpus, and **100% recall** on known regressions.
+   - Codified: *The fail-open fallback is the reliability mechanism. Benchmark recall is a quality metric, not an assumption of perfect classification. The ≤12 tools target is a heuristic optimization target, not a correctness invariant.*
+6. **Benchmark Latency Distinctions**:
+   - Reconciled documentation to clearly state that 660ms p50 is an *architecture evaluation benchmark* on offline DAG passes, NOT integrated Jarvis V2 production latency (which will later measure real end-to-end routing, context, planner, SQLite persistence, and streaming).
+
+### 2. Record-Keeping & Deferral System Initialized
+- **`tasks/CHECKPOINT_LOG.md`**: Authoritative chronological record of validated checkpoints (C0, C1).
+- **`tasks/DEFERRED.md`**: Register of deliberately postponed engineering complexity (D-001 through D-010).
+- **Scope-Control Rule Added to `tasks/lessons.md` (Rule 22)**:
+  > Implement the minimum reliable version required by the active checkpoint. If valuable work is not required for the current acceptance gate, substantially increases complexity, or depends on later architecture, record it in `tasks/DEFERRED.md` rather than implementing it immediately. Deferral must NEVER be used to avoid correctness, security, data integrity, mutation safety, or known regression fixes.
+
+### 3. Verification Evidence
+- `pnpm typecheck`: **0 errors** (PASS)
+- `tests/jarvis-core/types.test.ts`: **14 tests passed in 11ms** (PASS)
+- `pnpm test` (full suite): **7 test files, 48 tests green in 19.64s** (PASS)
+- `pnpm build` (production build): **Turbopack 34.5s, TypeScript 28.4s, 28 dynamic routes green** (PASS)
+
+---
+
+*End of Checkpoint C1 & C1 Amendment Report.*

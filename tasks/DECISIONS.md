@@ -22,13 +22,16 @@
 
 ---
 
-## ADR-003: Runtime-Owned Persistent Operation Ledger (Exact-Once Execution)
+## ADR-003: Runtime-Owned Persistent Operation Ledger (Logical Deduplication, Replay Protection & UNKNOWN_COMMIT Handling)
 - **Status**: ACCEPTED
 - **Date**: 2026-09-19
-- **Context**: Empirical audit showed `createTask` and `saveMemory` create duplicate records upon LLM retry or failover. Furthermore, `deleteTask` throws unhandled crashes on non-existent IDs. Prompt instructions ("do not create duplicates") are probabilistic and fail under model failovers or retry loops.
-- **Decision**: Implement a runtime-owned `operations` ledger in SQLite (`lib/jarvis-core/ledger/`). Every mutating capability call generates a deterministic `dedupeKey` (hash of actor, target domain, action, normalized parameters, and time window). The runtime checks the ledger before dispatching mutations. If an identical operation is already recorded as `succeeded`, the cached result is returned without re-invoking the external connector or DB write.
+- **Context**: Empirical audit showed `createTask` and `saveMemory` create duplicate records upon LLM retry or failover. Furthermore, `deleteTask` throws unhandled crashes on non-existent IDs. Prompt instructions ("do not create duplicates") are probabilistic and fail under model failovers or retry loops. Universal "exactly-once" execution across distributed networks is theoretically impossible due to potential network partitions where a remote service commits but the acknowledgement is dropped.
+- **Decision**: Implement a runtime-owned `operations` ledger in SQLite (`lib/jarvis-core/ledger/`). Every mutating capability call generates a deterministic `dedupeKey` (hash of actor, target domain, action, normalized parameters, and time window). The runtime checks the ledger before dispatching mutations:
+  1. *Local Mutations*: Strictly guarded against duplicate execution via the ledger and SQLite transactions.
+  2. *External Mutations*: If an unacknowledged timeout or disconnection occurs, the operation is flagged as `UNKNOWN_COMMIT` rather than falsely reported as succeeded or failed, preventing unverified automated retries.
+  3. *Replays*: If an identical operation is already recorded as `succeeded`, the cached result is returned without re-invoking the external connector.
 - **Consequences**:
-  - *Positive*: Hard architectural guarantee of idempotency; elimination of duplicate tasks, duplicate calendar invites, and duplicate emails on retry.
+  - *Positive*: Hard architectural guarantee against duplicate local mutations and duplicate API calls on retries; explicit handling of uncertain remote side effects.
   - *Negative*: Ledger entries must be indexed and garbage-collected periodically; mutation tools must declare parameter normalization rules.
 
 ---
@@ -36,12 +39,13 @@
 ## ADR-004: Capability Routing Strategy (Primary Candidate: Strategy E, Subject to C7 Evaluation)
 - **Status**: PROVISIONAL (Primary Candidate subject to C7 evaluation)
 - **Date**: 2026-09-19
-- **Context**: Jarvis has 47 registered tools across 8 domains (Tasks, Memory, Research, Voice, Google, GitHub, Apple, Obsidian). Passing all 47 schemas in every prompt causes tool confusion, parameter hallucinations, increased token cost, and latency outliers.
+- **Context**: Jarvis has 47 registered tools across 12 logical capability groups (Tasks, Memory, Research, Voice, Feed, Skills, Preferences, Google, GitHub, Apple, Obsidian, Telegram). Passing all 47 schemas in every prompt causes tool confusion, parameter hallucinations, increased token cost, and latency outliers.
 - **Decision**: Adopt Strategy E (hybrid deterministic domain classifier + vector semantic search) as the primary capability routing candidate in `lib/jarvis-core/routing/`, subject to formal evaluation in Checkpoint C7. The routing mechanism must:
-  1. Run in shadow mode initially to validate routing accuracy against `evals/corpora/routing_corpus_227.json`.
-  2. Measure required-capability recall (target: ≥99% recall).
+  1. Run in shadow mode first to validate routing accuracy against `evals/corpora/routing_corpus_227.json`.
+  2. Target **≥99.5% required-capability recall** on the fixed corpus, and **100% recall** on known regression cases.
   3. Include a fail-open fallback to broader tool/domain sets whenever routing confidence is below threshold.
-  4. Treat "≤12 tools" as a heuristic target rather than an absolute invariant.
+  4. Explicitly recognize: *The fail-open fallback is the reliability mechanism. Benchmark recall is a quality metric, not an assumption of perfect classification.*
+  5. Treat "≤12 tools" as a heuristic optimization target, not an absolute correctness invariant.
 - **Consequences**:
   - *Positive*: Substantially reduces token payload per turn, eliminates cross-domain parameter hallucinations, and lowers step latency.
   - *Negative*: Risk of pruning necessary tools on low confidence queries, mitigated by fail-open fallback and intent clarification.

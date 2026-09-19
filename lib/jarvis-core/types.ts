@@ -1,21 +1,31 @@
 /**
  * JARVIS CORE V2 — FOUNDATION DOMAIN TYPES & RUNTIME CONTRACTS
  * 
- * Checkpoint: C1 (Milestone 0)
+ * Checkpoint: C1 (Milestone 0) — Amended
  * Status: Authoritative Foundation Vocabulary
  * 
- * Rules:
+ * Architectural Invariants:
  * 1. Framework-independent: ZERO imports of React, Next.js request/response types,
  *    browser APIs, ToolLoopAgent, or Vercel AI SDK stream chunk types.
- * 2. JSON-safe: All runtime data structures serialize cleanly to JSON (no Error,
- *    Map, Set, BigInt, or custom class instances).
+ * 2. JSON-safe: Fields intended to cross persistence (SQLite), network streams (SSE),
+ *    logs, or provider boundaries strictly use JsonValue / JsonObject.
  * 3. Minimal shared vocabulary: Provides the type contracts for C2 (Registry),
  *    C3 (ToolResult boundary), C4 (Action policy), C5 (Ledger), C6-C8 (Quest/Router),
  *    and C9-C13 (Planner/DAG) without prematurely implementing their logic.
+ * 4. Branched Execution Lifecycles: Non-linear state machines supporting fast paths
+ *    (CHAT, READ, ACTION) without forcing planning or graph overhead onto simple queries.
  */
 
 // ============================================================================
-// 1. STRONG IDENTITIES (Section D)
+// 1. JSON-SAFE PRIMITIVES & STRUCTURES (Section 8)
+// ============================================================================
+
+export type JsonPrimitive = string | number | boolean | null
+export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue }
+export type JsonObject = { [key: string]: JsonValue }
+
+// ============================================================================
+// 2. STRONG IDENTITIES (Section D)
 // ============================================================================
 
 export type TraceId = string & { readonly __brand: "TraceId" }
@@ -38,22 +48,40 @@ export const asToolCallId = (id: string): ToolCallId => id as ToolCallId
 export const asOperationId = (id: string): OperationId => id as OperationId
 
 // ============================================================================
-// 2. EXECUTION MODES (Section E)
+// 3. EXECUTION MODES & INTENT OUTCOME (Section E & Step 3)
 // ============================================================================
 
 /**
- * Top-level execution mode determining the orchestration pathway for an incoming turn.
- * Determined by intent classification before capability routing or planning.
+ * Top-level execution mode determining how a resolved request executes.
+ * AMBIGUOUS is intentionally excluded: ambiguity is an unresolved classification
+ * outcome handled via TurnStatus.NEEDS_CLARIFICATION rather than an execution mode.
  */
 export type ExecutionMode =
-  | "CHAT"       // Conversational turn; no real-world tool capability required
-  | "READ"       // Single or small collection of read-only queries (e.g. check calendar, search web)
-  | "ACTION"     // Single bounded, explicit state-changing action (e.g. snooze task, create reminder)
-  | "QUEST"      // Multi-step, compound, or dependency-driven objective requiring planning and verification
-  | "AMBIGUOUS"  // Request cannot be safely classified or resolved without explicit user clarification
+  | "CHAT"    // Conversational turn; no real-world tool capability required
+  | "READ"    // Single or small bounded collection of read-only queries (e.g. check calendar, search web)
+  | "ACTION"  // Single bounded, explicit state-changing action (e.g. snooze task, create reminder)
+  | "QUEST"   // Multi-step, compound, or dependency-driven objective requiring planning and verification
+
+/**
+ * Result of intent classification. If unresolved, the turn pauses for clarification.
+ */
+export type ClassificationOutcome =
+  | {
+      readonly resolved: true
+      readonly mode: ExecutionMode
+      readonly confidence: number
+      readonly rationale?: string
+    }
+  | {
+      readonly resolved: false
+      readonly needsClarification: true
+      readonly clarificationPrompt: string
+      readonly options?: ReadonlyArray<string>
+      readonly rationale?: string
+    }
 
 // ============================================================================
-// 3. TRACE CONTEXT (Section O)
+// 4. TRACE CONTEXT (Section O)
 // ============================================================================
 
 /**
@@ -68,16 +96,23 @@ export interface TraceContext {
 }
 
 // ============================================================================
-// 4. TURN CONTRACT & LIFECYCLE (Section F)
+// 5. TURN CONTRACT & BRANCHED LIFECYCLES (Section F & Step 4)
 // ============================================================================
 
 /**
  * Lifecycle states of an overall user request turn.
+ * TurnStatus is a set of possible states within non-linear, branched lifecycles:
+ * 
+ * - CHAT Fast Path:   RECEIVED -> CLASSIFYING -> FINALIZING -> COMPLETED
+ * - READ Fast Path:   RECEIVED -> CLASSIFYING -> ROUTING -> EXECUTING -> FINALIZING -> COMPLETED
+ * - ACTION Fast Path: RECEIVED -> CLASSIFYING -> ROUTING -> EXECUTING -> FINALIZING -> COMPLETED
+ * - QUEST Graph Path: RECEIVED -> CLASSIFYING -> ROUTING -> PLANNING -> EXECUTING -> FINALIZING -> COMPLETED
+ * - AMBIGUITY Pause:  RECEIVED -> CLASSIFYING -> NEEDS_CLARIFICATION
  */
 export type TurnStatus =
   | "RECEIVED"            // Turn input received at the runtime boundary
   | "CLASSIFYING"         // Intent classifier is determining the ExecutionMode
-  | "NEEDS_CLARIFICATION" // Ambiguous intent or missing parameters; pausing for user input
+  | "NEEDS_CLARIFICATION" // Ambiguous intent or missing parameters; paused for user input
   | "ROUTING"             // Capability router is selecting relevant tools
   | "PLANNING"            // Planner is generating an execution graph for QUEST mode
   | "EXECUTING"           // Dispatching read/action/DAG steps
@@ -89,7 +124,7 @@ export type TurnStatus =
 export interface TurnInput {
   readonly text: string
   readonly sessionHistory?: ReadonlyArray<{ readonly role: "user" | "assistant" | "system"; readonly text: string }>
-  readonly clientMetadata?: Record<string, string | number | boolean | null>
+  readonly clientMetadata?: JsonObject
 }
 
 export interface Turn {
@@ -104,12 +139,12 @@ export interface Turn {
 }
 
 // ============================================================================
-// 5. QUEST CONTRACT & LIFECYCLE (Section G)
+// 6. QUEST CONTRACT & LIFECYCLE (Section G)
 // ============================================================================
 
 /**
  * Operational lifecycle states for multi-step goals.
- * Persisted across restarts and process boundaries.
+ * Persisted across restarts and process boundaries in SQLite (C8).
  */
 export type QuestStatus =
   | "CREATED"                   // Quest registered in SQLite
@@ -137,7 +172,7 @@ export interface Quest {
 }
 
 // ============================================================================
-// 6. PLAN & PLAN STEP CONTRACTS (Sections H & I)
+// 7. PLAN & PLAN STEP CONTRACTS (Sections H & I)
 // ============================================================================
 
 /**
@@ -159,7 +194,7 @@ export interface PlanStep {
   readonly id: PlanStepId
   readonly objective: string
   readonly capabilityId: CapabilityId
-  readonly arguments: Record<string, unknown>
+  readonly arguments: JsonObject
   readonly dependsOn: ReadonlyArray<PlanStepId>
   readonly status: StepStatus
   readonly completionCriteria?: string
@@ -179,11 +214,11 @@ export interface Plan {
 }
 
 // ============================================================================
-// 7. ACTION CLASSIFICATION (Section J)
+// 8. ACTION CLASSIFICATION (Section J)
 // ============================================================================
 
 /**
- * Standard classification for safety, authorization, and confirmation gates.
+ * Standard classification for safety, authorization, and confirmation gates (C4).
  */
 export type ActionClass =
   | "READ_ONLY"        // Idempotent reads; no state changes (e.g. search, list, readNote)
@@ -197,7 +232,7 @@ export type ActionClass =
   | "SYSTEM_ACTION"    // Interacts with OS-level settings, tokens, or sidecars
 
 // ============================================================================
-// 8. CONFIRMATION VOCABULARY (Section K)
+// 9. CONFIRMATION VOCABULARY (Section K)
 // ============================================================================
 
 /**
@@ -212,11 +247,14 @@ export type ConfirmationState =
   | "EXPIRED"       // Confirmation window elapsed without user response
 
 // ============================================================================
-// 9. OPERATION & IDEMPOTENCY VOCABULARY (Section L)
+// 10. OPERATION & IDEMPOTENCY VOCABULARY (Section L & Step 5)
 // ============================================================================
 
 /**
  * Lifecycle states of an operation in the persistent operation ledger (C5).
+ * Note: Provides logical deduplication and replay protection, with UNKNOWN_COMMIT
+ * handling for unverifiable external mutations. Universal "exactly-once" execution
+ * is impossible across remote networks; UNKNOWN_COMMIT represents uncertain remote commit.
  */
 export type OperationStatus =
   | "PENDING"         // Operation registered in ledger; dispatch in progress
@@ -236,7 +274,7 @@ export type IdempotencyClass =
   | "UNKNOWN"                         // Unaudited capability behavior
 
 // ============================================================================
-// 10. CAPABILITY AVAILABILITY (Section M)
+// 11. CAPABILITY AVAILABILITY (Section M)
 // ============================================================================
 
 /**
@@ -251,7 +289,7 @@ export type CapabilityAvailability =
   | "UNAVAILABLE"     // Target sidecar, server, or binary is offline or unreachable
 
 // ============================================================================
-// 11. PROVIDER ROLES (Section N)
+// 12. PROVIDER ROLES (Section N)
 // ============================================================================
 
 /**
@@ -265,7 +303,7 @@ export type ProviderRole =
   | "FINALIZER"  // Grounded outcome synthesis from ledger and step results
 
 // ============================================================================
-// 12. RUNTIME ERROR TAXONOMY (Section P)
+// 13. RUNTIME ERROR TAXONOMY (Section P)
 // ============================================================================
 
 /**
@@ -286,22 +324,18 @@ export interface RuntimeErrorEnvelope {
   readonly message: string
   readonly code?: string
   readonly retryable: boolean
-  readonly details?: Record<string, unknown>
+  readonly details?: JsonObject
 }
 
 // ============================================================================
-// 13. COMPONENT INTERFACES (Section Q)
+// 14. COMPONENT INTERFACES (Section Q)
 // ============================================================================
 
 /**
  * Component interface: Intent Classification
  */
 export interface IntentClassifier {
-  classify(input: TurnInput, context?: TraceContext): Promise<{
-    readonly mode: ExecutionMode
-    readonly confidence: number
-    readonly rationale?: string
-  }>
+  classify(input: TurnInput, context?: TraceContext): Promise<ClassificationOutcome>
 }
 
 /**
@@ -342,7 +376,7 @@ export interface PlanValidator {
 export interface QuestExecutor {
   execute(quest: Quest, plan: Plan, context?: TraceContext): Promise<{
     readonly updatedQuest: Quest
-    readonly stepResults: Record<string, unknown>
+    readonly stepResults: Record<string, JsonValue>
   }>
 }
 
@@ -350,7 +384,7 @@ export interface QuestExecutor {
  * Component interface: Completion Verifier
  */
 export interface CompletionVerifier {
-  verify(quest: Quest, plan: Plan, stepResults: Record<string, unknown>, context?: TraceContext): Promise<{
+  verify(quest: Quest, plan: Plan, stepResults: Record<string, JsonValue>, context?: TraceContext): Promise<{
     readonly satisfied: boolean
     readonly missingGoals?: ReadonlyArray<string>
     readonly explanation?: string
@@ -365,14 +399,14 @@ export interface Finalizer {
     readonly turn: Turn
     readonly quest?: Quest
     readonly plan?: Plan
-    readonly stepResults?: Record<string, unknown>
+    readonly stepResults?: Record<string, JsonValue>
   }, context?: TraceContext): Promise<{
     readonly responseText: string
   }>
 }
 
 // ============================================================================
-// 14. TURN CONTROLLER BOUNDARY (Section R)
+// 15. TURN CONTROLLER BOUNDARY (Section R)
 // ============================================================================
 
 export type TurnEvent =

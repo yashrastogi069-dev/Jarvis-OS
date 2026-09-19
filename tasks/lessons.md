@@ -157,3 +157,11 @@ iteration. Add a new entry after ANY correction from Yash.
     locks the session to that provider. When a subsequent generation step hits
     a 429 quota error, failover to Gemini/NVIDIA is blocked. Read-only tool
     chunks should be buffered pre-commit.
+
+22. **Permanent Scope-Control Rule (Checkpoint Integrity).**
+    Implement the minimum reliable version required by the active checkpoint.
+    If valuable work is not required for the current acceptance gate, substantially
+    increases complexity, or depends on later architecture, record it in
+    `tasks/DEFERRED.md` rather than implementing it immediately. Deferral must
+    NEVER be used to avoid correctness, security, data integrity, mutation safety,
+    or known regression fixes. Applies to C2 through C23.

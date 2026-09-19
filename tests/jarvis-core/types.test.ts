@@ -1,5 +1,5 @@
 // tests/jarvis-core/types.test.ts
-// Verification of Checkpoint C1 Domain Types and Runtime Contracts
+// Verification of Checkpoint C1 Domain Types and Runtime Contracts (Amended)
 
 import { describe, it, expect } from "vitest"
 import fs from "node:fs"
@@ -20,6 +20,7 @@ import {
   type PlanStepId,
   type CapabilityId,
   type ExecutionMode,
+  type ClassificationOutcome,
   type TurnStatus,
   type QuestStatus,
   type StepStatus,
@@ -38,6 +39,9 @@ import {
   type TurnResult,
   type TurnEvent,
   type TurnController,
+  type JsonPrimitive,
+  type JsonValue,
+  type JsonObject,
 } from "@/lib/jarvis-core/types"
 
 describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
@@ -68,13 +72,30 @@ describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
     expect(deserialized.stepId).toBe("step-345")
   })
 
-  it("2. Validates all Execution Modes are distinct", () => {
-    const modes: ExecutionMode[] = ["CHAT", "READ", "ACTION", "QUEST", "AMBIGUOUS"]
+  it("2. Validates Execution Modes describe execution pathways (AMBIGUOUS is excluded)", () => {
+    const modes: ExecutionMode[] = ["CHAT", "READ", "ACTION", "QUEST"]
     const uniqueModes = new Set(modes)
-    expect(uniqueModes.size).toBe(5)
+    expect(uniqueModes.size).toBe(4)
+
+    // Ambiguity is handled via ClassificationOutcome, not an execution mode
+    const resolvedOutcome: ClassificationOutcome = {
+      resolved: true,
+      mode: "ACTION",
+      confidence: 0.98,
+      rationale: "Explicit request to snooze task",
+    }
+    const ambiguousOutcome: ClassificationOutcome = {
+      resolved: false,
+      needsClarification: true,
+      clarificationPrompt: "Did you mean Google Calendar or Apple Calendar?",
+      options: ["Google Calendar", "Apple Calendar"],
+    }
+
+    expect(resolvedOutcome.resolved).toBe(true)
+    expect(ambiguousOutcome.resolved).toBe(false)
   })
 
-  it("3. Validates Turn lifecycle states are distinct and complete", () => {
+  it("3. Validates Turn lifecycle states are distinct and support branched paths", () => {
     const turnStatuses: TurnStatus[] = [
       "RECEIVED",
       "CLASSIFYING",
@@ -89,6 +110,11 @@ describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
     ]
     const uniqueStatuses = new Set(turnStatuses)
     expect(uniqueStatuses.size).toBe(10)
+
+    // Verify fast path states exist
+    expect(turnStatuses).toContain("NEEDS_CLARIFICATION")
+    expect(turnStatuses).toContain("FINALIZING")
+    expect(turnStatuses).toContain("COMPLETED")
   })
 
   it("4. Validates Quest lifecycle states", () => {
@@ -203,7 +229,29 @@ describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
     expect(new Set(errorKinds).size).toBe(7)
   })
 
-  it("11. Serializes representative Turn, Quest, Plan, and TraceContext objects cleanly", () => {
+  it("11. Validates JSON-safe primitives and structures", () => {
+    const jsonPrimitiveString: JsonPrimitive = "hello"
+    const jsonPrimitiveNum: JsonPrimitive = 42
+    const jsonPrimitiveBool: JsonPrimitive = true
+    const jsonPrimitiveNull: JsonPrimitive = null
+
+    const jsonObject: JsonObject = {
+      str: jsonPrimitiveString,
+      num: jsonPrimitiveNum,
+      bool: jsonPrimitiveBool,
+      nil: jsonPrimitiveNull,
+      nested: {
+        items: [1, "two", false],
+      },
+    }
+
+    const str = JSON.stringify(jsonObject)
+    const back = JSON.parse(str)
+    expect(back.str).toBe("hello")
+    expect(back.nested.items[1]).toBe("two")
+  })
+
+  it("12. Serializes representative Turn, Quest, Plan, and TraceContext objects cleanly", () => {
     const traceContext: TraceContext = {
       traceId: asTraceId("trace-001"),
       turnId: asTurnId("turn-001"),
@@ -282,7 +330,7 @@ describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
     expect(parsed.plan.steps[1].dependsOn[0]).toBe("step-001")
   })
 
-  it("12. Static analysis: lib/jarvis-core/types.ts has ZERO framework imports", () => {
+  it("13. Static analysis: lib/jarvis-core/types.ts has ZERO framework imports", () => {
     const typesFilePath = path.join(process.cwd(), "lib", "jarvis-core", "types.ts")
     expect(fs.existsSync(typesFilePath)).toBe(true)
 
@@ -298,7 +346,7 @@ describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
     expect(fileContent).not.toMatch(/import\s+.*NextResponse/)
   })
 
-  it("13. Validates TurnController and event interface can be mock-implemented headlessly", async () => {
+  it("14. Validates TurnController and event interface can be mock-implemented headlessly", async () => {
     const events: TurnEvent[] = []
 
     const mockController: TurnController = {

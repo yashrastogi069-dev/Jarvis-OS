@@ -1,16 +1,16 @@
 [
   {
     "tool": "createTask",
-    "firstExecutionId": 64,
-    "secondExecutionId": 65,
+    "firstExecutionId": 69,
+    "secondExecutionId": 70,
     "duplicateCreated": true,
     "mechanism": "No dedupeKey, operationId, or unique title constraint in tasks schema",
     "riskLevel": "HIGH (creates duplicate tasks in SQLite and triggers duplicate notifications)"
   },
   {
     "tool": "saveMemory",
-    "firstExecutionId": 37,
-    "secondExecutionId": 38,
+    "firstExecutionId": 41,
+    "secondExecutionId": 42,
     "duplicateCreated": true,
     "mechanism": "Raw INSERT into memories without unique constraint or semantic deduplication window",
     "riskLevel": "HIGH (pollutes memory table and vec_memories with identical vectors)"
@@ -18,7 +18,7 @@
   {
     "tool": "addWakeWord",
     "duplicateCreated": false,
-    "thrownErrorOnDuplicate": "A wake word with the phrase \"test-wake-1789815540827\" already exists.",
+    "thrownErrorOnDuplicate": "A wake word with the phrase \"test-wake-1789817086183\" already exists.",
     "mechanism": "sqlite table has UNIQUE constraint on phrase; throws unhandled exception on retry",
     "riskLevel": "MEDIUM (prevents duplicate, but throws unhandled crash instead of returning existing record)"
   },

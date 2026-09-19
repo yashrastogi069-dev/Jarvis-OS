@@ -1017,7 +1017,7 @@
       "largeResultHandled": true,
       "errorFormat": "SUCCESSFUL_RETURN",
       "exceptionMessage": null,
-      "sampleOutputSnippet": "{\"saved\":true,\"memoryIds\":[36],\"semanticIndex\":false}"
+      "sampleOutputSnippet": "{\"saved\":true,\"memoryIds\":[40],\"semanticIndex\":false}"
     },
     {
       "toolName": "recallMemory",
@@ -1043,7 +1043,7 @@
       "largeResultHandled": true,
       "errorFormat": "SUCCESSFUL_RETURN",
       "exceptionMessage": null,
-      "sampleOutputSnippet": "{\"memories\":[{\"id\":36,\"content\":\"[AUDIT TEST] Pref: 日本語 🚀 éèê مرحبا\",\"category\":\"test\",\"source\":\"chat\",\"createdAt\":\"202"
+      "sampleOutputSnippet": "{\"memories\":[{\"id\":40,\"content\":\"[AUDIT TEST] Pref: 日本語 🚀 éèê مرحبا\",\"category\":\"test\",\"source\":\"chat\",\"createdAt\":\"202"
     },
     {
       "toolName": "deleteMemory",
@@ -1121,7 +1121,7 @@
       "largeResultHandled": true,
       "errorFormat": "SUCCESSFUL_RETURN",
       "exceptionMessage": null,
-      "sampleOutputSnippet": "{\"id\":63,\"title\":\"[AUDIT TEST] Task 日本語 🚀\",\"status\":\"open\"}"
+      "sampleOutputSnippet": "{\"id\":68,\"title\":\"[AUDIT TEST] Task 日本語 🚀\",\"status\":\"open\"}"
     },
     {
       "toolName": "listTasks",
