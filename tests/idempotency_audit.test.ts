@@ -5,7 +5,7 @@ import { describe, it, expect } from "vitest";
 import { writeFileSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { allTools } from "@/lib/agent";
-import { listTasks, deleteTask, getTask } from "@/lib/tasks";
+import { listTasks, deleteTask } from "@/lib/tasks";
 import { listMemories, deleteMemory, getMemory } from "@/lib/memory";
 
 const OUTPUT_FILE = path.join(process.cwd(), "logs", "idempotency_test_results.json");

@@ -83,7 +83,7 @@ describe("Canonical Tool Inventory & Contract Audit", () => {
       }
 
       // Check confirmation policy in tool description or schema
-      const desc = toolObj.description || "";
+      const desc = typeof toolObj.description === "string" ? toolObj.description : "";
       const requiresConfirmation = schemaDef.includes("confirmed") || desc.toLowerCase().includes("confirmation");
       const hasPreviewStep = desc.toLowerCase().includes("preview") || desc.toLowerCase().includes("confirmed:false");
 

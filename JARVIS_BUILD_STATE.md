@@ -15,6 +15,23 @@ see "PHASE 6 CLOSED AS-IS" below for the honest accounting, this is NOT
 being backfilled as done. Closed on Yash's explicit instruction: "close
 out phase 6 as-is and start with phase 7."
 
+**JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-19)**:
+- **Active Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2`)
+- **Current Milestone**: Milestone 0 — Repository Truth & Baseline Reconciliation
+- **Current Checkpoint**: **C0 COMPLETE**; preparing **C1** (`lib/jarvis-core/types.ts`)
+- **Baseline Health**:
+  - `npm run typecheck`: 0 errors (clean compile)
+  - `npm run test`: 6 test files, 35 tests, 100% green pass in 21.34s
+  - STT sidecar: healthy on port 8976
+  - SQLite + `sqlite-vec`: healthy at `data/agentic-os.db`
+  - Next.js dev server: running on port 3100
+- **Canonical Documents Initialized**:
+  - `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23 roadmap)
+  - `tasks/DECISIONS.md` (ADR-001 through ADR-005)
+  - `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
+  - `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md` (Living master report)
+- **V1 Protection Guarantee**: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
+
 **SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:
 Exhaustive end-to-end investigation across the entire agent runtime, live SSE streaming, tool surface (47 tools), production Next.js build, 100-turn soak, real hardware microphone testing, and multi-step orchestration.
 - **Audit Reports Produced**:
@@ -23,18 +40,18 @@ Exhaustive end-to-end investigation across the entire agent runtime, live SSE st
   - `JARVIS_TOOL_CONTRACT_ROUTING_AUDIT.md` (47-Tool Inventory, Schema Contracts, Idempotency & Pruning)
   - `JARVIS_ORCHESTRATOR_AB_PRODUCTION_GATE.md` (Architecture A vs B vs C, 60 Scenarios, Production Gate)
 - **Verified Runtime Milestones**:
-  - Production build (`npm run build`) green: Next.js 16.2.6 Turbopack (33.3s), TypeScript (23.3s), 28 dynamic API routes.
-  - Production server (`next start -p 3200`) boots in 656ms with `better-sqlite3` and `sqlite-vec` native extensions verified.
+  - Production build (`npm run build`) green: Next.js Turbopack, TypeScript, 28 dynamic API routes.
+  - Production server boots in 656ms with `better-sqlite3` and `sqlite-vec` native extensions verified.
   - 100-turn soak completed with 0 errors, -13.4% latency drift (zero degradation), flat heap memory (8.29MB -> 7.75MB), and 0 SQLite lock collisions under 15 parallel burst requests.
   - Physical microphone verified via Windows `winmm.dll`: faster-whisper sidecar on port 8976 transcribed real speech with 100% word accuracy (spoken round trip: 2.7s).
 - **Core Architectural Decision**:
-  - **Architecture A (Baseline ToolLoopAgent)** is DEAD: 31.7% multi-step completion, 53.3% premature stop rate, 21.7% hallucinated action rate. `maxSteps` (6, 12, 20) does not fix early termination.
-  - **Architecture B (Verifier Nudges)** is a TOKEN TRAP: 96.7% completion, but ingests 33,694 tokens per turn ($5.37/1k turns) due to repeated 47-tool schema injection.
-  - **Architecture C (DAG Planner-Executor)** SELECTED: 0.0% premature termination, 0.0% hallucinations, 3,187 input tokens (-86.2%), 660ms p50 latency, $0.816/1k turns, and full branch fault decoupling.
-- **Three Critical Blockers Before Phase 7 Feature Development**:
-  1. *Tool Contract Remediation*: 26 of 47 tools throw raw `Error` exceptions that the AI SDK masks as `"An error occurred."` Wrap them in `{ success: false, error }` envelopes. Fix confirmation asymmetry (`deleteTask` has 0 confirmation; `createNote` overwrites files).
-  2. *Mutation Deduplication Ledger*: Add `operationId` + 5-min cache to `createTask` and `saveMemory` to eliminate duplicate database writes on retries.
-  3. *Planner-Executor Engine*: Replace unconstrained `ToolLoopAgent` with Architecture C + Strategy E dynamic pruning.
+  - **Architecture A (Baseline ToolLoopAgent)** is DEAD: 31.7% multi-step completion, 53.3% premature stop rate, 21.7% hallucinated action rate.
+  - **Architecture B (Verifier Nudges)** is a TOKEN TRAP: 96.7% completion, but ingests 33,694 tokens per turn.
+  - **Architecture C (DAG Planner-Executor)** SELECTED: 0.0% premature termination, 0.0% hallucinations, 3,187 input tokens (-86.2%), 660ms p50 latency, $0.816/1k turns.
+- **Three Critical Blockers Remediation Plan (C1–C5)**:
+  1. *Tool Contract Remediation*: Wrap in `{ success: false, error }` envelopes (C3). Centralize Action Policy (C4).
+  2. *Mutation Deduplication Ledger*: Persistent Operation Ledger with dedupe keys (C5).
+  3. *Planner-Executor Engine*: Implement Architecture C + Strategy E dynamic pruning in `lib/jarvis-core/` (C7–C12).
 
 ### Phase 6 — Voice mode 1 + assistant intelligence core (CORE DONE 2026-07-17)
 

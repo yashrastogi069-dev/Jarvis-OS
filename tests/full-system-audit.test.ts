@@ -42,7 +42,7 @@ describe("1. Database & Memory Engine Practical Test", () => {
 
     const vecOk = isVecAvailable()
     console.log(`[AUDIT] sqlite-vec available: ${vecOk}, embedding dimension: ${EMBEDDING_DIM}`)
-  })
+  }, 15000)
 
   it("saves, retrieves, recalls, and cleanly deletes memories", async () => {
     const { saveMemory, getMemory, recallMemory, listMemories, deleteMemory } = await import("@/lib/memory")

@@ -1,0 +1,2167 @@
+<USER_REQUEST>
+# JARVIS CORE V2
+
+## MASTER ANTIGRAVITY ENGINEERING, ORCHESTRATION, REMEDIATION & MIGRATION PROTOCOL
+
+You are taking responsibility for a substantial engineering migration of the Jarvis Agentic OS.
+
+This is not a one-shot coding task.
+
+This is a controlled software-engineering program involving:
+
+* architecture;
+* agent runtime design;
+* tool/capability reliability;
+* state machines;
+* persistence;
+* model/provider routing;
+* failure recovery;
+* safety;
+* testing;
+* evaluation;
+* observability;
+* documentation;
+* migration;
+* production verification.
+
+Your responsibility is not to generate the maximum amount of code.
+
+Your responsibility is to move the repository from its current state to a reliable Jarvis Core V2 while:
+
+1. preserving working functionality;
+2. minimizing regressions;
+3. maintaining clear context across sessions;
+4. producing evidence for every important engineering claim;
+5. avoiding repeated investigations;
+6. keeping implementation understandable;
+7. maintaining rollback capability;
+8. preventing autonomous-agent drift.
+
+The primary objective is:
+
+> A real user should be able to give Jarvis a natural-language objective, and Jarvis should understand it, clarify only when necessary, select the correct capabilities, create a reliable plan when required, execute real actions safely and exactly once, recover from failures, track what actually happened, and give an accurate final response without pathological latency.
+
+============================================================
+PART I — OPERATING PHILOSOPHY
+=============================
+
+Follow these principles throughout the project.
+
+### 1. Repository truth beats documentation
+
+Documentation may be stale.
+
+Audit reports may describe previous repository states.
+
+Plans may contain unfinished or superseded work.
+
+The actual repository, database schema, environment configuration, Git state, and executable behavior are the final source of truth.
+
+If documentation conflicts with source:
+
+1. investigate;
+2. determine the actual current state;
+3. record the discrepancy;
+4. update current-state documentation;
+5. preserve useful historical information as HISTORICAL/SUPERSEDED.
+
+Never silently choose one side.
+
+---
+
+### 2. Evidence before architecture assumptions
+
+Do not redesign components because they "seem bad."
+
+Use the existing audits and current source evidence.
+
+Known evidence already supports replacing the existing agent orchestration core.
+
+Do NOT repeatedly re-audit questions that have already been answered unless:
+
+* implementation changed;
+* evidence conflicts;
+* a regression appears;
+* a previous test was invalid.
+
+Do not waste tokens rediscovering established facts.
+
+---
+
+### 3. Fix root causes, not symptoms
+
+Do not solve:
+
+* tool errors with dozens of unrelated try/catch blocks;
+* duplicate mutations with prompt instructions;
+* planning failures by raising maxSteps;
+* latency by arbitrarily shortening every timeout;
+* tool-selection failures with massive prompts;
+* hallucinated success with stronger wording.
+
+Create architectural guarantees.
+
+Examples:
+
+Tool errors
+→ structured capability-result boundary.
+
+Duplicate mutations
+→ runtime-owned persistent operation ledger.
+
+Premature completion
+→ persisted Quest state + completion verification.
+
+Tool overload
+→ capability routing.
+
+Dangerous actions
+→ centralized action policy.
+
+Provider failures
+→ role-aware provider router + global deadline.
+
+---
+
+### 4. Deterministic runtime over probabilistic control
+
+Use LLMs where reasoning is useful.
+
+Use deterministic application code for:
+
+* state transitions;
+* dependency execution;
+* confirmation enforcement;
+* idempotency;
+* retries;
+* timeout accounting;
+* completion detection;
+* mutation tracking;
+* provider health;
+* policy enforcement.
+
+The LLM may propose.
+
+The runtime decides whether execution is valid.
+
+---
+
+### 5. The builder must not be the only reviewer
+
+Whenever possible:
+
+* one agent/sub-agent investigates;
+* another designs/reviews;
+* another implements;
+* another verifies.
+
+The agent that wrote a significant architecture change should not be the only agent assessing whether that change is correct.
+
+Use adversarial review for major changes.
+
+---
+
+### 6. Small checkpoints beat giant diffs
+
+Do not attempt the entire V2 migration in one edit.
+
+Each checkpoint must:
+
+* have a clear objective;
+* have explicit files likely to change;
+* have acceptance conditions;
+* have tests;
+* be reviewable;
+* be reversible.
+
+If a checkpoint fails:
+
+repair or revert the checkpoint.
+
+Do not continue stacking architecture on top of a broken state.
+
+============================================================
+PART II — INITIAL CONTEXT LOADING PROTOCOL
+==========================================
+
+At the beginning of EVERY new major Antigravity session:
+
+Read these files first if present:
+
+1. CLAUDE.md
+2. JARVIS_BUILD_STATE.md
+3. HANDOFF.md
+4. tasks/ACTIVE_PLAN.md
+5. tasks/MASTER_PLAN_V2.md
+6. tasks/lessons.md
+7. tasks/DECISIONS.md
+8. tasks/KNOWN_ISSUES.md
+9. latest remediation/core-V2 implementation report
+10. relevant recent Git history
+
+Then read relevant source files.
+
+Do NOT begin by reading the entire repository indiscriminately.
+
+Load context according to the task.
+
+For example:
+
+tool contract task:
+read capability/tool/runtime files.
+
+planner task:
+read planner/quest/runtime/provider files.
+
+voice regression:
+read voice pipeline only.
+
+Avoid flooding the context window with unrelated code.
+
+============================================================
+PART III — CANONICAL PROJECT DOCUMENTATION
+==========================================
+
+Do not create endless overlapping MD files.
+
+Maintain a SMALL CANONICAL SET.
+
+The following documents should be authoritative.
+
+---
+
+1. JARVIS_BUILD_STATE.md
+
+---
+
+Purpose:
+
+The current factual state of the project.
+
+It must contain:
+
+CURRENT PHASE
+CURRENT RUNTIME
+CURRENT BRANCH
+LAST VERIFIED COMMIT
+WHAT WORKS
+WHAT IS PARTIALLY WORKING
+WHAT IS BROKEN
+CURRENT BLOCKERS
+ACTIVE FEATURE FLAGS
+CURRENT ACCEPTANCE METRICS
+NEXT CHECKPOINT
+
+Keep this concise.
+
+This is not a diary.
+
+Historical material should be moved/labeled clearly.
+
+---
+
+---
+
+2. HANDOFF.md
+
+---
+
+Purpose:
+
+Allow another engineering agent to continue immediately.
+
+HANDOFF.md should answer:
+
+What are we building?
+
+Why?
+
+What architecture was chosen?
+
+Where are we now?
+
+What changed in the last session?
+
+What is unfinished?
+
+What must NOT be changed?
+
+What should the next agent do first?
+
+Which tests should be run?
+
+Which files matter?
+
+Which known traps exist?
+
+Keep this document operational.
+
+Do not turn it into a history book.
+
+At the END of every meaningful work session:
+
+update HANDOFF.md.
+
+---
+
+---
+
+3. tasks/ACTIVE_PLAN.md
+
+---
+
+Purpose:
+
+The only active execution plan.
+
+It should contain:
+
+CURRENT MILESTONE
+
+CURRENT CHECKPOINT
+
+OBJECTIVE
+
+DEPENDENCIES
+
+FILES EXPECTED TO CHANGE
+
+TESTS REQUIRED
+
+ACCEPTANCE CRITERIA
+
+RISKS
+
+STATUS
+
+NEXT CHECKPOINT
+
+Only one checkpoint should be ACTIVE.
+
+Future checkpoints may be listed as QUEUED.
+
+Completed checkpoints should be summarized rather than retaining massive detail.
+
+---
+
+---
+
+4. tasks/DECISIONS.md
+
+---
+
+Purpose:
+
+Record important architectural decisions.
+
+Use lightweight ADR-style entries.
+
+Each decision should contain:
+
+Decision ID
+
+Date
+
+Problem
+
+Options considered
+
+Chosen option
+
+Why
+
+Trade-offs
+
+What would cause reconsideration
+
+Examples:
+
+ADR-001:
+Build Core V2 beside V1 instead of modifying ToolLoopAgent.
+
+ADR-002:
+Use persisted Quest state.
+
+ADR-003:
+Runtime owns operationId.
+
+ADR-004:
+Use capability routing instead of injecting all tools.
+
+Do not repeatedly debate settled architecture unless new evidence appears.
+
+---
+
+---
+
+5. tasks/KNOWN_ISSUES.md
+
+---
+
+Purpose:
+
+Maintain unresolved defects.
+
+Each issue:
+
+ID
+severity
+description
+reproduction
+suspected/confirmed cause
+status
+related checkpoint
+regression test
+owner if applicable
+
+Statuses:
+
+OPEN
+INVESTIGATING
+FIXING
+VERIFYING
+RESOLVED
+DEFERRED
+
+Never mark RESOLVED unless a regression test exists where practical.
+
+---
+
+---
+
+6. tasks/lessons.md
+
+---
+
+Purpose:
+
+Prevent repeated mistakes.
+
+Add only durable engineering lessons.
+
+Examples:
+
+"Do not treat model TTFT as full-turn latency."
+
+"Do not expose all tool schemas on every turn."
+
+"Do not retry external mutations after uncertain commit."
+
+"Do not rely on the LLM to determine action completion."
+
+Keep lessons short and actionable.
+
+---
+
+---
+
+7. JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md
+
+---
+
+Purpose:
+
+Long-form evidence and engineering record.
+
+Unlike BUILD_STATE or HANDOFF, this may contain detailed:
+
+benchmarks
+architecture diagrams
+test results
+before/after metrics
+migration history
+failure-injection evidence
+production verification
+
+Update progressively.
+
+Do not regenerate from scratch every session.
+
+============================================================
+PART IV — SESSION START PROCEDURE
+=================================
+
+At the beginning of work:
+
+### Step 1 — Establish Git truth
+
+Run:
+
+git status
+git branch --show-current
+git log --oneline -20
+git diff
+git diff --cached
+
+Determine:
+
+branch
+HEAD
+dirty files
+staged files
+untracked files
+unexpected modifications
+
+Never perform destructive Git operations automatically.
+
+Do not:
+
+git reset --hard
+git clean -fd
+force checkout
+discard unknown work
+
+without explicit user authorization.
+
+---
+
+### Step 2 — Read current state documents
+
+Read:
+
+JARVIS_BUILD_STATE.md
+HANDOFF.md
+tasks/ACTIVE_PLAN.md
+tasks/DECISIONS.md
+tasks/KNOWN_ISSUES.md
+tasks/lessons.md
+
+---
+
+### Step 3 — State the current objective internally
+
+Before editing code, establish:
+
+What exact checkpoint are we completing?
+
+What evidence proves this checkpoint is necessary?
+
+What files are likely involved?
+
+What tests prove completion?
+
+What could regress?
+
+---
+
+### Step 4 — Ask questions only when they materially matter
+
+Questions are encouraged when a wrong assumption could cause:
+
+architecture divergence;
+data loss;
+security risk;
+large rework;
+product-behavior ambiguity;
+irreversible external actions.
+
+Do NOT stop for trivial questions that can be resolved from:
+
+repository evidence;
+existing documentation;
+tests;
+reasonable engineering defaults.
+
+When questions are needed:
+
+group them.
+
+Do not ask one tiny question per message.
+
+Prefer:
+
+"Before implementing this architecture decision, I need answers to these 4 issues."
+
+If the user does not answer and implementation can safely continue with a reversible assumption:
+
+record the assumption and proceed.
+
+============================================================
+PART V — SUB-AGENT STRATEGY
+===========================
+
+Use sub-agents deliberately.
+
+Do NOT spawn many sub-agents just because they are available.
+
+For major checkpoints use roles such as:
+
+---
+
+## A. RECON AGENT
+
+Responsibilities:
+
+inspect current implementation;
+find relevant files;
+trace execution;
+identify dependencies;
+identify existing abstractions;
+report risks.
+
+Recon agent should NOT redesign everything.
+
+Deliverable:
+
+short evidence report with file/function references.
+
+---
+
+---
+
+## B. ARCHITECT AGENT
+
+Responsibilities:
+
+review Recon findings;
+propose minimal architecture;
+identify interfaces;
+define invariants;
+identify migration approach.
+
+Architect should answer:
+
+What must be guaranteed?
+
+Where should the responsibility live?
+
+What can remain unchanged?
+
+What is the smallest maintainable design?
+
+Deliverable:
+
+implementation design.
+
+---
+
+---
+
+## C. IMPLEMENTATION AGENT
+
+Responsibilities:
+
+implement only the approved checkpoint;
+avoid unrelated cleanup;
+add tests;
+update types/interfaces.
+
+Implementation agent must follow existing repository conventions.
+
+---
+
+---
+
+## D. ADVERSARIAL REVIEW AGENT
+
+Responsibilities:
+
+assume the implementation is wrong;
+look for:
+
+race conditions
+state inconsistencies
+retry bugs
+duplicate execution
+security mistakes
+bad edge cases
+unhandled errors
+wrong assumptions
+overengineering
+hidden regressions
+
+The reviewer should not merely praise the implementation.
+
+---
+
+---
+
+## E. TEST / EVALUATION AGENT
+
+Responsibilities:
+
+run targeted tests;
+run regression cases;
+inspect failures;
+measure real metrics;
+compare before/after.
+
+The test agent must not alter product behavior simply to make tests pass.
+
+---
+
+### Parallelization rule
+
+Parallelize:
+
+independent research
+independent reviews
+different read-only investigations
+different test analyses
+
+Do NOT parallelize agents editing the same architectural files unless explicitly coordinated.
+
+Avoid merge-conflict-producing parallel work.
+
+============================================================
+PART VI — SKILLS / TOOL USAGE PROTOCOL
+======================================
+
+At checkpoint start:
+
+inspect available engineering skills relevant to the task.
+
+Use skills intentionally.
+
+Examples:
+
+architecture/system-design skills
+TypeScript engineering skills
+database/schema skills
+testing/evaluation skills
+security review skills
+performance profiling skills
+UI/UX skills only when working on UI
+agent-design skills
+code-review skills
+
+Do not blindly invoke every available skill.
+
+Too many overlapping skill instructions create context noise.
+
+Before using a skill ask:
+
+Does this skill improve this checkpoint?
+
+Is it directly relevant?
+
+Would it conflict with repository rules?
+
+Use the minimum useful skill set.
+
+Record important skill-driven decisions in the checkpoint report when material.
+
+============================================================
+PART VII — CORE V2 ARCHITECTURE TARGET
+======================================
+
+Build Jarvis Core V2 BESIDE V1.
+
+Do not transform lib/agent.ts into a giant hybrid.
+
+Target structure:
+
+lib/
+jarvis-core/
+
+```
+runtime/
+  turn-controller.ts
+  quest-engine.ts
+
+intent/
+  classifier.ts
+  ambiguity.ts
+
+capabilities/
+  registry.ts
+  router.ts
+  types.ts
+
+planning/
+  planner.ts
+  schemas.ts
+  validator.ts
+  replanner.ts
+
+policy/
+  action-policy.ts
+  confirmation.ts
+
+execution/
+  executor.ts
+  tool-runner.ts
+  operation-ledger.ts
+  retry-policy.ts
+  timeout-policy.ts
+
+providers/
+  router.ts
+  roles.ts
+  health.ts
+
+context/
+  builder.ts
+  retrieval.ts
+
+observability/
+  trace.ts
+  metrics.ts
+  events.ts
+
+responses/
+  finalizer.ts
+```
+
+Exact file names may change if repository conventions support a cleaner design.
+
+Do not create abstractions merely to match this tree.
+
+============================================================
+PART VIII — EXECUTION PATHS
+===========================
+
+Not every user request should enter full planning.
+
+Classify requests.
+
+---
+
+## PATH A — CHAT
+
+Examples:
+
+Hello Jarvis.
+Explain recursion.
+Write a poem.
+
+Flow:
+
+User
+→ Turn Controller
+→ CHAT model
+→ response
+
+No tool schemas.
+
+No planner.
+
+No Quest execution graph.
+
+---
+
+---
+
+## PATH B — SIMPLE READ
+
+Example:
+
+What tasks do I have?
+
+Flow:
+
+Intent
+→ capability routing
+→ deterministic read capability
+→ response
+
+Avoid unnecessary planner call.
+
+---
+
+---
+
+## PATH C — SIMPLE ACTION
+
+Example:
+
+Create a task to call Sam tomorrow at 4pm.
+
+Flow:
+
+Intent/extraction
+→ validation
+→ policy
+→ operation identity
+→ execution
+→ result
+→ response
+
+Planner optional only if extraction cannot be reliably deterministic.
+
+---
+
+---
+
+## PATH D — COMPLEX GOAL
+
+Example:
+
+Check tomorrow's meeting, look through related emails, research the company, summarize what I need to know, and remind me 30 minutes before.
+
+Flow:
+
+Quest creation
+→ routing
+→ structured planning
+→ plan validation
+→ policy
+→ DAG execution
+→ replan if required
+→ completion verification
+→ finalizer
+
+============================================================
+PART IX — CAPABILITY REGISTRY
+=============================
+
+Replace fragmented tool metadata with one canonical capability registry.
+
+Each capability should define:
+
+id
+domain
+description
+inputSchema
+resultSchema
+handler
+actionClass
+confirmationPolicy
+idempotencyPolicy
+availability
+configuration dependencies
+timeoutPolicy
+retryPolicy
+routing metadata
+
+Action classes:
+
+READ_ONLY
+LOCAL_CREATE
+LOCAL_UPDATE
+LOCAL_DELETE
+EXTERNAL_CREATE
+EXTERNAL_UPDATE
+EXTERNAL_SEND
+EXTERNAL_DELETE
+SYSTEM_ACTION
+
+All runtime subsystems should derive behavior from this metadata where practical.
+
+Do not separately maintain:
+
+tool definitions
+prompt hint list
+confirmation table
+router capability list
+availability list
+
+if one canonical source can generate them.
+
+============================================================
+PART X — STRUCTURED TOOL RESULT CONTRACT
+========================================
+
+Expected capability failures must become structured results.
+
+Do not allow routine failures to crash SSE.
+
+Standardize:
+
+success
+data
+error.code
+error.message
+error.retryable
+error.fixAction
+
+Error types should include where appropriate:
+
+UNCONFIGURED
+AUTH_REQUIRED
+PERMISSION_DENIED
+NOT_FOUND
+INVALID_INPUT
+CONFLICT
+ALREADY_EXISTS
+RATE_LIMITED
+TIMEOUT
+NETWORK_ERROR
+CANCELLED
+INTERNAL_ERROR
+
+Tool wrappers must normalize:
+
+Error objects
+undefined
+BigInt
+class instances
+network exceptions
+OAuth failures
+connector-offline states
+
+Ensure JSON serialization.
+
+============================================================
+PART XI — ACTION SAFETY
+=======================
+
+Centralize action policy.
+
+Never rely purely on tool descriptions for safety.
+
+READ_ONLY
+→ normally no confirmation.
+
+LOCAL_CREATE
+→ usually direct, but idempotent.
+
+LOCAL_DELETE
+→ confirmation.
+
+EXTERNAL_SEND
+→ confirmation unless covered by explicit durable authorization.
+
+EXTERNAL_DELETE
+→ confirmation.
+
+EXTERNAL_UPDATE
+→ confirmation when visible/destructive.
+
+SYSTEM_ACTION
+→ explicit policy.
+
+Known cases needing special review:
+
+deleteTask
+createNote overwrite
+sendTelegram
+Gmail send/reply
+GitHub writes
+calendar writes
+skill execution/deployment
+
+Ambiguity + destructive action
+→ clarification before confirmation.
+
+============================================================
+PART XII — QUEST ENGINE
+=======================
+
+Quest Engine must become a real persisted runtime.
+
+Quest is not simply a prompt.
+
+Persist:
+
+Quest
+QuestStep
+OperationExecution
+
+Quest state must survive:
+
+provider failure
+SSE disconnect
+browser refresh
+replan
+model change
+
+Quest states may include:
+
+CREATED
+NEEDS_CLARIFICATION
+WAITING_FOR_CONFIRMATION
+READY
+RUNNING
+PARTIALLY_COMPLETED
+COMPLETED
+BLOCKED
+FAILED
+CANCELLED
+
+Step states:
+
+PENDING
+READY
+WAITING_FOR_CONFIRMATION
+RUNNING
+COMPLETED
+BLOCKED_WITH_REASON
+FAILED_RETRYABLE
+FAILED_FINAL
+UNKNOWN_COMMIT
+CANCELLED
+
+============================================================
+PART XIII — OPERATION LEDGER
+============================
+
+Runtime owns operation identity.
+
+LLM does not.
+
+Derive stable mutation identity from logical execution step.
+
+Example:
+
+questId:stepId:capabilityId
+
+Persist operation state.
+
+Same logical retry:
+
+reuse operation ID.
+
+If already SUCCEEDED:
+
+return previous result.
+
+Do not execute again.
+
+External actions with uncertain remote commit:
+
+UNKNOWN_COMMIT.
+
+Do not blindly retry UNKNOWN_COMMIT.
+
+Verify remote state if possible.
+
+Otherwise explain uncertainty.
+
+============================================================
+PART XIV — CAPABILITY ROUTING
+=============================
+
+Do not expose all tools to every request.
+
+Use previous routing corpus and Strategy E results as starting evidence.
+
+Improve routing until:
+
+required capability recall >=99.5%.
+
+Prefer 100% on fixed corpus.
+
+Router must FAIL OPEN.
+
+If uncertain:
+
+select broader relevant domain/capability set.
+
+Do not aggressively prune and hide needed functionality.
+
+Initially run router in SHADOW MODE.
+
+Log:
+
+request class
+predicted domains
+selected capabilities
+confidence
+fallback
+required capability present?
+
+After gate passes:
+
+allow V2 router to control capability visibility.
+
+============================================================
+PART XV — AMBIGUITY / CLARIFICATION
+===================================
+
+This is first-class architecture.
+
+Do not bury it inside planner prompting.
+
+Examples:
+
+"Remind me later."
+→ ask when.
+
+"Send him this."
+→ resolve recipient or ask.
+
+"Delete that."
+→ resolve unambiguously or ask.
+
+Do not fabricate required parameters.
+
+Use conversation context where confidence is strong.
+
+Avoid unnecessary questions.
+
+Build ambiguity evaluation corpus.
+
+Target:
+
+> =95% correct clarification decisions.
+
+0 ambiguous destructive execution.
+
+============================================================
+PART XVI — STRUCTURED PLANNER
+=============================
+
+Planner returns structured Plan data.
+
+Not prose.
+
+Plan contains:
+
+planId
+objective
+steps
+clarification status if applicable
+
+Step contains:
+
+id
+objective
+capability
+arguments
+dependencies
+completionCriteria
+expectedActionClass
+
+Planner never directly executes capabilities.
+
+============================================================
+PART XVII — PLAN VALIDATOR
+==========================
+
+Never execute planner output blindly.
+
+Validate:
+
+known capability
+enabled capability
+schema-valid args
+valid dependencies
+acyclic graph
+correct action classification
+connector availability
+confirmation requirements
+operation identity
+plan limits
+depth
+fan-out
+
+Reject or repair unsafe/invalid plans.
+
+============================================================
+PART XVIII — EXECUTOR
+=====================
+
+Executor must be deterministic application code.
+
+Executor:
+
+loads Quest;
+finds READY steps;
+checks dependencies;
+checks policy;
+checks confirmation;
+assigns operation identity;
+executes capability;
+stores result;
+updates step;
+unblocks dependents.
+
+Parallelize independent READ_ONLY work where safe.
+
+Do not parallelize dependent mutations.
+
+One branch failing must not automatically kill independent branches.
+
+============================================================
+PART XIX — REPLANNER
+====================
+
+Replan only when needed.
+
+Do not call planner after every step.
+
+Replan when:
+
+dependency fails;
+service unavailable;
+results invalidate later arguments;
+capability unavailable;
+user corrects goal.
+
+Preserve:
+
+completed work
+operation IDs
+confirmations
+blocked state
+mutation history
+
+Never replay completed mutation steps.
+
+============================================================
+PART XX — COMPLETION VERIFIER
+=============================
+
+Before Quest finalization:
+
+all required goals must resolve.
+
+Allowed terminal goal states:
+
+COMPLETED
+BLOCKED_WITH_REASON
+CANCELLED
+
+Do not finish with required steps still:
+
+PENDING
+READY
+RUNNING
+NEEDS_CLARIFICATION
+WAITING_FOR_CONFIRMATION
+
+This is a runtime check.
+
+Not an LLM opinion.
+
+============================================================
+PART XXI — PROVIDER ROLE ROUTING
+================================
+
+Do not treat every provider as identical.
+
+Roles:
+
+CHAT
+PLANNER
+REPLANNER
+FINALIZER
+
+Executor is application code.
+
+Maintain provider capability/health metadata:
+
+model
+provider
+role eligibility
+healthy
+TTFT
+error rate
+rate limit
+cooldown
+last failure
+
+A provider may be:
+
+chatEligible = true
+
+plannerEligible = false
+
+This is valid.
+
+Benchmark planner providers against the actual Plan schema.
+
+============================================================
+PART XXII — CONTEXT MANAGEMENT
+==============================
+
+Do not inject everything into every turn.
+
+Construct context according to request.
+
+Possible sources:
+
+recent conversation
+relevant user memory
+active Quest
+task context
+connector status
+selected capabilities
+
+Log token contribution.
+
+Avoid irrelevant tool schemas and memory.
+
+Prefer retrieval over unconditional injection.
+
+============================================================
+PART XXIII — TIMEOUT / FAILOVER MODEL
+=====================================
+
+Replace stacked provider watchdogs.
+
+Track:
+
+CONNECT_TIMEOUT
+FIRST_TOKEN_TIMEOUT
+PLAN_TIMEOUT
+TOOL_TIMEOUT
+FINALIZER_TIMEOUT
+GLOBAL_TURN_DEADLINE
+
+Set thresholds from observed healthy latency.
+
+All provider attempts share the same global turn budget.
+
+Provider failover must not reset the full user-visible timer.
+
+Retry policies differ by operation class.
+
+READ_ONLY:
+safe retries where appropriate.
+
+MUTATION:
+respect operation ledger.
+
+UNKNOWN_COMMIT:
+no automatic destructive retry.
+
+============================================================
+PART XXIV — OBSERVABILITY
+=========================
+
+Every turn needs trace identity.
+
+Capture:
+
+TraceId
+TurnId
+QuestId
+PlanId where applicable
+provider
+routing result
+context tokens
+planner latency
+tool latency
+finalizer latency
+total latency
+error category
+
+Structured runtime events:
+
+turn_received
+classified
+routing_complete
+planning_started
+plan_created
+clarification_required
+confirmation_required
+quest_started
+step_started
+step_completed
+step_blocked
+step_failed
+replan_started
+finalizing
+turn_completed
+
+User-facing UI should show simplified progress.
+
+Never silently spin for tens of seconds.
+
+============================================================
+PART XXV — TESTING PYRAMID
+==========================
+
+Every checkpoint requires appropriate tests.
+
+### Level 1 — Unit
+
+Pure functions.
+
+Examples:
+
+router
+policy
+plan validator
+state transitions
+idempotency keys
+timeout accounting
+
+### Level 2 — Contract
+
+Capability schemas/results.
+
+All capability error paths.
+
+### Level 3 — Integration
+
+Quest + DB.
+
+Executor + tools.
+
+Provider + planner.
+
+### Level 4 — End-to-end
+
+Actual /api/chat + SSE.
+
+### Level 5 — Adversarial
+
+rate limit
+timeouts
+malformed responses
+missing auth
+duplicate execution
+ambiguous requests
+provider failover
+
+### Level 6 — Soak/concurrency
+
+100 turns
+parallel reads
+scheduler + chat
+voice + chat
+rapid messages
+
+Do not use lower-level passing tests as proof of full-system reliability.
+
+============================================================
+PART XXVI — EVALUATION LOOPS
+============================
+
+Use the existing evaluation assets as permanent benchmarks.
+
+Maintain:
+
+20-scenario adversarial suite
+227-prompt routing suite
+60-scenario orchestration suite
+47-tool contract suite
+ambiguity corpus
+mutation-failure suite
+100-turn soak
+voice regression suite
+
+Do not change expected outputs merely because implementation fails.
+
+If expectations are wrong:
+
+document why before modifying the evaluation.
+
+For nondeterministic model behavior:
+
+repeat important cases.
+
+Measure:
+
+success rate
+variance
+p50
+p95
+p99 where sample size permits
+
+============================================================
+PART XXVII — RED/GREEN/REFACTOR LOOP
+====================================
+
+For every known defect:
+
+1. reproduce failure;
+2. create regression test;
+3. verify test fails;
+4. implement smallest architectural fix;
+5. verify regression passes;
+6. run adjacent tests;
+7. refactor if useful;
+8. run regression again;
+9. update KNOWN_ISSUES;
+10. update active checkpoint status.
+
+Do not declare fixes based solely on visual inspection.
+
+============================================================
+PART XXVIII — CODE REVIEW LOOP
+==============================
+
+After each major checkpoint:
+
+run adversarial review.
+
+Reviewer must specifically look for:
+
+hidden duplicate side effects;
+unsafe retries;
+state machine gaps;
+stale state;
+race conditions;
+DB transaction problems;
+security bypasses;
+prompt injection boundaries;
+tool output injection;
+secret leakage;
+uncaught errors;
+timeout leaks;
+memory growth;
+unbounded loops;
+unnecessary LLM calls;
+overengineering.
+
+Review findings become:
+
+BLOCKING
+IMPORTANT
+OPTIONAL
+
+Fix BLOCKING before checkpoint completion.
+
+============================================================
+PART XXIX — SECURITY REVIEW
+===========================
+
+Treat external content as untrusted.
+
+Examples:
+
+web search result
+email
+GitHub issue
+Obsidian note
+web page
+Telegram message
+
+External content may contain malicious instructions.
+
+Never allow content returned by tools to redefine:
+
+system policy
+confirmation requirements
+tool permissions
+provider configuration
+
+Separate:
+
+instructions
+from
+data.
+
+Test prompt injection scenarios.
+
+============================================================
+PART XXX — PERFORMANCE ENGINEERING
+==================================
+
+Measure before optimizing.
+
+Track stage latency:
+
+route
+validation
+context
+routing
+planner
+provider queue
+TTFT
+tool
+replan
+finalizer
+SSE/UI
+
+Do not report TTFT as complete-turn latency.
+
+Use real end-to-end latency.
+
+Record:
+
+p50
+p95
+slowest traces
+
+Optimize largest contributors first.
+
+============================================================
+PART XXXI — TOKEN / COST DISCIPLINE
+===================================
+
+Avoid unnecessary LLM calls.
+
+Ask:
+
+Can deterministic code solve this?
+
+Can one LLM call solve this?
+
+Can we route without planner?
+
+Can we avoid re-sending full context?
+
+Can tool schemas be reduced?
+
+Do not sacrifice reliability merely to reduce tokens.
+
+But do not use:
+
+planner
+verifier
+critic
+replanner
+finalizer
+
+for every trivial chat message.
+
+============================================================
+PART XXXII — MIGRATION ORDER
+============================
+
+Recommended Core V2 migration order:
+
+1. foundational types
+2. capability registry
+3. ToolResult contract
+4. policy engine
+5. operation ledger
+6. intent/ambiguity
+7. routing shadow mode
+8. Quest persistence
+9. planner
+10. validator
+11. executor
+12. completion verifier
+13. replanner
+14. provider role router
+15. finalizer
+16. structured SSE
+
+Then migrate capabilities by risk:
+
+1. Tasks
+2. Memory
+3. Research
+4. Read-only connectors
+5. Notes
+6. Local mutations
+7. External writes
+8. System/skill actions
+
+Do not start with Gmail/Telegram writes before local execution guarantees work.
+
+============================================================
+PART XXXIII — CHECKPOINT FRAMEWORK
+==================================
+
+Use this exact pattern for each checkpoint.
+
+---
+
+## CHECKPOINT HEADER
+
+Checkpoint:
+Objective:
+Evidence:
+Dependencies:
+Expected files:
+Risk:
+Acceptance criteria:
+
+---
+
+## RECON
+
+Relevant source:
+Existing behavior:
+Known problems:
+Reusable components:
+Possible conflicts:
+
+---
+
+## DESIGN
+
+Proposed change:
+Interfaces:
+State changes:
+DB changes:
+Failure behavior:
+Rollback:
+
+---
+
+## IMPLEMENT
+
+Only approved scope.
+
+---
+
+## VERIFY
+
+Typecheck:
+Unit:
+Contract:
+Integration:
+E2E:
+Performance if relevant:
+
+---
+
+## REVIEW
+
+Adversarial review findings.
+
+---
+
+## DOCUMENT
+
+Update:
+
+ACTIVE_PLAN
+KNOWN_ISSUES
+BUILD_STATE where required
+HANDOFF
+implementation report
+DECISIONS if architecture changed
+
+---
+
+## COMMIT / CHECKPOINT
+
+Only after gate passes.
+
+============================================================
+PART XXXIV — USER COMMUNICATION
+===============================
+
+When reporting progress to the user:
+
+do not dump raw implementation noise.
+
+Report:
+
+what checkpoint was completed;
+what changed;
+what evidence proves it;
+what failed;
+what remains;
+what the next checkpoint is.
+
+If you uncover a major architectural contradiction:
+
+stop that branch of implementation and tell the user.
+
+If multiple paths are genuinely viable and have meaningful trade-offs:
+
+present them clearly and ask the user.
+
+Do not ask for approval for minor engineering details.
+
+============================================================
+PART XXXV — HANDOFF PROTOCOL
+============================
+
+Before ending any substantial session:
+
+1. ensure repository is in understandable state;
+2. run relevant tests;
+3. record unresolved failures;
+4. update ACTIVE_PLAN;
+5. update BUILD_STATE;
+6. update KNOWN_ISSUES;
+7. update HANDOFF;
+8. record new architectural decisions;
+9. record exact next command/task.
+
+HANDOFF must end with:
+
+NEXT AGENT START HERE
+
+containing:
+
+1. current branch;
+2. current checkpoint;
+3. last passing tests;
+4. current failing tests;
+5. files to read first;
+6. exact next engineering action;
+7. things NOT to change.
+
+A new agent should be able to resume without reconstructing the entire history.
+
+============================================================
+PART XXXVI — ANTI-CONFUSION RULES
+=================================
+
+Never have multiple contradictory active plans.
+
+Only tasks/ACTIVE_PLAN.md is active.
+
+MASTER_PLAN is strategic.
+
+HANDOFF is operational context.
+
+BUILD_STATE is factual status.
+
+DECISIONS records architecture.
+
+KNOWN_ISSUES tracks defects.
+
+Do not duplicate the same information in all files.
+
+If old plans conflict:
+
+mark them SUPERSEDED.
+
+Do not let a historical TODO become current work accidentally.
+
+============================================================
+PART XXXVII — ANTI-OVERENGINEERING RULES
+========================================
+
+Jarvis is local-first.
+
+Do not introduce:
+
+Kubernetes
+Kafka
+Redis
+distributed queues
+microservices
+event sourcing frameworks
+workflow SaaS
+new databases
+
+unless measurable evidence proves the current local architecture cannot meet requirements.
+
+Prefer:
+
+TypeScript
+SQLite
+clear interfaces
+small state machines
+persistent tables
+simple queues
+explicit policies
+
+over infrastructure complexity.
+
+============================================================
+PART XXXVIII — STOP CONDITIONS
+==============================
+
+Stop implementation and investigate if:
+
+database corruption risk appears;
+unknown user work could be overwritten;
+migration would destroy data;
+security policy becomes unclear;
+external side effects cannot be made safe;
+architecture contradicts existing critical functionality;
+tests expose a fundamental assumption failure;
+latency materially worsens after an architectural checkpoint.
+
+Do not push through uncertainty simply to finish the checklist.
+
+============================================================
+PART XXXIX — DEFINITION OF DONE FOR CORE V2
+===========================================
+
+V2 is NOT done because:
+
+TypeScript compiles.
+
+V2 is NOT done because:
+
+unit tests pass.
+
+V2 is NOT done because:
+
+one demo works.
+
+Required gates:
+
+Structured expected tool errors:
+100%.
+
+Generic masked operational errors:
+0.
+
+Logical duplicate mutations:
+0.
+
+Hallucinated successful actions:
+0.
+
+Required-goal premature termination:
+0 on fixed core corpus.
+
+Executable task completion:
+
+> =95%.
+
+Correct goal resolution:
+
+> =95%.
+
+Router required-capability recall:
+
+> =99.5%.
+
+Clarification correctness:
+
+> =95%.
+
+Ambiguous destructive execution:
+0.
+
+Production build:
+PASS.
+
+100-turn soak:
+PASS.
+
+Database consistency:
+PASS.
+
+Voice regression:
+PASS.
+
+No ordinary request:
+45–120 second silent freeze.
+
+============================================================
+PART XL — CURRENT STARTING STRATEGY
+===================================
+
+Do not begin by implementing the planner.
+
+Begin by making the substrate trustworthy.
+
+Recommended checkpoint sequence:
+
+C0 — Repository truth & documentation reconciliation
+
+C1 — Jarvis Core V2 domain types and runtime interfaces
+
+C2 — Canonical capability registry
+
+C3 — Structured ToolResult boundary
+
+C4 — Central action/confirmation policy
+
+C5 — Persistent operation ledger
+
+C6 — Intent + ambiguity system
+
+C7 — Capability router in shadow mode and routing evaluation
+
+C8 — Persisted Quest engine
+
+C9 — Structured planner
+
+C10 — Plan validator
+
+C11 — Deterministic DAG executor
+
+C12 — Completion verifier
+
+C13 — Controlled replanner
+
+C14 — Provider-role router and global deadline model
+
+C15 — Finalizer
+
+C16 — Structured progress/SSE integration
+
+C17 — Tasks/Memory/Research migration
+
+C18 — Read-only connector migration
+
+C19 — External mutation migration
+
+C20 — Full V1 vs V2 evaluation
+
+C21 — Production canary
+
+C22 — V2 default
+
+C23 — Legacy removal after confidence period
+
+============================================================
+PART XLI — FIRST SESSION INSTRUCTIONS
+=====================================
+
+For the first session after receiving this prompt:
+
+DO NOT attempt C0 through C23.
+
+Perform only:
+
+C0
+and prepare C1.
+
+Specifically:
+
+1. establish Git state;
+2. read canonical project documents;
+3. reconcile stale documentation;
+4. inspect current runtime architecture;
+5. verify audit-described fixes against actual source;
+6. map current agent/tool/provider boundaries;
+7. identify reusable infrastructure;
+8. identify V1 code that must remain untouched initially;
+9. create/update canonical documentation files;
+10. create tasks/ACTIVE_PLAN.md if not present;
+11. define C1 scope;
+12. run baseline typecheck/tests/build required to establish current health;
+13. produce a concise C0 completion report.
+
+Do NOT begin major architecture implementation until C0 proves the repository state is understood.
+
+============================================================
+PART XLII — C0 OUTPUT FORMAT
+============================
+
+At the end of C0 report:
+
+A. Repository State
+
+B. Current Runtime Architecture
+
+C. Audit Claims Verified in Source
+
+D. Audit Claims Not Matching Source
+
+E. Healthy Components to Preserve
+
+F. Components to Replace
+
+G. Documentation Corrections Made
+
+H. Baseline Test Results
+
+I. Current Risks
+
+J. C1 Proposed Scope
+
+K. Questions for User, ONLY IF materially required
+
+L. Exact Next Action
+
+============================================================
+FINAL ENGINEERING PRINCIPLE
+===========================
+
+Do not attempt to make Jarvis "look agentic."
+
+Make Jarvis reliable.
+
+A correct Jarvis:
+
+knows what the user wants;
+
+knows when it does not know;
+
+knows which capabilities exist;
+
+knows which actions are safe;
+
+knows exactly which steps remain;
+
+knows which actions already happened;
+
+knows what failed;
+
+knows what can still continue;
+
+and never confuses a generated sentence with real-world execution.
+
+START WITH C0 ONLY.
+
+Preserve V1.
+
+Establish truth.
+
+Then proceed checkpoint by checkpoint.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-19T16:10:26+05:30.
+</ADDITIONAL_METADATA>
