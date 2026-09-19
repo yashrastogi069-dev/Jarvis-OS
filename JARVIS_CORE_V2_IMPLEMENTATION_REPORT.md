@@ -570,6 +570,32 @@ Checkpoint C5 implements the persistent runtime-owned Operation Ledger in SQLite
 
 *End of Checkpoint C5 Report.*
 
+---
+
+## Checkpoint C6 Report — Intent Analysis & Ambiguity System
+
+### 1. Executive Summary
+Checkpoint C6 implements deterministic intent classification and ambiguity detection in `lib/jarvis-core/intent/`. It establishes two foundational guarantees:
+1. **Sub-millisecond Fast Path**: Predictable conversational greetings, factual questions, simple read queries, single-capability mutations, and multi-step conjunctions are classified deterministically without incurring LLM round-trip latency.
+2. **Destructive Ambiguity Invariant**: Any destructive action lacking an explicit identifier or title (e.g. "delete that task", "remove memory", "cancel meeting") is intercepted deterministically before routing or ledger execution, returning structured `needsClarification: true` with `ambiguityType: "AMBIGUOUS_TARGET"` or `"MISSING_REQUIRED_FIELD"`.
+
+### 2. Implementation Ledger
+- `lib/jarvis-core/intent/types.ts`: `IntentCategory` (`CHAT`, `READ`, `MUTATION_SINGLE`, `GOAL_MULTI_STEP`), `AmbiguityType` (`AMBIGUOUS_TARGET`, `MISSING_REQUIRED_FIELD`, etc.), `ClarificationRequest`, `ResolvedIntent`, `ClarificationIntent`, and `IntentAnalysisResult` discriminated unions.
+- `lib/jarvis-core/intent/ambiguity.ts`: `AmbiguityDetector` detecting underspecified target IDs or parameters on destructive actions across tasks, memories, calendars, emails, GitHub issues, and notes.
+- `lib/jarvis-core/intent/classifier.ts`: `DeterministicFastPathClassifier` handling high-precision pattern recognition for conversational, informational, and operational intents.
+- `lib/jarvis-core/intent/analyzer.ts`: `IntentAnalyzer` coordinating ambiguity pre-checks, fast-path classification, and LLM fallback interfaces with confidence thresholding (≥0.75).
+- `lib/jarvis-core/intent/index.ts`: Canonical module exports.
+- `tests/jarvis-core/intent-analysis.test.ts`: 13 automated unit tests evaluating 40 fixed benchmark scenarios with 100% accuracy.
+
+### 3. Verification Evidence
+- `pnpm typecheck` (`tsc --noEmit`): **0 errors** (code 0).
+- `vitest run tests/jarvis-core/intent-analysis.test.ts`: **13 tests passed (100% green)** in 23ms.
+- `vitest run tests/jarvis-core/`: **6 test files, 118 tests passed (100% green)** in 7.79s.
+- `pnpm build`: **Turbopack build succeeded in 17.4s, TypeScript finished in 22.7s, all 28 API routes generated**.
+
+*End of Checkpoint C6 Report.*
+
+
 
 
 

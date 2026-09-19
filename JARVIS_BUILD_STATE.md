@@ -18,12 +18,12 @@ out phase 6 as-is and start with phase 7."
 **JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-19)**:
 - **Active Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2`)
 - **Current Milestone**: Phase 1 — Trustworthy Runtime Foundation
-- **Current Checkpoint**: **C5 COMPLETE** (`lib/jarvis-core/ledger/ledger.ts`); **C6 ACTIVE** (`lib/jarvis-core/intent/`)
+- **Current Checkpoint**: **C6 COMPLETE** (`lib/jarvis-core/intent/`); **C7 ACTIVE** (`lib/jarvis-core/routing/`)
 - **Baseline Health**:
   - Framework: Next.js 16.2.6 (React 19.2.4)
   - Canonical Package Manager: `pnpm` (lockfile v9.0, workspace overrides pinned)
   - Typecheck: `pnpm typecheck` (tsc --noEmit) -> 0 errors
-  - Automated Tests: `pnpm vitest run tests/jarvis-core/` -> 5 test files, 105 tests, 100% green pass
+  - Automated Tests: `pnpm vitest run tests/jarvis-core/` -> 6 test files, 118 tests, 100% green pass
   - STT sidecar: healthy on port 8976
   - SQLite + `sqlite-vec`: healthy at `data/agentic-os.db`
   - Production Build: `pnpm build` green (Next.js Turbopack, 28 dynamic routes)
@@ -33,7 +33,8 @@ out phase 6 as-is and start with phase 7."
   - `lib/jarvis-core/capabilities/safe-boundary.ts` + `result.ts` + `json.ts` + `normalizer.ts`: Authoritative structured CapabilityResult execution gateway with deterministic JSON serialization, 14-code semantic error taxonomy, context-aware RetryHint, UNKNOWN_COMMIT distinction on external mutation timeouts, complete secret redaction, and AI SDK error containment (C3).
   - `lib/jarvis-core/safety/`: Central Action Safety Policy Manager (`policy.ts`), unforgeable single-use 24-byte crypto tokens, canonical SHA-256 argument binding (`canonical.ts`), deterministic action previews (`preview.ts`), clarification precedence for ambiguous deletes, zero model authority, and execution gateway (`authorizeAndExecuteCapability`) (C4).
   - `lib/jarvis-core/ledger/`: Persistent Operation Ledger in SQLite (`ledger.ts`), claim-before-execute pattern, canonical dedupeKey hashing (`canonical.ts`), logical idempotency, concurrent conflict guards, UNKNOWN_COMMIT protection, boot crash recovery, and retention pruning (C5).
-  - `tests/jarvis-core/`: 5 test files, 105 automated tests validating domain contracts, capability integrity, safe boundary execution, safety confirmation policies, and operation ledger lifecycle (100% green).
+  - `lib/jarvis-core/intent/`: Intent Analysis & Ambiguity System (`analyzer.ts`, `classifier.ts`, `ambiguity.ts`), sub-millisecond fast-path classification, destructive ambiguity interception (`AMBIGUOUS_TARGET`), and structured clarification requests (C6).
+  - `tests/jarvis-core/`: 6 test files, 118 automated tests validating domain contracts, capability integrity, safe boundary execution, safety confirmation policies, operation ledger lifecycle, and intent/ambiguity classification (100% green).
   - V1 Protection Guarantee: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
 
 **SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:

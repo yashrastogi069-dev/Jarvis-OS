@@ -255,11 +255,52 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 - V1 runtime in `lib/` remains 100% functional and untouched.
 
 ### Commit & Push
-- **Commit**: Pending C5 git commit (`feat(core-v2): add persistent operation ledger`)
-- **Push**: `origin/jarvis-core-v2`
+- **Commit**: `c43dd13` (*"feat(core-v2): add persistent operation ledger"*)
+- **Push**: `origin/jarvis-core-v2` (verified: YES)
 
 ### Next
-- Checkpoint C6: Intent Analysis & Ambiguity System (`lib/jarvis-core/intent/`). (ACTIVE)
+- Checkpoint C6: Intent Analysis & Ambiguity System (`lib/jarvis-core/intent/`). (COMPLETE)
+
+---
+
+## [2026-09-19] Checkpoint C6 — Intent Analysis & Ambiguity System
+- **Status**: COMPLETE
+- **Corpus / Baseline**: 40-scenario fixed evaluation corpus across conversational, informational, single-capability mutations, multi-step goals, and destructive ambiguity prompts (100% classification accuracy).
+
+### Architecture & Implementation
+- Created `lib/jarvis-core/intent/types.ts`:
+  - `IntentCategory` union (`CHAT`, `READ`, `MUTATION_SINGLE`, `GOAL_MULTI_STEP`).
+  - `AmbiguityType` union (`AMBIGUOUS_TARGET`, `MISSING_REQUIRED_FIELD`, `MULTIPLE_MATCHES`, `CONTRADICTORY_INSTRUCTION`, `UNSPECIFIED_RECIPIENT`).
+  - `ClarificationRequest`, `ResolvedIntent`, `ClarificationIntent`, and `IntentAnalysisResult` discriminated unions.
+- Created `lib/jarvis-core/intent/ambiguity.ts`:
+  - `AmbiguityDetector` detecting underspecified destructive requests missing explicit IDs/titles (tasks, memory, meetings, emails, GitHub issues, Obsidian notes).
+  - Enforces Destructive Ambiguity Invariant: returns `AMBIGUOUS_TARGET` or `MISSING_REQUIRED_FIELD` to prevent unintended confirmations.
+- Created `lib/jarvis-core/intent/classifier.ts`:
+  - `DeterministicFastPathClassifier` with sub-millisecond classification across chat, read-only queries, single mutations, and multi-step conjunctions/action sequences.
+- Created `lib/jarvis-core/intent/analyzer.ts`:
+  - `IntentAnalyzer` coordinating ambiguity detection, deterministic fast-path classification, and model fallback interfaces with strict confidence thresholds (≥0.75).
+- Created `lib/jarvis-core/intent/index.ts`: canonical module exports.
+- Created `tests/jarvis-core/intent-analysis.test.ts`:
+  - 13 automated test suites verifying conversational detection, read capability matching, single-mutation domain tagging, multi-step goal isolation, destructive deletion ambiguity interception, context-aware clarification resolution, model fallback interfaces, sub-millisecond execution latency (<5ms), and 40-scenario fixed corpus evaluation.
+
+### Verification
+- `pnpm typecheck` (`tsc --noEmit`): PASS (0 errors)
+- `vitest run tests/jarvis-core/intent-analysis.test.ts`: PASS (13 tests in 23ms)
+- `vitest run tests/jarvis-core/`: PASS (6 test files, 118 tests, 100% green)
+- `pnpm build`: Next.js Turbopack build succeeded, 28 dynamic API routes generated.
+
+### Review
+- Deterministic fast path bypasses LLM latency for predictable queries.
+- Destructive actions without unambiguous targets can never proceed to execution without user clarification.
+- V1 runtime in `lib/` remains 100% functional and untouched.
+
+### Commit & Push
+- **Commit**: Pending
+- **Push**: Pending
+
+### Next
+- Checkpoint C7: Capability Router & Shadow Evaluation (`lib/jarvis-core/routing/`). (ACTIVE)
+
 
 
 

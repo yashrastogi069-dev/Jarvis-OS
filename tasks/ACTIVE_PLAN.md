@@ -97,10 +97,10 @@
 - [x] **C5: Persistent Operation Ledger (COMPLETE)**
 
 ### Phase 2: Intent, Routing & Quest Engine (Checkpoints C6 – C8)
-- [ ] **C6: Intent Analysis & Ambiguity System (ACTIVE)**
+- [x] **C6: Intent Analysis & Ambiguity System (COMPLETE)**
   - Path: `lib/jarvis-core/intent/`
-  - Deterministic classification: direct answer vs single tool vs multi-step goal vs clarification request.
-- [ ] **C7: Capability Router & Shadow Evaluation (Strategy E Primary Candidate)**
+  - Deterministic classification: direct answer vs single tool vs multi-step goal vs clarification request. Destructive ambiguity protection verified on 40-prompt corpus.
+- [ ] **C7: Capability Router & Shadow Evaluation (ACTIVE - Strategy E Primary Candidate)**
   - Path: `lib/jarvis-core/routing/`
   - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; requires ≥99.5% required-capability recall on the fixed evaluation corpus, 100% recall on known regression prompts, shadow mode first, fail-open fallback on low confidence, with ≤12 tools as heuristic target rather than absolute invariant.
 
