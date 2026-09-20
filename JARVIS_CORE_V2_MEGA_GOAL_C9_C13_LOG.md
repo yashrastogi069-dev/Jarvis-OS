@@ -17,9 +17,9 @@
 | **C9** | Structured DAG Planner | **COMPLETE** | `lib/jarvis-core/planner/`, typed step output references, JSON Pointer, conservative plan bounds, provider adapter (22 tests). | `5a74148` |
 | **C10** | Deterministic Plan Validator | **COMPLETE** | `lib/jarvis-core/planner/validator.ts`, cycle detection, registry & schema validation, trusted safety derivation (20 tests). | `7c0b321` |
 | **C11** | Deterministic DAG Executor | **COMPLETE** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery (10 tests). | `121b402` |
-| **C12** | Terminal Completion Verifier | **COMPLETE** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion (5 tests). | Commit pending |
-| **C13** | Controlled Replanner | **ACTIVE** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget. | TBD |
-| **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **QUEUED** | 20 headless end-to-end scenarios validating complete orchestration stack. | TBD |
+| **C12** | Terminal Completion Verifier | **COMPLETE** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion (5 tests). | `7a1c0f5` |
+| **C13** | Controlled Replanner | **COMPLETE** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget (9 tests). | PENDING_COMMIT |
+| **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **ACTIVE** | 20 headless end-to-end scenarios validating complete orchestration stack. | TBD |
 
 ---
 
@@ -111,3 +111,30 @@
   - `pnpm vitest run tests/jarvis-core/`: 13 test files, 234/234 passed (100% green).
   - `pnpm typecheck`: 0 errors.
   - `pnpm build`: Next.js production build succeeded with 0 errors.
+
+---
+
+## 7. Checkpoint C13 Report — Controlled Replanner
+
+- **Objective**: Bounded replan budget (<=2 attempts per quest), material trigger detection, patch semantics on unfinished subgraphs, absolute immutability of completed step history, and deterministic validation gate for composite plans.
+- **Files Created / Modified**:
+  - `lib/jarvis-core/planner/types.ts`: Added `MAX_REPLAN_ATTEMPTS = 2`, `ReplanTriggerType` (`"MISSING_PREREQUISITE" | "USER_REDIRECTION" | "EXTERNAL_STATE_MISMATCH" | "RECOVERABLE_STEP_FAILURE"`), `ReplanEligibility`, `ReplanRequest`, and `ReplanResult`.
+  - `lib/jarvis-core/planner/replanner.ts`: `ControlledReplanner` implementing:
+    - `evaluateReplanEligibility()`: Rejects attempts >= 2; categorizes material failure triggers; verifies failed step presence in plan.
+    - `replan()`: Immutable history preservation (completed step definitions, outputs, and ledger operations are permanently preserved and cannot be overwritten); pruned subgraph calculation (removes failed step and any downstream steps dependent on it); validates composite graph (preserved + intact pending + replacement steps) through `DeterministicPlanValidator` to guarantee 0 cycles, valid schemas, trusted safety derivation, and valid `$ref` pointers.
+  - `lib/jarvis-core/planner/index.ts`: Exported `ControlledReplanner` and replanner types.
+  - `tests/jarvis-core/replanner.test.ts`: 9 unit tests verifying:
+    1. Material trigger detection (`MISSING_PREREQUISITE`, `USER_REDIRECTION`, `EXTERNAL_STATE_MISMATCH`, `RECOVERABLE_STEP_FAILURE`).
+    2. Strict 2-attempt budget enforcement (attempt 0, 1 allowed; attempt 2 rejected with `eligible: false`).
+    3. Immutable completed history preservation (completed steps are never removed or mutated).
+    4. Subgraph patching & pruning (prunes failed step and cascading dependents while retaining unaffected pending steps).
+    5. Structural rejection if replan produces cyclic dependencies.
+    6. Structural rejection if replan references nonexistent step outputs.
+    7. Structural rejection on graph depth/breadth/fan-out limit violations.
+    8. Full integration: Replanner generates valid composite plan that executes smoothly in `DeterministicDAGExecutor`.
+- **Verification Metrics**:
+  - `pnpm vitest run tests/jarvis-core/replanner.test.ts`: 9/9 passed (100% green).
+  - `pnpm vitest run tests/jarvis-core/`: 14 test files, 243/243 passed (100% green).
+  - `pnpm typecheck`: 0 errors.
+  - `pnpm build`: Next.js production build succeeded with 0 errors.
+

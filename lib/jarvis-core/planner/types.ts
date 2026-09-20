@@ -15,6 +15,7 @@ import type {
 } from "../types"
 import type { IntentAnalysisResult } from "../intent/types"
 import type { CapabilityDefinition } from "../capabilities/types"
+import type { ValidatedExecutionPlan } from "./validator"
 
 export type CapabilityDescriptor =
   | CapabilityDefinition
@@ -145,3 +146,41 @@ export interface PlannerError {
 export type PlannerResult =
   | { readonly success: true; readonly plan: ExecutionPlan }
   | { readonly success: false; readonly error: PlannerError }
+
+// ============================================================================
+// 7. CONTROLLED REPLANNER CONTRACTS (Checkpoint C13)
+// ============================================================================
+
+export const MAX_REPLAN_ATTEMPTS = 2
+
+export type ReplanTriggerType =
+  | "RECOVERABLE_STEP_FAILURE"
+  | "MISSING_PREREQUISITE"
+  | "USER_REDIRECTION"
+  | "EXTERNAL_STATE_MISMATCH"
+
+export interface ReplanEligibility {
+  readonly eligible: boolean
+  readonly trigger?: ReplanTriggerType
+  readonly reason: string
+  readonly remainingAttempts: number
+}
+
+export interface ReplanRequest {
+  readonly failedStepId: PlanStepId
+  readonly trigger: ReplanTriggerType
+  readonly reason: string
+  readonly attemptCount: number
+  readonly completedStepIds: ReadonlyArray<PlanStepId>
+  readonly replacementSteps: ReadonlyArray<PlannerStep>
+}
+
+export interface ReplanResult {
+  readonly success: boolean
+  readonly newPlan?: ValidatedExecutionPlan
+  readonly preservedStepIds: ReadonlyArray<PlanStepId>
+  readonly prunedStepIds: ReadonlyArray<PlanStepId>
+  readonly addedStepIds: ReadonlyArray<PlanStepId>
+  readonly attemptCount: number
+  readonly error?: string
+}
