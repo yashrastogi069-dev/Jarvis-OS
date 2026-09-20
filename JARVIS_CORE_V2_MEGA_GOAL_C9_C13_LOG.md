@@ -19,7 +19,7 @@
 | **C11** | Deterministic DAG Executor | **COMPLETE** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery (10 tests). | `121b402` |
 | **C12** | Terminal Completion Verifier | **COMPLETE** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion (5 tests). | `7a1c0f5` |
 | **C13** | Controlled Replanner | **COMPLETE** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget (9 tests). | `545188b` |
-| **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **COMPLETE** | `tests/jarvis-core/integration-c9-c13.test.ts`, 20 canonical headless scenarios validating full orchestration stack. | PENDING_COMMIT |
+| **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **COMPLETE** | `tests/jarvis-core/integration-c9-c13.test.ts`, 20 canonical headless scenarios validating full orchestration stack. | `46e22c5` |
 
 ---
 

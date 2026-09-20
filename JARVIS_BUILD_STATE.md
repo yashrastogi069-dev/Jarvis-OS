@@ -15,30 +15,35 @@ see "PHASE 6 CLOSED AS-IS" below for the honest accounting, this is NOT
 being backfilled as done. Closed on Yash's explicit instruction: "close
 out phase 6 as-is and start with phase 7."
 
-**JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-20)**:
+**JARVIS CORE V2 MIGRATION PROTOCOL ACTIVE (2026-09-21)**:
 - **Active Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2`)
-- **Current Milestone**: Phase 1 — Trustworthy Runtime Foundation (Checkpoints C0–C8 Complete) & Pre-C9 Foundation Reconciliation Gate
-- **Current Status**: **PRE-C9 FOUNDATION RECONCILIATION COMPLETE & VERIFIED**
-- **Next Checkpoint**: C9 — Structured DAG Planner (`lib/jarvis-core/planner/`) — **READY / QUEUED** (STOP at Pre-C9 gate; DO NOT begin C9)
+- **Current Milestone**: Phase 2 — Planning, Execution & Verification (Checkpoints C9–C13 Complete) & Cross-Checkpoint Integration Gate
+- **Current Status**: **MEGA GOAL C9–C13 COMPLETE & INTEGRATION GATE VERIFIED** (Commits: C9 `5a74148`, C10 `7c0b321`, C11 `121b402`, C12 `7a1c0f5`, C13 `545188b`, Integration `46e22c5`)
+- **Next Checkpoint**: C14 / Phase 3 Integration — **QUEUED / PENDING AUTHORIZATION** (STOP; DO NOT begin C14; DO NOT cut over production `/api/chat`)
 - **Baseline Health**:
   - Framework: Next.js 16.2.6 (React 19.2.4)
   - Canonical Package Manager: `pnpm` (lockfile v9.0, workspace overrides pinned)
-  - Typecheck: `pnpm typecheck` (tsc --noEmit) -> 0 errors
-  - Automated Tests: `pnpm vitest run tests/jarvis-core/` -> 9 test files, 175 tests, 100% green pass
+  - Typecheck: `pnpm typecheck` (`npx tsc --noEmit`) -> 0 errors
+  - Automated Tests: `pnpm vitest run tests/jarvis-core/` -> 15 test files, 263 tests, 100% green pass
   - STT sidecar: healthy on port 8976
   - SQLite + `sqlite-vec`: healthy at `data/agentic-os.db`
   - Production Build: `pnpm build` green (Next.js Turbopack, 28 dynamic routes)
 - **Core V2 Architecture Baseline Established**:
-  - `lib/jarvis-core/types.ts`: Foundation domain types, lifecycles, and component interfaces with zero framework coupling (C1; reconciled Pre-C9 with `AWAITING_VERIFICATION` and backward-compatible aliases).
-  - `lib/jarvis-core/capabilities/`: Canonical Capability Registry with 47 registered user-facing capabilities across 12 domains, formal classifications for 4 unexposed skill candidates, diagnostics utility, and 1:1 V1 compatibility adapter (C2).
-  - `lib/jarvis-core/capabilities/safe-boundary.ts` + `result.ts` + `json.ts` + `normalizer.ts`: Authoritative structured CapabilityResult execution gateway with deterministic JSON serialization, 14-code semantic error taxonomy, context-aware RetryHint, UNKNOWN_COMMIT distinction on external mutation timeouts, complete secret redaction, and AI SDK error containment (C3).
-  - `lib/jarvis-core/safety/`: Central Action Safety Policy Manager (`policy.ts`), unforgeable single-use 24-byte crypto tokens, canonical SHA-256 argument binding (`canonical.ts`), deterministic action previews (`preview.ts`), clarification precedence for ambiguous deletes, zero model authority, and execution gateway (`authorizeAndExecuteCapability`) (C4).
-  - `lib/jarvis-core/ledger/`: Persistent Operation Ledger in SQLite (`ledger.ts`), claim-before-execute pattern, runtime-owned logical `operationId` derivation (`canonical.ts`), canonical argument hash mismatch guards, crash recovery `UNKNOWN_COMMIT` semantics for in-flight mutations, concurrent conflict guards, and retention pruning (C5).
-  - `lib/jarvis-core/intent/`: Intent Analysis & Ambiguity System (`analyzer.ts`, `classifier.ts`, `ambiguity.ts`), canonical `ExecutionMode` (`CHAT`, `READ`, `ACTION`, `QUEST`), destructive ambiguity interception (`AMBIGUOUS_TARGET`), and expanded held-out ambiguity synonym suite (C6).
-  - `lib/jarvis-core/routing/`: Capability Router & Shadow Evaluation (`router.ts`, `strategy-e.ts`, `evaluator.ts`), 100% recall on 227-item benchmark corpus, 6.68 average tools exposed (85.7% token reduction), conversational chit-chat pruning, and fail-open safe fallback (C7).
-  - `lib/jarvis-core/quest/`: Persisted Quest Engine in SQLite (`engine.ts`, `schema.ts`), multi-step goal tracking, dependency DAG enforcement, crash recovery reconciling ledger `UNKNOWN_COMMIT` states, `AWAITING_VERIFICATION` step completion gateway, and `verifyAndCompleteQuest` C12 boundary (C8).
-  - `tests/jarvis-core/integration-c4-c8.test.ts`: 9 end-to-end integration tests verifying all 7 canonical runtime scenarios without planner and 2 crash recovery validations (100% green).
-  - `tests/jarvis-core/`: 9 test files, 175 automated tests validating the complete C1–C8 stack and Pre-C9 contracts.
+  - `lib/jarvis-core/types.ts`: Foundation domain types, lifecycles, and component interfaces with zero framework coupling (C1).
+  - `lib/jarvis-core/capabilities/`: Canonical Capability Registry with 47 registered user-facing capabilities across 12 domains (C2).
+  - `lib/jarvis-core/capabilities/safe-boundary.ts`: Authoritative structured CapabilityResult execution gateway with deterministic JSON serialization (C3).
+  - `lib/jarvis-core/safety/`: Central Action Safety Policy Manager (`policy.ts`), unforgeable tokens, argument binding, preview generators (C4).
+  - `lib/jarvis-core/ledger/`: Persistent Operation Ledger in SQLite (`ledger.ts`), claim-before-execute pattern, runtime-owned operation IDs, UNKNOWN_COMMIT crash safety (C5).
+  - `lib/jarvis-core/intent/`: Intent Analysis & Ambiguity System (`analyzer.ts`, `classifier.ts`, `ambiguity.ts`), canonical ExecutionMode (`CHAT`, `READ`, `ACTION`, `QUEST`) (C6).
+  - `lib/jarvis-core/routing/`: Capability Router & Shadow Evaluation (`router.ts`), 100% recall on 227-item benchmark corpus, 6.68 average tools exposed (C7).
+  - `lib/jarvis-core/quest/`: Persisted Quest Engine in SQLite (`engine.ts`), multi-step goal tracking, dependency DAG enforcement, crash recovery (C8).
+  - `lib/jarvis-core/planner/`: Structured DAG Planner (`planner.ts`), typed step output references, RFC 6901 JSON pointers, conservative plan bounds, provider adapter (C9).
+  - `lib/jarvis-core/planner/validator.ts`: Deterministic Plan Validator, Kahn's cycle detection, registry & schema validation, trusted safety derivation (C10).
+  - `lib/jarvis-core/executor/`: Deterministic DAG Executor (`executor.ts`), parallel reads (up to 4 concurrent), sequential mutations, JSON pointer resolution, ledger claim, confirmation pause/resume, crash recovery (C11).
+  - `lib/jarvis-core/verifier/`: Terminal Completion Verifier (`verifier.ts`), criteria evaluation, sole terminal authority, anti-premature-completion, SQLite sync (C12).
+  - `lib/jarvis-core/planner/replanner.ts`: Controlled Replanner, material trigger detection, patch semantics on unfinished subgraphs, immutable history, strict 2-attempt budget (C13).
+  - `tests/jarvis-core/integration-c9-c13.test.ts`: 20 canonical headless integration scenarios verifying the complete orchestration stack (100% green).
+  - `tests/jarvis-core/`: 15 test files, 263 automated tests validating the complete C1–C13 stack.
   - V1 Protection Guarantee: V1 runtime in `lib/` remains 100% untouched and functional. Core V2 is engineered beside V1 in `lib/jarvis-core/`.
 
 **SYSTEM RELIABILITY, TOOL CONTRACT & ORCHESTRATION AUDIT COMPLETE (2026-09-18)**:

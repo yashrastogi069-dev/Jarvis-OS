@@ -1,8 +1,8 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
-## Current Milestone: Milestone 0 & 1 — Trustworthy Runtime Foundation (C0–C8 Complete)
-## Current Gate: PRE-C9 FOUNDATION RECONCILIATION = COMPLETE
-## Next Up: C9 — Structured DAG Planner (READY / QUEUED)
+## Current Milestone: Milestone 2 — Planning, Execution & Verification (Checkpoints C9–C13 Complete & Integration Gate Verified)
+## Current Status: C9–C13 MEGA GOAL COMPLETE (Commits: 5a74148, 7c0b321, 121b402, 7a1c0f5, 545188b, 46e22c5)
+## Next Up: C14 — Provider-Role Router & UX Deadline Model (QUEUED / AWAITING AUTHORIZATION)
 
 ---
 
@@ -111,22 +111,26 @@
   - Hardened contracts across C5/C6/C7/C8 before Structured DAG Planning.
   - Reconciled operation identity (`operationId` runtime-owned, argument hash mismatch guard), local mutation crash recovery (`UNKNOWN_COMMIT` on boot), quest step ledger recovery, quest completion boundary (`AWAITING_VERIFICATION` transitioning to C12 `verifyAndCompleteQuest`), intent execution modes, and held-out destructive ambiguity test suite. All 175 jarvis-core unit tests pass (100% green).
 
-### Phase 3: Planning, Execution & Verification (Checkpoints C9 – C13)
-- [x] **C9: Structured DAG Planner (COMPLETE)**
+### Phase 3: Planning, Execution & Verification (Checkpoints C9 – C13) — COMPLETE
+- [x] **C9: Structured DAG Planner (COMPLETE — Commit `5a74148`)**
   - Path: `lib/jarvis-core/planner/`
   - Generates validated directed acyclic graph of steps with typed input references, JSON pointer RFC 6901, and provider-independent adapter. Verified with 22 tests.
-- [ ] **C10: Plan Validator & Safety Checker (ACTIVE)**
+- [x] **C10: Deterministic Plan Validator (COMPLETE — Commit `7c0b321`)**
   - Path: `lib/jarvis-core/planner/validator.ts`
-  - Ensures acyclicity, capability existence, schema satisfaction, and policy compliance before any execution.
-- [ ] **C11: Deterministic DAG Executor**
+  - Ensures acyclicity (Kahn's), capability existence, schema satisfaction, trusted safety metadata derivation, and step output reference integrity before any execution. Verified with 20 tests.
+- [x] **C11: Deterministic DAG Executor (COMPLETE — Commit `121b402`)**
   - Path: `lib/jarvis-core/executor/`
-  - Topological step execution, parallel dispatch of independent steps, ledger registration, step-level error handling.
-- [ ] **C12: Completion Verifier**
+  - Wave-based topological execution, parallel bounded reads (up to 4), serialized mutations, ledger claims, confirmation pause/resume, and crash recovery. Verified with 10 tests.
+- [x] **C12: Terminal Completion Verifier (COMPLETE — Commit `7a1c0f5`)**
   - Path: `lib/jarvis-core/verifier/`
-  - Inspects ledger and goal criteria before terminating; prevents premature termination on multi-goal requests.
-- [ ] **C13: Controlled Replanner & Error Recovery**
+  - Sole terminal authority separating execution from verification; evaluates deterministic criteria against persistent ledger evidence; syncs with SQLite QuestEngine. Verified with 5 tests.
+- [x] **C13: Controlled Replanner & Error Recovery (COMPLETE — Commit `545188b`)**
   - Path: `lib/jarvis-core/planner/replanner.ts`
-  - Recovers from failed steps with bounded replanning budget (max 2 attempts) rather than blind loop churning.
+  - Material trigger detection, patch semantics on unfinished subgraphs, immutable completed history, and strict 2-attempt budget. Verified with 9 tests.
+- [x] **Cross-Checkpoint Integration Gate C9–C13 (COMPLETE — Commit `46e22c5`)**
+  - Path: `tests/jarvis-core/integration-c9-c13.test.ts`
+  - 20 canonical headless scenarios verifying complete planning, validation, execution, verification, and replanning stack (100% green).
+
 
 ### Phase 4: Reliability, Providers & Observability (Checkpoints C14 – C16)
 - [ ] **C14: Provider-Role Router & UX Deadline Model**

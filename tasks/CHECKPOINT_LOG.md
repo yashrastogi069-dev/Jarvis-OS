@@ -421,3 +421,71 @@ Authoritative chronological ledger of validated checkpoints for Jarvis Core V2.
 
 ### Next
 - Checkpoint C9: Structured DAG Planner (`lib/jarvis-core/planner/`).
+
+---
+
+## [2026-09-21] Checkpoint C9: Structured DAG Planner
+- **Status**: COMPLETE
+- **Commit**: `5a74148` (*"feat(core-v2): add structured quest planner"*)
+- **Deliverables**:
+  - `lib/jarvis-core/planner/types.ts`: Plan limits, typed step output references, RFC 6901 JSON pointer contracts.
+  - `lib/jarvis-core/planner/references.ts`: JSON pointer evaluation and step output reference extractors.
+  - `lib/jarvis-core/planner/schema.ts`: Planner JSON schema and validation.
+  - `lib/jarvis-core/planner/prompt.ts`: Provider-independent planner prompt builder.
+  - `lib/jarvis-core/planner/planner.ts`: `StructuredPlanner` generating validated execution plans without invoking tools.
+  - `tests/jarvis-core/planner.test.ts`: 22 unit tests passing (100% green).
+
+---
+
+## [2026-09-21] Checkpoint C10: Deterministic Plan Validator
+- **Status**: COMPLETE
+- **Commit**: `7c0b321` (*"feat(core-v2): add deterministic plan validator"*)
+- **Deliverables**:
+  - `lib/jarvis-core/planner/validator.ts`: `DeterministicPlanValidator` validating Kahn's cycle detection, graph depth/breadth/fan-out bounds, user-facing capability checks, literal argument schema validation, prototype pollution guards, step output reference integrity, and deriving trusted safety metadata.
+  - `tests/jarvis-core/plan-validator.test.ts`: 20 unit tests passing (100% green).
+
+---
+
+## [2026-09-21] Checkpoint C11: Deterministic DAG Executor
+- **Status**: COMPLETE
+- **Commit**: `121b402` (*"feat(core-v2): add deterministic dag executor"*)
+- **Deliverables**:
+  - `lib/jarvis-core/executor/`: `DeterministicDAGExecutor` providing wave-based topological dispatch, parallel bounded reads (up to 4 concurrent), strictly serialized mutations, argument pointer resolution, confirmation pause/resume, operation ledger claiming & caching, cascading blockage propagation, and crash recovery.
+  - `tests/jarvis-core/executor.test.ts`: 10 unit tests passing (100% green).
+
+---
+
+## [2026-09-21] Checkpoint C12: Terminal Completion Verifier
+- **Status**: COMPLETE
+- **Commit**: `7a1c0f5` (*"feat(core-v2): add terminal completion verifier"*)
+- **Deliverables**:
+  - `lib/jarvis-core/verifier/`: `TerminalCompletionVerifier` evaluating deterministic completion criteria (`CAPABILITY_SUCCEEDED`, `OUTPUT_PRESENT`, `CONFIRMATION_ACCEPTED`, `DEPENDENCY_RESOLVED`) against persistent ledger records and verified outputs; sole terminal authority separating execution from verification; synchronizes with SQLite QuestEngine.
+  - `tests/jarvis-core/verifier.test.ts`: 5 unit tests passing (100% green).
+
+---
+
+## [2026-09-21] Checkpoint C13: Controlled Replanner
+- **Status**: COMPLETE
+- **Commit**: `545188b` (*"feat(core-v2): add bounded quest replanner"*)
+- **Deliverables**:
+  - `lib/jarvis-core/planner/replanner.ts`: `ControlledReplanner` enforcing strict 2-attempt budget, material trigger detection (`MISSING_PREREQUISITE`, `USER_REDIRECTION`, `EXTERNAL_STATE_MISMATCH`, `RECOVERABLE_STEP_FAILURE`), patch semantics on unfinished subgraphs, absolute immutability of completed step history, and deterministic validation gate for composite plans.
+  - `tests/jarvis-core/replanner.test.ts`: 9 unit tests passing (100% green).
+
+---
+
+## [2026-09-21] Cross-Checkpoint Integration Gate (C9–C13)
+- **Status**: COMPLETE
+- **Commit**: `46e22c5` (*"feat(core-v2): complete cross-checkpoint integration gate c9-c13"*)
+- **Deliverables**:
+  - `tests/jarvis-core/integration-c9-c13.test.ts`: 20 canonical headless scenarios verifying end-to-end plan generation, validation, execution, verification, replanning, parallel reads, serialized mutations, confirmation pause/resume, JSON pointer argument passing, crash recovery, UNKNOWN_COMMIT cascade blocking, direct action vs quest isolation, error propagation, cancellation, cycle rejection, schema rejection, and 25-run concurrent stress test.
+- **Verification**:
+  - `pnpm vitest run tests/jarvis-core/integration-c9-c13.test.ts`: 20/20 passed (100% green).
+  - `pnpm vitest run tests/jarvis-core/`: 15 test files, 263/263 passed (100% green).
+  - `pnpm typecheck` (`npx tsc --noEmit`): 0 errors.
+  - `pnpm build`: Next.js Turbopack build succeeded with 0 errors.
+
+---
+
+### Next
+- Checkpoint C14: Production Integration Gate / Provider-Role Router (Awaiting User Authorization).
+

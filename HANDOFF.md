@@ -1,23 +1,29 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-09-21**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, C6, C7, and C8**, the **Cross-Checkpoint Integration Gate**, and the **Pre-C9 Foundation Reconciliation Gate** of the **JARVIS CORE V2 MASTER PROTOCOL**.
+Status as of **2026-09-21**. Authoritative state of the codebase following completion of **Checkpoints C0 through C13** and the **C9–C13 Cross-Checkpoint Integration Gate** of the **JARVIS CORE V2 MASTER PROTOCOL**.
 - **Active Git Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2` on `https://github.com/yashrastogi069-dev/Jarvis-OS.git`)
 - **Master Plan**: `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23)
-- **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008, including ADR-002, ADR-003, ADR-004 reconciled Pre-C9)
+- **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008)
 - **Known Issues Ledger**: `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
 - **Deferred Register**: `tasks/DEFERRED.md` (D-001 through D-015)
 - **Living Implementation Report**: `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md`
-- **End-to-End Execution Log**: `JARVIS_CORE_V2_MEGA_GOAL_C4_C8_LOG.md` (Historical execution log)
-- **Foundation Types**: `lib/jarvis-core/types.ts` & `tests/jarvis-core/types.test.ts` (14/14 tests green)
+- **Execution Log (C9–C13)**: `JARVIS_CORE_V2_MEGA_GOAL_C9_C13_LOG.md`
+- **Execution Log (C4–C8)**: `JARVIS_CORE_V2_MEGA_GOAL_C4_C8_LOG.md`
+- **Foundation Types**: `lib/jarvis-core/types.ts` & `tests/jarvis-core/types.test.ts` (15/15 tests green)
 - **Capability Registry**: `lib/jarvis-core/capabilities/` & `tests/jarvis-core/capabilities.test.ts` (12/12 tests green)
 - **Safe Execution Boundary**: `lib/jarvis-core/capabilities/safe-boundary.ts` & `tests/jarvis-core/result-boundary.test.ts` (39/39 tests green)
 - **Central Action Safety Policy**: `lib/jarvis-core/safety/` & `tests/jarvis-core/safety-policy.test.ts` (25/25 tests green)
-- **Persistent Operation Ledger**: `lib/jarvis-core/ledger/` & `tests/jarvis-core/operation-ledger.test.ts` (22/22 tests green)
+- **Persistent Operation Ledger**: `lib/jarvis-core/ledger/` & `tests/jarvis-core/operation-ledger.test.ts` (23/23 tests green)
 - **Intent Analysis & Ambiguity System**: `lib/jarvis-core/intent/` & `tests/jarvis-core/intent-analysis.test.ts` (16/16 tests green)
 - **Capability Router & Shadow Evaluation**: `lib/jarvis-core/routing/` & `tests/jarvis-core/capability-router.test.ts` (23/23 tests green)
 - **Persisted Quest Engine**: `lib/jarvis-core/quest/` & `tests/jarvis-core/quest-engine.test.ts` (15/15 tests green)
-- **Cross-Checkpoint Integration Gate**: `tests/jarvis-core/integration-c4-c8.test.ts` (9/9 tests green)
-- **Total Suite Health**: 9 test files, 175/175 passed (100% green); `pnpm typecheck` 0 errors; `pnpm build` clean.
+- **Structured DAG Planner**: `lib/jarvis-core/planner/` & `tests/jarvis-core/planner.test.ts` (22/22 tests green)
+- **Deterministic Plan Validator**: `lib/jarvis-core/planner/validator.ts` & `tests/jarvis-core/plan-validator.test.ts` (20/20 tests green)
+- **Deterministic DAG Executor**: `lib/jarvis-core/executor/` & `tests/jarvis-core/executor.test.ts` (10/10 tests green)
+- **Terminal Completion Verifier**: `lib/jarvis-core/verifier/` & `tests/jarvis-core/verifier.test.ts` (5/5 tests green)
+- **Controlled Replanner**: `lib/jarvis-core/planner/replanner.ts` & `tests/jarvis-core/replanner.test.ts` (9/9 tests green)
+- **Cross-Checkpoint Integration Gate (C9–C13)**: `tests/jarvis-core/integration-c9-c13.test.ts` (20/20 tests green)
+- **Total Suite Health**: 15 test files, 263/263 passed (100% green); `pnpm typecheck` 0 errors; `pnpm build` clean.
 - **Standing Rules**: `CLAUDE.md` and `tasks/lessons.md`.
 
 ---
@@ -25,23 +31,21 @@ Status as of **2026-09-21**. Authoritative state of the codebase following Check
 ## NEXT AGENT START HERE
 
 > [!IMPORTANT]
-> **PRE-C9 FOUNDATION RECONCILIATION GATE IS COMPLETE.**
-> All foundational contracts (C5 Operation Ledger, C6 Intent Modes, C7 Router, C8 Quest Engine Lifecycle) have been verified, repaired, and tested.
-> **DO NOT BEGIN C9 AUTOMATICALLY.** Await explicit user instruction to begin Checkpoint C9 (Structured DAG Planner).
+> **MEGA GOAL C9 → C13 & INTEGRATION GATE ARE COMPLETE & COMMITTED.**
+> The deterministic planning, validation, execution, verification, and controlled replanning stack is fully functional, tested, and pushed.
+> **DO NOT BEGIN C14 AUTOMATICALLY.**
+> **DO NOT CUT OVER PRODUCTION `/api/chat`.**
+> **DO NOT MERGE TO `main`.**
+> Await explicit user authorization for Phase 3 (C14 Integration / Cutover Gate).
 >
-> When the user instructs you to start C9:
+> Baseline verification before doing anything:
 > 1. Verify working branch is `jarvis-core-v2` (`git status -sb`).
-> 2. Run test verification (`pnpm vitest run tests/jarvis-core/`) to confirm baseline 175/175 tests pass.
-> 3. Read `lib/jarvis-core/types.ts`, `lib/jarvis-core/quest/types.ts`, and `lib/jarvis-core/ledger/types.ts` before writing planner code.
-> 4. Remember: The Quest Engine step completion transitions quests to `AWAITING_VERIFICATION`, preserving C12 Completion Verifier ownership. C9 planner must output step graphs with typed dependencies, runtime-owned step IDs (`PlanStepId`), and explicit capability targets.
+> 2. Run test verification (`pnpm vitest run tests/jarvis-core/`) to confirm baseline 263/263 tests pass.
+> 3. Run typecheck (`pnpm typecheck`) and production build (`pnpm build`).
 
 ---
-sqlite-vec for memory, a multi-provider AI brain (no single-vendor lock-in),
-Ollama for embeddings, an MCP server so Claude Code can watch/operate the OS,
-and a from-scratch redesign into a real Iron-Man-style HUD: an open 3D stage
-with an interactive Arc Reactor and a color-driving neural network.
 
-**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoints **C0 through C8 and the Cross-Checkpoint Integration Gate are COMPLETE**. All trustworthy runtime foundations (Safety, Ledger, Intent, Routing, Quest Engine) are verified in place. Next checkpoint on the roadmap is **C9: Structured DAG Planner**.
+**Active Protocol**: Building **Jarvis Core V2** beside V1 in `lib/jarvis-core/`. V1 remains 100% untouched and functional. Checkpoints **C0 through C13 and both Cross-Checkpoint Integration Gates are COMPLETE**. All planning, validation, execution, and verification engines are verified in place. Next checkpoint on the roadmap is **C14: Production Integration Gate**.
 
 
 ---

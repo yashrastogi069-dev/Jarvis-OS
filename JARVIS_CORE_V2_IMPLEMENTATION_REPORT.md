@@ -736,3 +736,119 @@ The Cross-Checkpoint Integration Gate (`tests/jarvis-core/integration-c4-c8.test
 - `pnpm build`: **Turbopack build succeeded, 28 dynamic API routes generated**.
 
 *End of Integration Gate Report.*
+
+---
+
+## Checkpoint C9: Structured DAG Planner
+
+### 1. Specification & Architecture
+- **Location**: `lib/jarvis-core/planner/`
+- **Core Invariant**: Pure, deterministic plan generation. Executes zero capabilities, issues zero confirmation tokens, claims zero ledger rows.
+- **Components**:
+  - `types.ts`: Plan limits (depth <= 5, fan-out <= 5, steps <= 10, bytes <= 64KB), typed references, RFC 6901 JSON pointer contracts.
+  - `references.ts`: JSON pointer evaluation, token replacement, step output reference extraction.
+  - `schema.ts`: Zod & JSON schema specifications for planner outputs.
+  - `prompt.ts`: Provider-independent prompt synthesizer.
+  - `planner.ts`: `StructuredPlanner` generating validated execution plans via `PlannerModelAdapter`.
+- **Verification**: `tests/jarvis-core/planner.test.ts` (22/22 unit tests passed).
+
+---
+
+## Checkpoint C10: Deterministic Plan Validator
+
+### 1. Specification & Architecture
+- **Location**: `lib/jarvis-core/planner/validator.ts`
+- **Core Invariant**: Deterministic validation with zero model authority. Derives trusted safety and idempotency metadata directly from canonical runtime registry.
+- **Checks Enforced**:
+  - DAG Acyclicity via Kahn's algorithm.
+  - Complexity bounds (depth <= 5, fan-out <= 5, steps <= 10, bytes <= 64KB).
+  - User-facing capability existence and static availability.
+  - Literal argument validation against capability Zod schemas.
+  - Step output references ($ref) syntax, topological precedence, declared dependencies.
+  - Prototype pollution and unsafe path guard (`__proto__`, `constructor`, `prototype`).
+  - Safety policy derivation (`actionClass`, `confirmationPolicy`, `requiresConfirmation`, `idempotencyClass`).
+- **Verification**: `tests/jarvis-core/plan-validator.test.ts` (20/20 unit tests passed).
+
+---
+
+## Checkpoint C11: Deterministic DAG Executor
+
+### 1. Specification & Architecture
+- **Location**: `lib/jarvis-core/executor/`
+- **Core Invariant**: Deterministic wave execution with parallel bounded reads and serialized mutations.
+- **Scheduler Guarantees**:
+  - Parallel reads: up to 4 concurrent read-only capabilities executed via `Promise.all`.
+  - Serialized mutations: strictly 1 mutating capability at a time.
+  - Dynamic dataflow: RFC 6901 JSON pointer arguments resolved from completed predecessor step outputs.
+  - Two-phase confirmation: pauses before destructive mutations, issuing `ConfirmationRequest` with unforgeable tokens. Resumes on explicit confirmation without repeating prior steps.
+  - Idempotent deduplication: operation ledger claim-before-execute returns cached outputs on re-dispatch.
+  - Cascading blockage: failure in required step cascades `BLOCKED_WITH_REASON` to downstream dependents.
+  - Crash recovery: `reconcileWithLedger` identifies committed steps upon restart and resumes execution directly at pending steps.
+- **Verification**: `tests/jarvis-core/executor.test.ts` (10/10 unit tests passed).
+
+---
+
+## Checkpoint C12: Terminal Completion Verifier
+
+### 1. Specification & Architecture
+- **Location**: `lib/jarvis-core/verifier/`
+- **Core Invariant**: Sole terminal authority separating execution from verification. LLM and executor have zero authority to declare a quest completed.
+- **Criteria Evaluated**:
+  - `CAPABILITY_SUCCEEDED`: verifies underlying capability completed successfully in ledger.
+  - `OUTPUT_PRESENT`: verifies required output properties exist via RFC 6901 JSON pointer.
+  - `CONFIRMATION_ACCEPTED`: verifies confirmation was granted and recorded.
+  - `DEPENDENCY_RESOLVED`: verifies all upstream dependencies completed cleanly.
+- **Goal Resolution**:
+  - `COMPLETED`: all required criteria satisfied across all required steps.
+  - `PARTIALLY_COMPLETED`: all required criteria satisfied, but non-essential optional steps failed.
+  - `BLOCKED`: required steps pending or blocked by upstream failure.
+  - `FAILED`: required steps failed permanently.
+- **Verification**: `tests/jarvis-core/verifier.test.ts` (5/5 unit tests passed).
+
+---
+
+## Checkpoint C13: Controlled Replanner
+
+### 1. Specification & Architecture
+- **Location**: `lib/jarvis-core/planner/replanner.ts`
+- **Core Invariant**: Bounded replanning budget (<=2 attempts per quest), material trigger detection, patch semantics on unfinished subgraphs, and absolute immutability of completed step history.
+- **Mechanisms**:
+  - `evaluateReplanEligibility`: detects triggers (`MISSING_PREREQUISITE`, `USER_REDIRECTION`, `EXTERNAL_STATE_MISMATCH`, `RECOVERABLE_STEP_FAILURE`), enforces max 2 attempt limit.
+  - `replan`: preserves all completed step definitions and ledger records; prunes failed step and its downstream dependents; adds replacement steps; validates composite DAG through `DeterministicPlanValidator`.
+- **Verification**: `tests/jarvis-core/replanner.test.ts` (9/9 unit tests passed).
+
+---
+
+## Cross-Checkpoint Integration Gate (C9–C13)
+
+### 1. Executive Summary
+The Cross-Checkpoint Integration Gate (`tests/jarvis-core/integration-c9-c13.test.ts`) verifies the end-to-end integration of the complete C9–C13 orchestration engine across 20 canonical headless scenarios:
+1. End-to-end plan generation, validation, execution, and verification.
+2. Parallel read fan-out into sequential create.
+3. Two-phase confirmation pause, inspection, resume, and completion.
+4. Argument passing via RFC 6901 JSON pointer across 3 steps.
+5. Replan trigger on missing prerequisite and successful patch execution.
+6. Replan budget exhaustion (2 attempts maximum) transitioning to FAILED.
+7. Idempotent deduplication via Operation Ledger caching on replay.
+8. Crash recovery mid-execution without re-executing committed steps.
+9. UNKNOWN_COMMIT blocking downstream steps safely.
+10. Direct ACTION vs QUEST isolation in shared ledger.
+11. Multi-domain connector workflow (Tasks + Research + Notifications).
+12. Cascading error propagation on unrecoverable failure.
+13. Optional step failure permits PARTIALLY_COMPLETED status.
+14. Mid-flight plan cancellation via AbortSignal.
+15. Structural rejection of cycles during validation.
+16. Structural rejection of invalid schemas and unrouted capabilities.
+17. Forward reference and undeclared dependency rejection in $ref.
+18. Prototype pollution and unsafe path guard in $ref.
+19. Plan complexity bound limits enforcement.
+20. 25-run concurrent stress test (0 race conditions, 0 deadlocks, 50 operations recorded).
+
+### 2. Verification Evidence
+- `pnpm vitest run tests/jarvis-core/integration-c9-c13.test.ts`: **20/20 passed (100% green)**
+- `pnpm vitest run tests/jarvis-core/`: **15 test files, 263/263 passed (100% green)**
+- `pnpm typecheck` (`npx tsc --noEmit`): **0 errors**
+- `pnpm build`: **Next.js 16.2.6 Turbopack production build succeeded with 0 errors**
+
+*End of Checkpoint C9–C13 Integration Report.*
+
