@@ -18,8 +18,8 @@
 | **C10** | Deterministic Plan Validator | **COMPLETE** | `lib/jarvis-core/planner/validator.ts`, cycle detection, registry & schema validation, trusted safety derivation (20 tests). | `7c0b321` |
 | **C11** | Deterministic DAG Executor | **COMPLETE** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery (10 tests). | `121b402` |
 | **C12** | Terminal Completion Verifier | **COMPLETE** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion (5 tests). | `7a1c0f5` |
-| **C13** | Controlled Replanner | **COMPLETE** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget (9 tests). | PENDING_COMMIT |
-| **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **ACTIVE** | 20 headless end-to-end scenarios validating complete orchestration stack. | TBD |
+| **C13** | Controlled Replanner | **COMPLETE** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget (9 tests). | `545188b` |
+| **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **COMPLETE** | `tests/jarvis-core/integration-c9-c13.test.ts`, 20 canonical headless scenarios validating full orchestration stack. | PENDING_COMMIT |
 
 ---
 
@@ -137,4 +137,38 @@
   - `pnpm vitest run tests/jarvis-core/`: 14 test files, 243/243 passed (100% green).
   - `pnpm typecheck`: 0 errors.
   - `pnpm build`: Next.js production build succeeded with 0 errors.
+
+---
+
+## 8. Cross-Checkpoint Integration Gate Report (C9–C13)
+
+- **Objective**: Comprehensive end-to-end integration verification testing the combined C9–C13 orchestration stack across all 20 canonical headless scenarios.
+- **Files Created / Modified**:
+  - `tests/jarvis-core/integration-c9-c13.test.ts`: 20 canonical headless scenarios:
+    1. *Scenario 1 (End-to-end plan generation, validation, execution, and verification)*: Full flow: Planner generates DAG -> Validator enforces invariants & derives safety metadata -> Executor dispatches topologically with ledger claims -> Verifier evaluates completion criteria and completes Quest in SQLite.
+    2. *Scenario 2 (Parallel read fan-out into sequential create)*: 3 independent read steps (`research.search`, `tasks.list`, `memory.search`) execute concurrently in parallel before sequential mutation (`tasks.create`) begins.
+    3. *Scenario 3 (Two-phase confirmation pause, inspection, resume, and completion)*: Executor halts before destructive step (`tasks.delete`) returning unforgeable `ConfirmationRequest`; caller inspects preview; resumes with valid confirmation; step finishes cleanly.
+    4. *Scenario 4 (Argument passing via RFC 6901 JSON pointer across 3 steps)*: Dataflow across 3 sequential steps resolves JSON pointers without eval or expressions.
+    5. *Scenario 5 (Replan trigger on missing prerequisite and successful patch execution)*: Failing step triggers `MISSING_PREREQUISITE`; replanner prunes failed subgraph, patches plan with prerequisite creation, and validator confirms validity for execution.
+    6. *Scenario 6 (Replan budget exhaustion (2 attempts maximum) transitioning to FAILED)*: Strict budget bounds prevent unbounded infinite replanning loops; 3rd attempt is rejected with `eligible: false` and overall quest fails cleanly.
+    7. *Scenario 7 (Idempotent deduplication via Operation Ledger caching on replay)*: Replay of identical quest step returns `CACHED` from Operation Ledger without re-invoking the underlying capability handler.
+    8. *Scenario 8 (Crash recovery mid-execution without re-executing committed steps)*: System restart re-instantiates Executor; `reconcileWithLedger` identifies committed steps and resumes directly at pending steps without duplicating work.
+    9. *Scenario 9 (UNKNOWN_COMMIT blocking downstream steps safely)*: Unconfirmed external mutation in ledger cascades `BLOCKED_WITH_REASON` to downstream dependents, preventing corrupt continuation; Verifier sets `BLOCKED`.
+    10. *Scenario 10 (Direct ACTION vs QUEST isolation)*: Direct action and DAG quest steps execute against the same SQLite database with distinct key namespaces (`dk_` vs `qop_`) without key collision.
+    11. *Scenario 11 (Multi-domain connector workflow)*: Cross-domain pipeline chaining `tasks`, `research`, and `notification` domains with type safety and distinct action classes.
+    12. *Scenario 12 (Cascading error propagation on unrecoverable failure)*: Fatal failure in required step cascades `BLOCKED_WITH_REASON` to all dependent steps; status resolves to `FAILED`.
+    13. *Scenario 13 (Optional step failure permits PARTIALLY_COMPLETED status)*: Failure of optional step (`required: false`) does not fail the quest; verifier assigns `PARTIALLY_COMPLETED`.
+    14. *Scenario 14 (Mid-flight plan cancellation via AbortSignal)*: AbortController abort signal cleanly halts plan execution, cancelling all remaining pending steps.
+    15. *Scenario 15 (Structural rejection of cycles during validation)*: Kahn's topological sort detects cyclic dependencies and rejects the plan before any execution occurs.
+    16. *Scenario 16 (Structural rejection of invalid schemas and unrouted capabilities)*: Zod schema mismatches and unknown capability IDs are rejected with structured issue codes.
+    17. *Scenario 17 (Forward reference and undeclared dependency rejection in $ref)*: Future references and undeclared dependency references in JSON pointers are structurally blocked.
+    18. *Scenario 18 (Prototype pollution and unsafe path guard in $ref)*: Path containing `__proto__`, `constructor`, or `prototype` is blocked as a security violation.
+    19. *Scenario 19 (Plan complexity bound limits enforcement)*: Plans exceeding step count (> 10), depth (> 5), or fan-out (> 5) are rejected.
+    20. *Scenario 20 (25-run concurrent stress test)*: 25 simultaneous DAG plans execute concurrently against SQLite WAL database with 0 race conditions, 0 deadlocks, and 100% data integrity (50 distinct operations recorded).
+- **Verification Metrics**:
+  - `pnpm vitest run tests/jarvis-core/integration-c9-c13.test.ts`: **20/20 passed (100% green)**.
+  - `pnpm vitest run tests/jarvis-core/`: **15 test files, 263/263 passed (100% green)**.
+  - `pnpm typecheck` (`npx tsc --noEmit`): **0 errors**.
+  - `pnpm build`: **Next.js 16.2.6 Turbopack production build succeeded with 0 errors**.
+
 
