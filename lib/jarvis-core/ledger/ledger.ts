@@ -455,6 +455,17 @@ export class OperationLedger {
   }
 
   /**
+   * Retrieve an operation record by quest ID and step ID.
+   */
+  public getOperationByQuestStep(questId: string, stepId: string): OperationRecord | undefined {
+    const row = this.db
+      .prepare(`SELECT * FROM operations WHERE quest_id = ? AND step_id = ? ORDER BY created_at DESC LIMIT 1`)
+      .get(questId, stepId) as RawOperationRow | undefined
+
+    return row ? this.parseRow(row) : undefined
+  }
+
+  /**
    * Prune completed operations older than the specified retention threshold.
    */
   public pruneOldOperations(olderThanMs: number): number {
