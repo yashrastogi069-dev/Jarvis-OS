@@ -11,44 +11,44 @@
 
 ---
 
-## ADR-002: Persisted Quest Engine for Multi-Step Goals
+## ADR-002: Persisted Quest Engine for Multi-Step Goals & Completion Boundary
 - **Status**: ACCEPTED
-- **Date**: 2026-09-19
+- **Date**: 2026-09-19 (Reconciled Pre-C9)
 - **Context**: V1 relies on Vercel AI SDK `ToolLoopAgent` with an in-memory message history and `maxSteps=12`. Empirical benchmarking revealed an 8/25 (32%) failure rate on multi-goal prompts due to premature termination (the model answers conversational pleasantries after step 1 and drops remaining subgoals). In-memory agent loops lose state on process restarts, crashes, or timeout interruptions.
-- **Decision**: Introduce a SQLite-backed `quests` and `subgoals` state machine in `lib/jarvis-core/quest/`. Every complex user objective is decomposed into an explicit Quest with discrete SubGoals. Execution progress, dependencies, and statuses (`pending`, `in_progress`, `completed`, `failed`) are persisted to SQLite at each step transition. Completion is verified deterministically before final response synthesis.
+- **Decision**: Introduce a SQLite-backed `quests` and `quest_steps` state machine in `lib/jarvis-core/quest/`. Every complex user objective is decomposed into an explicit Quest with discrete `quest_steps`. Execution progress, dependencies, and statuses (`PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELLED`, `UNKNOWN_COMMIT`) are persisted to SQLite at each step transition. When all steps succeed, the Quest transitions to `AWAITING_VERIFICATION`, preserving the architectural boundary of the C12 Completion Verifier (which alone possesses authority to evaluate goal fulfillment and mark the quest `COMPLETED`/`FAILED` via `verifyAndCompleteQuest`).
 - **Consequences**:
-  - *Positive*: Complete resistance to premature completion; tasks resume cleanly across app restarts or crashes; explicit auditability of what completed and what failed.
+  - *Positive*: Complete resistance to premature completion; tasks resume cleanly across app restarts or crashes; explicit auditability of step execution; C12 completion verifier boundary preserved.
   - *Negative*: Requires SQLite schema migration and minimal overhead per step transition.
 
 ---
 
-## ADR-003: Runtime-Owned Persistent Operation Ledger (Logical Deduplication, Replay Protection & UNKNOWN_COMMIT Handling)
+## ADR-003: Runtime-Owned Persistent Operation Ledger (Logical Identity, Replay Protection & Local Mutation Crash Window Semantics)
 - **Status**: ACCEPTED
-- **Date**: 2026-09-19
-- **Context**: Empirical audit showed `createTask` and `saveMemory` create duplicate records upon LLM retry or failover. Furthermore, `deleteTask` throws unhandled crashes on non-existent IDs. Prompt instructions ("do not create duplicates") are probabilistic and fail under model failovers or retry loops. Universal "exactly-once" execution across distributed networks is theoretically impossible due to potential network partitions where a remote service commits but the acknowledgement is dropped.
-- **Decision**: Implement a runtime-owned `operations` ledger in SQLite (`lib/jarvis-core/ledger/`). Every mutating capability call generates a deterministic `dedupeKey` (hash of actor, target domain, action, normalized parameters, and time window). The runtime checks the ledger before dispatching mutations:
-  1. *Local Mutations*: Strictly guarded against duplicate execution via the ledger and SQLite transactions.
-  2. *External Mutations*: If an unacknowledged timeout or disconnection occurs, the operation is flagged as `UNKNOWN_COMMIT` rather than falsely reported as succeeded or failed, preventing unverified automated retries.
-  3. *Replays*: If an identical operation is already recorded as `succeeded`, the cached result is returned without re-invoking the external connector.
+- **Date**: 2026-09-19 (Reconciled Pre-C9)
+- **Context**: Empirical audit showed `createTask` and `saveMemory` create duplicate records upon LLM retry or failover. Deduplication cannot rely on `payload + timeBucket` because distinct user actions with identical parameters would be wrongfully suppressed. Furthermore, local database operations (e.g. SQLite tasks/memory) commit independently of the ledger without shared transaction handles; a crash between a business write and ledger commit leaves an unconfirmed mutation.
+- **Decision**: Implement a runtime-owned `operations` ledger in SQLite (`lib/jarvis-core/ledger/`):
+  1. *Logical Operation Identity*: The runtime owns the primary identity (`operationId` derived deterministically from `TurnId + slot + CapabilityId` or `QuestId + PlanStepId + CapabilityId`). The `inputHash` serves strictly as an argument mismatch and integrity guard (`CONFLICT` if arguments change for the same `operationId`).
+  2. *Replays*: If an identical `operationId` is already recorded as `SUCCEEDED`, the cached result is returned without re-invoking the connector.
+  3. *Local Mutation Crash Window*: In-flight mutating operations (`LOCAL_CREATE`, `LOCAL_DELETE`, `EXTERNAL_*`, `SYSTEM_ACTION`) that crash in `RUNNING` state transition to `UNKNOWN_COMMIT` upon reboot recovery (never `FAILED_RETRYABLE`). Only `READ_ONLY` actions can safely transition to `FAILED_RETRYABLE`.
+  4. *Quest Recovery Reconciliation*: The quest engine reconciles crashed steps with ledger state; an `UNKNOWN_COMMIT` step remains `UNKNOWN_COMMIT` and is never automatically re-queued as `PENDING`.
 - **Consequences**:
-  - *Positive*: Hard architectural guarantee against duplicate local mutations and duplicate API calls on retries; explicit handling of uncertain remote side effects.
-  - *Negative*: Ledger entries must be indexed and garbage-collected periodically; mutation tools must declare parameter normalization rules.
+  - *Positive*: Hard architectural guarantee against duplicate local mutations and duplicate API calls on retries; safe recovery after process termination without unverified mutation replays.
+  - *Negative*: Ledger entries must be indexed and cleaned up periodically; runtime must manage explicit operation IDs.
 
 ---
 
-## ADR-004: Capability Routing Strategy (Primary Candidate: Strategy E, Subject to C7 Evaluation)
-- **Status**: PROVISIONAL (Primary Candidate subject to C7 evaluation)
-- **Date**: 2026-09-19
+## ADR-004: Capability Routing Strategy (Strategy E — Hybrid Classifier + Semantic Search)
+- **Status**: ACCEPTED FOR CORE V2
+- **Date**: 2026-09-19 (Validated C7 / Reconciled Pre-C9)
 - **Context**: Jarvis has 47 registered tools across 12 logical capability groups (Tasks, Memory, Research, Voice, Feed, Skills, Preferences, Google, GitHub, Apple, Obsidian, Telegram). Passing all 47 schemas in every prompt causes tool confusion, parameter hallucinations, increased token cost, and latency outliers.
-- **Decision**: Adopt Strategy E (hybrid deterministic domain classifier + vector semantic search) as the primary capability routing candidate in `lib/jarvis-core/routing/`, subject to formal evaluation in Checkpoint C7. The routing mechanism must:
-  1. Run in shadow mode first to validate routing accuracy against `evals/corpora/routing_corpus_227.json`.
-  2. Target **≥99.5% required-capability recall** on the fixed corpus, and **100% recall** on known regression cases.
-  3. Include a fail-open fallback to broader tool/domain sets whenever routing confidence is below threshold.
-  4. Explicitly recognize: *The fail-open fallback is the reliability mechanism. Benchmark recall is a quality metric, not an assumption of perfect classification.*
-  5. Treat "≤12 tools" as a heuristic optimization target, not an absolute correctness invariant.
+- **Decision**: Formally accept Strategy E (hybrid deterministic keyword/domain classifier + vector semantic search) in `lib/jarvis-core/routing/` following C7 shadow evaluation:
+  1. Achieved 100% required-capability recall (227/227) on `evals/corpora/routing_corpus_227.json` (exceeding the ≥99.5% target).
+  2. 100% recall on known regression cases and zero false exclusions.
+  3. Includes deterministic fail-open fallback to broader tool/domain sets whenever routing confidence is low or domain is ambiguous.
+  4. Explicit invariant: The fail-open fallback is the reliability mechanism.
 - **Consequences**:
-  - *Positive*: Substantially reduces token payload per turn, eliminates cross-domain parameter hallucinations, and lowers step latency.
-  - *Negative*: Risk of pruning necessary tools on low confidence queries, mitigated by fail-open fallback and intent clarification.
+  - *Positive*: Substantially reduces token payload per turn, eliminates cross-domain parameter hallucinations, and lowers step latency while guaranteeing tool availability.
+  - *Negative*: Routing logic requires maintenance if new capability domains are introduced.
 
 ---
 

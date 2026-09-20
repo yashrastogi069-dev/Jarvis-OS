@@ -20,9 +20,17 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import Database from "better-sqlite3"
+import fs from "node:fs"
+import path from "node:path"
+import os from "node:os"
 import { OperationLedger } from "../../lib/jarvis-core/ledger/ledger"
-import { computeDedupeKey, hashCanonicalInput } from "../../lib/jarvis-core/ledger/canonical"
-import { asCapabilityId } from "../../lib/jarvis-core/types"
+import {
+  computeDedupeKey,
+  hashCanonicalInput,
+  deriveActionOperationId,
+  deriveQuestStepOperationId,
+} from "../../lib/jarvis-core/ledger/canonical"
+import { asCapabilityId, asTurnId, asQuestId, asPlanStepId } from "../../lib/jarvis-core/types"
 
 describe("C5 — Persistent Operation Ledger & Logical Idempotency", () => {
   let inMemoryDb: Database.Database
@@ -394,7 +402,7 @@ describe("C5 — Persistent Operation Ledger & Logical Idempotency", () => {
   // 8. CRASH RESTAURANT RECOVERY
   // ==========================================================================
   describe("Crash Recovery", () => {
-    it("recovers orphaned RUNNING operations to UNKNOWN_COMMIT for external and FAILED_RETRYABLE for local", () => {
+    it("recovers orphaned RUNNING operations to UNKNOWN_COMMIT for mutations and FAILED_RETRYABLE for READ_ONLY", () => {
       // Simulate crash: write orphaned records directly to SQLite
       inMemoryDb.exec(`
         INSERT INTO operations (
@@ -402,19 +410,26 @@ describe("C5 — Persistent Operation Ledger & Logical Idempotency", () => {
           input_hash, input_payload, created_at, updated_at
         ) VALUES
         ('op_crash_ext', 'dk_ext', 'google.mail.message.send', 'EXTERNAL_SEND', 'RUNNING', 'h1', '{}', 1000, 1000),
-        ('op_crash_local', 'dk_loc', 'tasks.create', 'LOCAL_CREATE', 'RUNNING', 'h2', '{}', 1000, 1000);
+        ('op_crash_local', 'dk_loc', 'tasks.create', 'LOCAL_CREATE', 'RUNNING', 'h2', '{}', 1000, 1000),
+        ('op_crash_read', 'dk_read', 'tasks.list', 'READ_ONLY', 'RUNNING', 'h3', '{}', 1000, 1000);
       `)
 
       const recoveredCount = ledger.recoverCrashedOperations()
-      expect(recoveredCount).toBe(2)
+      expect(recoveredCount).toBe(3)
 
       const extRecord = ledger.getOperation("op_crash_ext")
       expect(extRecord?.status).toBe("UNKNOWN_COMMIT")
       expect(extRecord?.errorMessage).toContain("crash recovery to UNKNOWN_COMMIT")
 
+      // Local mutations commit independently in SQLite, so crash window makes commit uncertain
       const localRecord = ledger.getOperation("op_crash_local")
-      expect(localRecord?.status).toBe("FAILED_RETRYABLE")
-      expect(localRecord?.errorMessage).toContain("crash recovery to FAILED_RETRYABLE")
+      expect(localRecord?.status).toBe("UNKNOWN_COMMIT")
+      expect(localRecord?.errorMessage).toContain("crash recovery to UNKNOWN_COMMIT")
+
+      // Read-only operations have zero side-effects and can safely retry
+      const readRecord = ledger.getOperation("op_crash_read")
+      expect(readRecord?.status).toBe("FAILED_RETRYABLE")
+      expect(readRecord?.errorMessage).toContain("crash recovery to FAILED_RETRYABLE")
     })
   })
 
@@ -500,5 +515,310 @@ describe("C5 — Persistent Operation Ledger & Logical Idempotency", () => {
       // RUNNING operations are never pruned by standard cleanup
       expect(ledger.getOperation("op_old_active")).toBeDefined()
     })
+  })
+
+  // ==========================================================================
+  // 12. SECTION 4: REQUIRED C5 IDENTITY TESTS (TESTS A, B, C, D, E)
+  // ==========================================================================
+  describe("Section 4 — Required Logical Operation Identity Tests", () => {
+    it("Test A: same OperationId with same arguments returns cached result without re-executing handler", () => {
+      const opId = deriveActionOperationId(asTurnId("turn_1"), 0, asCapabilityId("tasks.create"))
+      let handlerExecutions = 0
+      const execute = (input: { title: string }) => {
+        handlerExecutions++
+        return { taskId: 101, title: input.title }
+      }
+
+      // First attempt: claims, runs handler, completes
+      const claim1 = ledger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Drink Water" },
+      })
+      expect(claim1.status).toBe("CLAIMED")
+      if (claim1.status === "CLAIMED") {
+        const result = execute({ title: "Drink Water" })
+        ledger.completeOperation({
+          operationId: claim1.operationId,
+          resultPayload: result,
+        })
+      }
+
+      expect(handlerExecutions).toBe(1)
+
+      // Second attempt (e.g. model retry / loop failover of SAME logical turn operation)
+      const claim2 = ledger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Drink Water" },
+      })
+
+      expect(claim2.status).toBe("CACHED")
+      if (claim2.status === "CACHED") {
+        expect(claim2.resultPayload).toEqual({ taskId: 101, title: "Drink Water" })
+      }
+      // Handler must NOT have executed a second time
+      expect(handlerExecutions).toBe(1)
+    })
+
+    it("Test B: different OperationIds with same capability and same arguments execute twice (distinct user actions)", () => {
+      // Turn A: "Create a task called Drink Water."
+      const opId1 = deriveActionOperationId(asTurnId("turn_A"), 0, asCapabilityId("tasks.create"))
+      // Turn B: "Create another task called Drink Water."
+      const opId2 = deriveActionOperationId(asTurnId("turn_B"), 0, asCapabilityId("tasks.create"))
+
+      let handlerExecutions = 0
+      const execute = (input: { title: string }) => {
+        handlerExecutions++
+        return { taskId: 100 + handlerExecutions, title: input.title }
+      }
+
+      // Turn A executes
+      const claim1 = ledger.claimOperation({
+        operationId: opId1,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Drink Water" },
+      })
+      expect(claim1.status).toBe("CLAIMED")
+      if (claim1.status === "CLAIMED") {
+        const res1 = execute({ title: "Drink Water" })
+        ledger.completeOperation({ operationId: claim1.operationId, resultPayload: res1 })
+      }
+
+      // Turn B executes - identical payload, but distinct OperationId
+      const claim2 = ledger.claimOperation({
+        operationId: opId2,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Drink Water" },
+      })
+      expect(claim2.status).toBe("CLAIMED")
+      if (claim2.status === "CLAIMED") {
+        const res2 = execute({ title: "Drink Water" })
+        ledger.completeOperation({ operationId: claim2.operationId, resultPayload: res2 })
+      }
+
+      // Distinct logical actions: handler must execute twice!
+      expect(handlerExecutions).toBe(2)
+    })
+
+    it("Test C: same OperationId with different arguments triggers CONFLICT and blocks execution", () => {
+      const opId = deriveActionOperationId(asTurnId("turn_tamper"), 0, asCapabilityId("tasks.create"))
+
+      const claim1 = ledger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Original Title" },
+      })
+      expect(claim1.status).toBe("CLAIMED")
+
+      // Attempt to claim same OperationId with altered arguments
+      const claim2 = ledger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Tampered Title" },
+      })
+
+      expect(claim2.status).toBe("CONFLICT")
+      if (claim2.status === "CONFLICT") {
+        expect(claim2.reason).toContain("canonical argument hash")
+      }
+    })
+
+    it("Test D: retry of same QuestId + PlanStepId produces identical logical OperationId", () => {
+      const questId = asQuestId("quest_100")
+      const stepId = asPlanStepId("step_retry")
+      const capId = asCapabilityId("tasks.create")
+
+      const opIdFirst = deriveQuestStepOperationId(questId, stepId, capId)
+      const opIdSecond = deriveQuestStepOperationId(questId, stepId, capId)
+
+      expect(opIdFirst).toBe(opIdSecond)
+    })
+
+    it("Test E: different Quest steps with same payload produce distinct OperationIds", () => {
+      const questId = asQuestId("quest_100")
+      const step1Id = asPlanStepId("step_1")
+      const step2Id = asPlanStepId("step_2")
+      const capId = asCapabilityId("tasks.create")
+
+      const opIdStep1 = deriveQuestStepOperationId(questId, step1Id, capId)
+      const opIdStep2 = deriveQuestStepOperationId(questId, step2Id, capId)
+
+      expect(opIdStep1).not.toBe(opIdStep2)
+
+      const claim1 = ledger.claimOperation({
+        operationId: opIdStep1,
+        capabilityId: capId,
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Buy Milk" },
+        questId,
+        stepId: step1Id,
+      })
+      const claim2 = ledger.claimOperation({
+        operationId: opIdStep2,
+        capabilityId: capId,
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Buy Milk" },
+        questId,
+        stepId: step2Id,
+      })
+
+      expect(claim1.status).toBe("CLAIMED")
+      expect(claim2.status).toBe("CLAIMED")
+    })
+  })
+
+  // ==========================================================================
+  // 13. SECTION 5.3: CRASH-WINDOW FAULT INJECTION (FILE-BACKED SQLITE)
+  // ==========================================================================
+  describe("Section 5.3 — Crash-Window Fault Injection (File-backed SQLite)", () => {
+    let tempDir: string
+    let dbFilePath: string
+
+    beforeEach(() => {
+      tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "jarvis-crash-test-"))
+      dbFilePath = path.join(tempDir, "crash_test.db")
+    })
+
+    afterEach(() => {
+      try {
+        fs.rmSync(tempDir, { recursive: true, force: true })
+      } catch {
+        // ignore
+      }
+    })
+
+    it("simulates crash between local tasks.create commit and ledger completion, proving duplicate execution is blocked", () => {
+      // 1. Initial process: Open file-backed DB and initialize tasks & operations tables
+      const procDb = new Database(dbFilePath)
+      procDb.exec(`
+        CREATE TABLE IF NOT EXISTS tasks (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          created_at INTEGER NOT NULL
+        );
+      `)
+      const procLedger = new OperationLedger(procDb)
+
+      const opId = deriveActionOperationId(asTurnId("turn_crash"), 0, asCapabilityId("tasks.create"))
+      const taskInput = { title: "Critical Task" }
+
+      // Step 1: Ledger claim
+      const claim = procLedger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: taskInput,
+      })
+      expect(claim.status).toBe("CLAIMED")
+
+      // Step 2: Local business mutation writes to tasks table
+      procDb.prepare("INSERT INTO tasks (title, created_at) VALUES (?, ?)").run(taskInput.title, Date.now())
+
+      // Verify task exists in business table
+      const taskCountPreCrash = procDb.prepare("SELECT COUNT(*) as count FROM tasks WHERE title = ?").get(taskInput.title) as { count: number }
+      expect(taskCountPreCrash.count).toBe(1)
+
+      // Step 3: CRASH! Process dies abruptly before ledger.completeOperation() is executed.
+      procDb.close()
+
+      // Step 4: System reboots. Re-open DB with new process / instance.
+      const rebootDb = new Database(dbFilePath)
+      const rebootLedger = new OperationLedger(rebootDb)
+
+      // Step 5: Boot recovery routine runs
+      const recoveredCount = rebootLedger.recoverCrashedOperations()
+      expect(recoveredCount).toBe(1)
+
+      const recoveredOp = rebootLedger.getOperation(opId)
+      expect(recoveredOp?.status).toBe("UNKNOWN_COMMIT")
+
+      // Step 6: Attempted replay: Caller tries to re-claim same operationId
+      const replayClaim = rebootLedger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: taskInput,
+      })
+
+      // Invariant: System CANNOT silently create a duplicate logical mutation!
+      expect(replayClaim.status).toBe("UNKNOWN_COMMIT")
+      if (replayClaim.status === "UNKNOWN_COMMIT") {
+        expect(replayClaim.reason).toContain("UNKNOWN_COMMIT")
+      }
+
+      // Assert business table still has exactly 1 task
+      const taskCountPostCrash = rebootDb.prepare("SELECT COUNT(*) as count FROM tasks WHERE title = ?").get(taskInput.title) as { count: number }
+      expect(taskCountPostCrash.count).toBe(1)
+
+      rebootDb.close()
+    }, 15000)
+
+    it("simulates crash during memory.save mutation, verifying UNKNOWN_COMMIT blocks duplicate write", () => {
+      const procDb = new Database(dbFilePath)
+      procDb.exec(`
+        CREATE TABLE IF NOT EXISTS memories (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          content TEXT NOT NULL,
+          created_at INTEGER NOT NULL
+        );
+      `)
+      const procLedger = new OperationLedger(procDb)
+
+      const opId = deriveActionOperationId(asTurnId("turn_mem_crash"), 0, asCapabilityId("memory.save"))
+      const memInput = { content: "User likes dark mode" }
+
+      const claim = procLedger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("memory.save"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: memInput,
+      })
+      expect(claim.status).toBe("CLAIMED")
+
+      procDb.prepare("INSERT INTO memories (content, created_at) VALUES (?, ?)").run(memInput.content, Date.now())
+
+      // Crash before ledger completion
+      procDb.close()
+
+      // Reboot
+      const rebootDb = new Database(dbFilePath)
+      const rebootLedger = new OperationLedger(rebootDb)
+
+      const recoveredCount = rebootLedger.recoverCrashedOperations()
+      expect(recoveredCount).toBe(1)
+
+      const replayClaim = rebootLedger.claimOperation({
+        operationId: opId,
+        capabilityId: asCapabilityId("memory.save"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: memInput,
+      })
+
+      expect(replayClaim.status).toBe("UNKNOWN_COMMIT")
+
+      const memCount = rebootDb.prepare("SELECT COUNT(*) as count FROM memories WHERE content = ?").get(memInput.content) as { count: number }
+      expect(memCount.count).toBe(1)
+
+      rebootDb.close()
+    }, 15000)
   })
 })

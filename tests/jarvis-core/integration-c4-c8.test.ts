@@ -391,14 +391,25 @@ describe("JARVIS CORE V2 — Mega Goal C4–C8 Cross-Checkpoint Integration Gate
     })
     questEngine.completeStep(step2Id, { appended: true, notePath: "Trips/2026-Flight.md" })
 
-    // 6. Complete Quest Verification in SQLite
-    const finalizedQuest = questEngine.getQuest(quest.questId)
-    expect(finalizedQuest?.status).toBe("SUCCEEDED")
-    expect(finalizedQuest?.completedAt).toBeGreaterThan(0)
-    expect(finalizedQuest?.steps[0].status).toBe("SUCCEEDED")
-    expect(finalizedQuest?.steps[1].status).toBe("SUCCEEDED")
-    expect(finalizedQuest?.steps[0].operationId).toBe(claim1.operationId)
-    expect(finalizedQuest?.steps[1].operationId).toBe(claim2.operationId)
+    // 6. Complete Quest Verification in SQLite:
+    // All planned steps terminal -> AWAITING_VERIFICATION (C12 Completion Verifier boundary)
+    const awaitingQuest = questEngine.getQuest(quest.questId)
+    expect(awaitingQuest?.status).toBe("AWAITING_VERIFICATION")
+
+    // C12 Completion Verifier explicitly completes the quest
+    questEngine.verifyAndCompleteQuest(
+      quest.questId,
+      "SUCCEEDED",
+      "Both email fetch and obsidian note append verified complete"
+    )
+
+    const finalizedQuest = questEngine.getQuest(quest.questId)!
+    expect(finalizedQuest.status).toBe("SUCCEEDED")
+    expect(finalizedQuest.completedAt).toBeGreaterThan(0)
+    expect(finalizedQuest.steps[0].status).toBe("SUCCEEDED")
+    expect(finalizedQuest.steps[1].status).toBe("SUCCEEDED")
+    expect(finalizedQuest.steps[0].operationId).toBe(claim1.operationId)
+    expect(finalizedQuest.steps[1].operationId).toBe(claim2.operationId)
   })
 
   // ==========================================================================
@@ -415,7 +426,7 @@ describe("JARVIS CORE V2 — Mega Goal C4–C8 Cross-Checkpoint Integration Gate
       })
       expect(extClaim.status).toBe("CLAIMED")
 
-      // 2. Simulate local mutation running when process dies
+      // 2. Simulate local mutation running when process dies (Blocker B: uncommitted crash window)
       const locClaim = operationLedger.claimOperation({
         capabilityId: asCapabilityId("tasks.create"),
         actionClass: "LOCAL_CREATE",
@@ -424,21 +435,35 @@ describe("JARVIS CORE V2 — Mega Goal C4–C8 Cross-Checkpoint Integration Gate
       })
       expect(locClaim.status).toBe("CLAIMED")
 
-      // 3. Server terminates and reboots: recoverCrashedOperations() called
+      // 3. Simulate read-only query running when process dies
+      const readClaim = operationLedger.claimOperation({
+        capabilityId: asCapabilityId("tasks.list"),
+        actionClass: "READ_ONLY",
+        idempotencyClass: "READ_ONLY",
+        input: {},
+      })
+      expect(readClaim.status).toBe("CLAIMED")
+
+      // 4. Server terminates and reboots: recoverCrashedOperations() called
       const rebootLedger = new OperationLedger(db)
       const count = rebootLedger.recoverCrashedOperations()
-      expect(count).toBe(2)
+      expect(count).toBe(3)
 
-      // 4. External mutation must be UNKNOWN_COMMIT; local must be FAILED_RETRYABLE
-      if (extClaim.status !== "CLAIMED" || locClaim.status !== "CLAIMED") throw new Error()
+      // 5. External and local mutations must be UNKNOWN_COMMIT; read-only must be FAILED_RETRYABLE
+      if (extClaim.status !== "CLAIMED" || locClaim.status !== "CLAIMED" || readClaim.status !== "CLAIMED") throw new Error()
       const extRecord = rebootLedger.getOperation(extClaim.operationId)
       const locRecord = rebootLedger.getOperation(locClaim.operationId)
+      const readRecord = rebootLedger.getOperation(readClaim.operationId)
 
       expect(extRecord?.status).toBe("UNKNOWN_COMMIT")
       expect(extRecord?.errorMessage).toContain("UNKNOWN_COMMIT")
 
-      expect(locRecord?.status).toBe("FAILED_RETRYABLE")
-      expect(locRecord?.errorMessage).toContain("FAILED_RETRYABLE")
+      // Blocker B: Local mutations cannot be atomically committed with ledger, so crash window -> UNKNOWN_COMMIT
+      expect(locRecord?.status).toBe("UNKNOWN_COMMIT")
+      expect(locRecord?.errorMessage).toContain("UNKNOWN_COMMIT")
+
+      expect(readRecord?.status).toBe("FAILED_RETRYABLE")
+      expect(readRecord?.errorMessage).toContain("FAILED_RETRYABLE")
 
       // 5. Automated replay of UNKNOWN_COMMIT external mutation is blocked
       const replayClaim = rebootLedger.claimOperation({

@@ -163,7 +163,7 @@ describe("JARVIS CORE V2 — Persisted Quest Engine (C8)", () => {
   })
 
   describe("Quest Completion Lifecycle", () => {
-    it("automatically completes quest when all steps have succeeded", () => {
+    it("transitions quest to AWAITING_VERIFICATION when all steps succeed and preserves C12 boundary", () => {
       const quest = questEngine.createQuest({
         sessionId: "sess_006",
         title: "Auto Completion Quest",
@@ -194,10 +194,20 @@ describe("JARVIS CORE V2 — Persisted Quest Engine (C8)", () => {
       questEngine.startStep(stepB.stepId)
       questEngine.completeStep(stepB.stepId, { id: "mem_1" })
 
-      // Now all steps complete -> quest is SUCCEEDED
+      // All steps complete -> quest transitions to AWAITING_VERIFICATION (C12 ownership boundary)
       currentQuest = questEngine.getQuest(quest.questId)
-      expect(currentQuest?.status).toBe("SUCCEEDED")
-      expect(currentQuest?.completedAt).toBeGreaterThan(0)
+      expect(currentQuest?.status).toBe("AWAITING_VERIFICATION")
+      expect(currentQuest?.completedAt).toBeNull()
+
+      // C12 Completion Verifier explicitly completes the quest
+      const verified = questEngine.verifyAndCompleteQuest(
+        quest.questId,
+        "SUCCEEDED",
+        "Both tasks.create and memory.save succeeded and verified"
+      )
+      expect(verified.status).toBe("SUCCEEDED")
+      expect(verified.completedAt).toBeGreaterThan(0)
+      expect(verified.resultSummary).toContain("Both tasks.create")
     })
   })
 
@@ -343,6 +353,116 @@ describe("JARVIS CORE V2 — Persisted Quest Engine (C8)", () => {
       expect(recoveredQuest?.errorMessage).toContain("Process restarted")
       expect(recoveredQuest?.steps[0].status).toBe("PENDING")
       expect(recoveredQuest?.steps[0].errorCode).toBe("CRASH_RECOVERED")
+    })
+
+    it("reconciles orphaned step with ledger UNKNOWN_COMMIT and blocks automated replay (Blocker E)", () => {
+      const quest = questEngine.createQuest({
+        sessionId: "sess_crash_unknown",
+        title: "Crash with Uncertain Mutation",
+        prompt: "Send email then format response",
+        steps: [
+          {
+            title: "External email step",
+            capabilityId: asCapabilityId("google.mail.messages.send"),
+          },
+        ],
+      })
+
+      const step = quest.steps[0]
+
+      // Claim operation in ledger
+      const claim = operationLedger.claimOperation({
+        capabilityId: asCapabilityId("google.mail.messages.send"),
+        actionClass: "EXTERNAL_SEND",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { to: "boss@example.com", body: "Hello" },
+        questId: quest.questId,
+        stepId: step.stepId,
+      })
+      expect(claim.status).toBe("CLAIMED")
+      if (claim.status !== "CLAIMED") throw new Error("Expected CLAIMED")
+
+      // Start step with operationId
+      questEngine.startStep(step.stepId, claim.operationId)
+
+      // Simulate crash: ledger operation transitions to UNKNOWN_COMMIT via recovery
+      operationLedger.recoverCrashedOperations()
+      const opPostCrash = operationLedger.getOperation(claim.operationId)
+      expect(opPostCrash?.status).toBe("UNKNOWN_COMMIT")
+
+      // Reboot QuestEngine and reconcile with ledger
+      const rebootEngine = new QuestEngine(db)
+      const summary = rebootEngine.recoverCrashedQuests(operationLedger)
+
+      expect(summary.unknownCommitSteps).toBe(1)
+
+      // Step MUST be UNKNOWN_COMMIT, NOT PENDING
+      const postRecoveryQuest = rebootEngine.getQuest(quest.questId)
+      expect(postRecoveryQuest?.status).toBe("SUSPENDED")
+      const recoveredStep = postRecoveryQuest?.steps[0]
+      expect(recoveredStep?.status).toBe("UNKNOWN_COMMIT")
+      expect(recoveredStep?.errorCode).toBe("UNKNOWN_COMMIT")
+
+      // Invariant: Automated replay is permanently blocked
+      expect(() => {
+        rebootEngine.startStep(step.stepId)
+      }).toThrow(/Cannot start step .* in status "UNKNOWN_COMMIT" \(must be PENDING\)/)
+
+      // Invariant: Second recovery routine NEVER resets UNKNOWN_COMMIT to PENDING
+      const secondSummary = rebootEngine.recoverCrashedQuests(operationLedger)
+      expect(secondSummary.recoveredSteps).toBe(0)
+      const stepCheck = rebootEngine.getQuest(quest.questId)?.steps[0]
+      expect(stepCheck?.status).toBe("UNKNOWN_COMMIT")
+    })
+
+    it("reconciles orphaned step with ledger SUCCEEDED and restores result payload (Blocker E)", () => {
+      const quest = questEngine.createQuest({
+        sessionId: "sess_crash_succeeded",
+        title: "Crash After Ledger Commit",
+        prompt: "Step completed in ledger but crash prevented quest step update",
+        steps: [
+          {
+            title: "Task create step",
+            capabilityId: asCapabilityId("tasks.create"),
+          },
+        ],
+      })
+
+      const step = quest.steps[0]
+
+      const claim = operationLedger.claimOperation({
+        capabilityId: asCapabilityId("tasks.create"),
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Completed task" },
+        questId: quest.questId,
+        stepId: step.stepId,
+      })
+      expect(claim.status).toBe("CLAIMED")
+      if (claim.status !== "CLAIMED") throw new Error("Expected CLAIMED")
+
+      // Start step with operationId
+      questEngine.startStep(step.stepId, claim.operationId)
+
+      // Business mutation and ledger completed before crash
+      operationLedger.completeOperation({
+        operationId: claim.operationId,
+        resultPayload: { taskId: 42, status: "created" },
+      })
+
+      // But process died before questEngine.completeStep() was invoked!
+      // Step was left in RUNNING in quest_steps.
+      const rebootEngine = new QuestEngine(db)
+      const summary = rebootEngine.recoverCrashedQuests(operationLedger)
+
+      expect(summary.recoveredSteps).toBe(1)
+      expect(summary.unknownCommitSteps).toBe(0)
+
+      const recoveredQuest = rebootEngine.getQuest(quest.questId)
+      const recoveredStep = recoveredQuest?.steps[0]
+      expect(recoveredStep?.status).toBe("SUCCEEDED")
+      expect(recoveredStep?.resultPayload).toEqual({ taskId: 42, status: "created" })
+      expect(recoveredStep?.completedAt).toBeGreaterThan(0)
     })
   })
 

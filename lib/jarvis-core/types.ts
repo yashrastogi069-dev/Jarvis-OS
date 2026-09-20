@@ -152,11 +152,16 @@ export type QuestStatus =
   | "WAITING_FOR_CONFIRMATION"  // A step in the quest requires human confirmation
   | "READY"                     // Plan validated and ready for dispatch
   | "RUNNING"                   // DAG executor actively running steps
+  | "AWAITING_VERIFICATION"     // All planned steps terminal; awaiting C12 completion verification
   | "PARTIALLY_COMPLETED"       // Some subgoals completed, non-critical branches failed/blocked
-  | "COMPLETED"                 // All requested goals verified complete
+  | "COMPLETED"                 // All requested goals verified complete by C12 verifier
   | "BLOCKED"                   // Cannot proceed due to missing external prerequisite
   | "FAILED"                    // Critical failure aborted the entire quest
   | "CANCELLED"                 // Explicitly cancelled by user
+  // Backward-compatible persisted aliases:
+  | "INITIALIZING"
+  | "SUCCEEDED"
+  | "SUSPENDED"
 
 export interface Quest {
   readonly id: QuestId
@@ -189,6 +194,9 @@ export type StepStatus =
   | "FAILED_FINAL"              // Unrecoverable failure; branch cannot continue automatically
   | "UNKNOWN_COMMIT"            // Side effect may have executed externally, but outcome unconfirmed
   | "CANCELLED"                 // Step cancelled due to upstream failure or user abort
+  // Backward-compatible aliases:
+  | "SUCCEEDED"                 // Alias for COMPLETED in initial C8 implementation
+  | "SKIPPED"                   // Alias for CANCELLED/BLOCKED in initial C8 implementation
 
 export interface PlanStep {
   readonly id: PlanStepId

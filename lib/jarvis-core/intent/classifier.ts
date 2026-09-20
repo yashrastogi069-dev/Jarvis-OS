@@ -23,7 +23,9 @@ export class DeterministicFastPathClassifier {
     if (!trimmed) {
       return {
         needsClarification: false,
+        mode: "CHAT",
         category: "CHAT",
+        intentKind: "CONVERSATION",
         confidence: 0.99,
         reason: "Empty input classified as conversational.",
         fastPath: true,
@@ -55,7 +57,9 @@ export class DeterministicFastPathClassifier {
 
       return {
         needsClarification: false,
+        mode: "QUEST",
         category: "QUEST",
+        intentKind: "GOAL_MULTI_STEP",
         confidence: 0.95,
         subgoals: subgoals.length >= 2 ? subgoals : undefined,
         reason: "Detected multi-step sequential connectors or chained capability actions.",
@@ -78,7 +82,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "CHAT",
         category: "CHAT",
+        intentKind: "CONVERSATION",
         confidence: 0.98,
         reason: "Detected standard greeting, pleasantry, or system identity question.",
         fastPath: true,
@@ -97,7 +103,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.96,
         targetDomain: "tasks",
         targetCapability: "tasks.list" as CapabilityId,
@@ -113,7 +121,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.95,
         targetDomain: "google",
         targetCapability: "google.calendar.events.list" as CapabilityId,
@@ -129,7 +139,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.95,
         targetDomain: "google",
         targetCapability: "google.mail.messages.list" as CapabilityId,
@@ -146,7 +158,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.95,
         targetDomain: "memory",
         targetCapability: "memory.recall" as CapabilityId,
@@ -161,7 +175,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.94,
         targetDomain: "obsidian",
         targetCapability: "obsidian.notes.search" as CapabilityId,
@@ -176,7 +192,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.95,
         targetDomain: "github",
         targetCapability: "github.prs.list" as CapabilityId,
@@ -191,7 +209,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.92,
         targetDomain: "research",
         targetCapability: "research.web_search" as CapabilityId,
@@ -210,7 +230,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.96,
         targetDomain: "tasks",
         targetCapability: "tasks.create" as CapabilityId,
@@ -223,7 +245,9 @@ export class DeterministicFastPathClassifier {
     if (/\b(complete\s+task|mark\s+task\s+#?\d+\s+as\s+done|finish\s+task\s+#?\d+)\b/i.test(lower)) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.97,
         targetDomain: "tasks",
         targetCapability: "tasks.complete" as CapabilityId,
@@ -235,7 +259,9 @@ export class DeterministicFastPathClassifier {
     if (/\b(delete\s+task\s+#?\d+|remove\s+task\s+#?\d+)\b/i.test(lower)) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.97,
         targetDomain: "tasks",
         targetCapability: "tasks.delete" as CapabilityId,
@@ -250,7 +276,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.95,
         targetDomain: "memory",
         targetCapability: "memory.save" as CapabilityId,
@@ -265,7 +293,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.95,
         targetDomain: "google",
         targetCapability: "google.mail.message.send" as CapabilityId,
@@ -280,7 +310,9 @@ export class DeterministicFastPathClassifier {
     ) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.93,
         targetDomain: "google",
         targetCapability: "google.calendar.event.create" as CapabilityId,
@@ -293,7 +325,9 @@ export class DeterministicFastPathClassifier {
     if (/\b(set\s+preference|change\s+theme|set\s+theme)\b/i.test(lower)) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.95,
         targetDomain: "preferences",
         targetCapability: "preferences.set" as CapabilityId,
@@ -306,7 +340,9 @@ export class DeterministicFastPathClassifier {
     if (/\b(add\s+wake\s+word|remove\s+wake\s+word)\b/i.test(lower)) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.96,
         targetDomain: "wake_words",
         targetCapability: "wake_words.add" as CapabilityId,

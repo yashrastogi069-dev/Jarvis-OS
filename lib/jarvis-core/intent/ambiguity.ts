@@ -24,14 +24,14 @@ export class AmbiguityDetector {
     const lower = trimmed.toLowerCase()
 
     // 1. Destructive Task Deletion Ambiguity
-    // Matches: "delete task", "remove task", "cancel task", "delete the task", "delete that task", "delete that", "delete it"
+    // Matches: "delete task", "remove task", "cancel task", "delete the task", "delete that task", "delete that", "delete it", "drop the task", "remove it from my list"
     if (
-      /\b(delete|remove|cancel|drop)\s+(the\s+|that\s+|this\s+)?(task|todo|reminder|item)\b/i.test(lower) ||
-      /^delete\s+(it|that|this)$/i.test(lower) ||
-      /^remove\s+(it|that|this)$/i.test(lower)
+      /\b(delete|remove|cancel|drop|erase)\s+(the\s+|that\s+|this\s+)?(task|todo|reminder|item|entry)\b/i.test(lower) ||
+      /\bremove\s+(it|that|this)\s+from\s+(my\s+)?(list|tasks|todos)\b/i.test(lower) ||
+      /^(delete|remove|erase|drop)\s+(it|that|this)$/i.test(lower)
     ) {
       // Check if a specific ID or unambiguous title is provided (e.g., "delete task #5" or "delete task 12")
-      const hasExplicitId = /\b(task\s+)?#?(\d+)\b/i.test(lower.replace(/\b(delete|remove|cancel)\s+(task|todo)?\b/gi, ""))
+      const hasExplicitId = /\b(task\s+)?#?(\d+)\b/i.test(lower.replace(/\b(delete|remove|cancel|drop|erase)\s+(task|todo|item|entry)?\b/gi, ""))
       const hasSpecificQuotedTitle = /"([^"]+)"|'([^']+)'/.test(trimmed)
 
       if (!hasExplicitId && !hasSpecificQuotedTitle && !context?.activeTaskId) {
@@ -47,12 +47,13 @@ export class AmbiguityDetector {
     }
 
     // 2. Destructive Memory Deletion Ambiguity
-    // Matches: "delete memory", "remove memory", "forget that", "clear memory"
+    // Matches: "delete memory", "remove memory", "forget that", "clear memory", "erase that memory"
     if (
-      /\b(delete|remove|forget|clear)\s+(the\s+)?(memory|memories)\b/i.test(lower) ||
-      /^forget\s+(that|it|this)$/i.test(lower)
+      /\b(delete|remove|forget|clear|erase)\s+(the\s+|that\s+|this\s+)?(memory|memories)\b/i.test(lower) ||
+      /^forget\s+(about\s+)?(that|it|this)$/i.test(lower) ||
+      /^(erase|clear)\s+(that|it|this)(\s+memory)?/i.test(lower)
     ) {
-      const hasExplicitId = /\b(memory\s+)?#?(\d+)\b/i.test(lower.replace(/\b(delete|remove|forget)\s+(memory)?\b/gi, ""))
+      const hasExplicitId = /\b(memory\s+)?#?(\d+)\b/i.test(lower.replace(/\b(delete|remove|forget|erase|clear)\s+(memory)?\b/gi, ""))
       const hasSpecificTopic = /"([^"]+)"|'([^']+)'/.test(trimmed)
 
       if (!hasExplicitId && !hasSpecificTopic) {
@@ -68,7 +69,7 @@ export class AmbiguityDetector {
     }
 
     // 3. Destructive Calendar Event Deletion Ambiguity
-    if (/\b(delete|cancel|remove)\s+(the\s+)?(meeting|event|calendar event)\b/i.test(lower)) {
+    if (/\b(delete|cancel|remove)\s+(the\s+)?(meeting|event|calendar event|appointment)\b/i.test(lower)) {
       const hasSpecificEvent = /"([^"]+)"|'([^']+)'|\b#?\d{2,}\b/.test(trimmed)
       if (!hasSpecificEvent) {
         return {

@@ -5,34 +5,25 @@
  * subgoals, step dependencies, and operation ledger linkage.
  */
 
-import type { CapabilityId, JsonValue } from "../types"
+import type {
+  CapabilityId,
+  JsonValue,
+  QuestId,
+  PlanStepId,
+  QuestStatus as CoreQuestStatus,
+  StepStatus as CoreStepStatus,
+} from "../types"
+import { asQuestId, asPlanStepId } from "../types"
 import type { OperationId } from "../ledger/types"
 
-export type QuestStatus =
-  | "INITIALIZING"
-  | "RUNNING"
-  | "SUCCEEDED"
-  | "FAILED"
-  | "CANCELLED"
-  | "SUSPENDED"
+export type QuestStatus = CoreQuestStatus
+export type QuestStepStatus = CoreStepStatus
 
-export type QuestStepStatus =
-  | "PENDING"
-  | "RUNNING"
-  | "SUCCEEDED"
-  | "FAILED"
-  | "SKIPPED"
+export type { QuestId }
+export { asQuestId }
 
-export type QuestId = string & { readonly __brand: unique symbol }
-export type StepId = string & { readonly __brand: unique symbol }
-
-export function asQuestId(id: string): QuestId {
-  return id as QuestId
-}
-
-export function asStepId(id: string): StepId {
-  return id as StepId
-}
+export type StepId = PlanStepId
+export const asStepId = asPlanStepId
 
 export interface QuestRecord {
   readonly questId: QuestId
@@ -102,4 +93,5 @@ export interface QuestRecoverySummary {
   readonly suspendedQuests: number
   readonly recoveredSteps: number
   readonly failedSteps: number
+  readonly unknownCommitSteps?: number
 }

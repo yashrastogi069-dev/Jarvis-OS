@@ -13,9 +13,18 @@
  */
 
 import type { CapabilityDomain } from "../capabilities/types"
-import type { CapabilityId } from "../types"
+import type { CapabilityId, ExecutionMode } from "../types"
 
-export type IntentCategory = "CHAT" | "READ" | "ACTION" | "QUEST"
+export type IntentKind =
+  | "CONVERSATION"
+  | "READ_QUERY"
+  | "MUTATION_SINGLE"
+  | "GOAL_MULTI_STEP"
+
+/**
+ * Reconciled with canonical ExecutionMode ("CHAT" | "READ" | "ACTION" | "QUEST").
+ */
+export type IntentCategory = ExecutionMode
 
 export type AmbiguityType =
   | "MISSING_REQUIRED_FIELD"
@@ -35,7 +44,9 @@ export interface ClarificationRequest {
 
 export interface ResolvedIntent {
   readonly needsClarification: false
-  readonly category: IntentCategory
+  readonly mode: ExecutionMode
+  readonly category: ExecutionMode
+  readonly intentKind?: IntentKind
   readonly confidence: number // 0.0 to 1.0
   readonly targetDomain?: CapabilityDomain | string
   readonly targetCapability?: CapabilityId
@@ -47,7 +58,9 @@ export interface ResolvedIntent {
 
 export interface ClarificationIntent {
   readonly needsClarification: true
-  readonly category: IntentCategory
+  readonly mode: ExecutionMode
+  readonly category: ExecutionMode
+  readonly intentKind?: IntentKind
   readonly clarification: ClarificationRequest
   readonly reason: string
   readonly fastPath: boolean

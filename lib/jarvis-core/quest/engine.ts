@@ -10,9 +10,10 @@ import crypto from "node:crypto"
 import type Database from "better-sqlite3"
 import { getRawDb } from "../../db"
 import type { CapabilityId, JsonValue } from "../types"
+import { asOperationId } from "../types"
 import { toJsonValue } from "../capabilities/json"
 import { sanitizeSecrets } from "../capabilities/normalizer"
-import type { OperationId } from "../ledger/types"
+import type { OperationId, OperationLedger } from "../ledger"
 import { initQuestSchema } from "./schema"
 import {
   type QuestRecord,
@@ -394,7 +395,8 @@ export class QuestEngine {
 
   /**
    * Mark a step as SUCCEEDED with its result payload.
-   * If all steps in the quest are now SUCCEEDED, transitions the quest to SUCCEEDED.
+   * If all steps in the quest are now terminal, transitions the quest to AWAITING_VERIFICATION.
+   * C12 Completion Verifier owns final goal verification and terminal completion.
    */
   public completeStep(stepId: StepId, resultPayload?: JsonValue): QuestStepRecord {
     const now = Date.now()
@@ -420,25 +422,65 @@ export class QuestEngine {
       // Check if all steps of this quest are complete
       const checkStmt = this.db.prepare(`
         SELECT COUNT(*) as total,
-               SUM(CASE WHEN status = 'SUCCEEDED' THEN 1 ELSE 0 END) as succeeded
+               SUM(CASE WHEN status IN ('SUCCEEDED', 'COMPLETED', 'SKIPPED') THEN 1 ELSE 0 END) as terminal
         FROM quest_steps
         WHERE quest_id = ?
       `)
-      const stats = checkStmt.get(step.quest_id) as { total: number; succeeded: number }
+      const stats = checkStmt.get(step.quest_id) as { total: number; terminal: number }
 
-      if (stats.total > 0 && stats.total === stats.succeeded) {
+      if (stats.total > 0 && stats.total === stats.terminal) {
+        // Blocker F: Transition to AWAITING_VERIFICATION. C12 Completion Verifier owns final resolution.
         const updateQuestStmt = this.db.prepare(`
           UPDATE quests
-          SET status = 'SUCCEEDED',
-              updated_at = ?,
-              completed_at = ?
-          WHERE quest_id = ?
+          SET status = 'AWAITING_VERIFICATION',
+              updated_at = ?
+          WHERE quest_id = ? AND status = 'RUNNING'
         `)
-        updateQuestStmt.run(now, now, step.quest_id)
+        updateQuestStmt.run(now, step.quest_id)
       }
 
       const updatedRaw = this.getStepRow(stepId)!
       return this.mapRawStep(updatedRaw)
+    })
+
+    return completeTx()
+  }
+
+  /**
+   * C12 Completion Verifier Gateway (Blocker F):
+   * Explicitly resolves an AWAITING_VERIFICATION (or RUNNING) quest to a terminal state
+   * (COMPLETED, SUCCEEDED, FAILED, or PARTIALLY_COMPLETED) with a verified result summary.
+   */
+  public verifyAndCompleteQuest(
+    questId: QuestId,
+    terminalStatus: "COMPLETED" | "SUCCEEDED" | "FAILED" | "PARTIALLY_COMPLETED" = "SUCCEEDED",
+    resultSummary?: string
+  ): QuestRecord {
+    const now = Date.now()
+
+    const completeTx = this.db.transaction(() => {
+      const quest = this.getQuestRow(questId)
+      if (!quest) {
+        throw new Error(`Quest "${questId}" does not exist.`)
+      }
+      if (quest.status !== "AWAITING_VERIFICATION" && quest.status !== "RUNNING") {
+        throw new Error(
+          `Cannot verify and complete quest "${questId}" in status "${quest.status}" (must be AWAITING_VERIFICATION or RUNNING).`
+        )
+      }
+
+      const updateStmt = this.db.prepare(`
+        UPDATE quests
+        SET status = ?,
+            result_summary = ?,
+            updated_at = ?,
+            completed_at = ?
+        WHERE quest_id = ?
+      `)
+      updateStmt.run(terminalStatus, resultSummary ?? null, now, now, questId)
+
+      const updatedRaw = this.getQuestRow(questId)!
+      return this.mapRawQuest(updatedRaw)
     })
 
     return completeTx()
@@ -609,10 +651,18 @@ export class QuestEngine {
   }
 
   /**
-   * Boot recovery routine: Transitions orphaned RUNNING quests to SUSPENDED,
-   * and orphaned RUNNING steps back to PENDING (for retry) or FAILED.
+   * Boot recovery routine: Transitions orphaned RUNNING quests to SUSPENDED.
+   * For orphaned RUNNING steps, reconciles with the OperationLedger (Blocker E):
+   * - If step has an operationId and ledger is provided:
+   *   - Ledger UNKNOWN_COMMIT -> step transitions to UNKNOWN_COMMIT (automated replay permanently blocked)
+   *   - Ledger SUCCEEDED -> step transitions to SUCCEEDED with restored payload
+   *   - Ledger FAILED_FINAL -> step transitions to FAILED
+   *   - Ledger FAILED_RETRYABLE -> step resets to PENDING if retry budget remains, else FAILED
+   *   - Ledger RUNNING -> UNKNOWN_COMMIT for mutations, PENDING for READ_ONLY
+   *   - Not in ledger -> UNKNOWN_COMMIT
+   * - If step has no operationId or ledger is omitted: resets to PENDING for safe restart
    */
-  public recoverCrashedQuests(): QuestRecoverySummary {
+  public recoverCrashedQuests(ledger?: OperationLedger): QuestRecoverySummary {
     const now = Date.now()
 
     const recoveryTx = this.db.transaction(() => {
@@ -633,26 +683,125 @@ export class QuestEngine {
 
       // Find running steps
       const findStepsStmt = this.db.prepare(`
-        SELECT step_id FROM quest_steps WHERE status = 'RUNNING'
+        SELECT * FROM quest_steps WHERE status = 'RUNNING'
       `)
-      const runningSteps = findStepsStmt.all() as Array<{ step_id: string }>
+      const runningSteps = findStepsStmt.all() as RawQuestStepRow[]
 
-      // Reset running steps to PENDING with an error notice
-      const updateStepsStmt = this.db.prepare(`
-        UPDATE quest_steps
-        SET status = 'PENDING',
-            error_code = 'CRASH_RECOVERED',
-            error_message = 'Step was running when process terminated. Reset to PENDING for safe restart.',
-            updated_at = ?
-        WHERE status = 'RUNNING'
-      `)
-      const stepRes = updateStepsStmt.run(now)
+      let recoveredSteps = 0
+      let failedSteps = 0
+      let unknownCommitSteps = 0
+
+      for (const step of runningSteps) {
+        if (ledger && step.operation_id) {
+          const op = ledger.getOperation(asOperationId(step.operation_id))
+          if (!op) {
+            this.db.prepare(`
+              UPDATE quest_steps
+              SET status = 'UNKNOWN_COMMIT',
+                  error_code = 'UNKNOWN_COMMIT',
+                  error_message = 'Associated operation not found in ledger upon crash recovery.',
+                  updated_at = ?
+              WHERE step_id = ?
+            `).run(now, step.step_id)
+            unknownCommitSteps++
+          } else if (op.status === "UNKNOWN_COMMIT") {
+            this.db.prepare(`
+              UPDATE quest_steps
+              SET status = 'UNKNOWN_COMMIT',
+                  error_code = 'UNKNOWN_COMMIT',
+                  error_message = 'Step operation ended in UNKNOWN_COMMIT in ledger. Automated replay blocked.',
+                  updated_at = ?
+              WHERE step_id = ?
+            `).run(now, step.step_id)
+            unknownCommitSteps++
+          } else if (op.status === "SUCCEEDED") {
+            const sanitizedResult = serializeAndSanitize(op.resultPayload)
+            this.db.prepare(`
+              UPDATE quest_steps
+              SET status = 'SUCCEEDED',
+                  result_payload = ?,
+                  error_code = NULL,
+                  error_message = NULL,
+                  updated_at = ?,
+                  completed_at = ?
+              WHERE step_id = ?
+            `).run(sanitizedResult, now, now, step.step_id)
+            recoveredSteps++
+          } else if (op.status === "FAILED_FINAL") {
+            this.db.prepare(`
+              UPDATE quest_steps
+              SET status = 'FAILED',
+                  error_code = ?,
+                  error_message = ?,
+                  updated_at = ?,
+                  completed_at = ?
+              WHERE step_id = ?
+            `).run(op.errorCode ?? "FAILED", op.errorMessage ?? "Operation failed in ledger", now, now, step.step_id)
+            failedSteps++
+          } else if (op.status === "FAILED_RETRYABLE") {
+            if (step.retry_count < step.max_retries) {
+              this.db.prepare(`
+                UPDATE quest_steps
+                SET status = 'PENDING',
+                    retry_count = retry_count + 1,
+                    error_code = 'CRASH_RECOVERED',
+                    error_message = 'Step was retryable in ledger. Reset to PENDING for safe restart.',
+                    updated_at = ?
+                WHERE step_id = ?
+              `).run(now, step.step_id)
+              recoveredSteps++
+            } else {
+              this.db.prepare(`
+                UPDATE quest_steps
+                SET status = 'FAILED',
+                    error_code = 'MAX_RETRIES_EXCEEDED',
+                    error_message = 'Retries exhausted upon crash recovery.',
+                    updated_at = ?,
+                    completed_at = ?
+              `).run(now, now, step.step_id)
+              failedSteps++
+            }
+          } else if (op.status === "RUNNING") {
+            if (op.actionClass === "READ_ONLY") {
+              this.db.prepare(`
+                UPDATE quest_steps
+                SET status = 'PENDING',
+                    error_code = 'CRASH_RECOVERED',
+                    error_message = 'Read-only operation interrupted. Reset to PENDING.',
+                    updated_at = ?
+                WHERE step_id = ?
+              `).run(now, step.step_id)
+              recoveredSteps++
+            } else {
+              this.db.prepare(`
+                UPDATE quest_steps
+                SET status = 'UNKNOWN_COMMIT',
+                    error_code = 'UNKNOWN_COMMIT',
+                    error_message = 'Running mutation interrupted during process termination. UNKNOWN_COMMIT.',
+                    updated_at = ?
+              `).run(now, step.step_id)
+              unknownCommitSteps++
+            }
+          }
+        } else {
+          this.db.prepare(`
+            UPDATE quest_steps
+            SET status = 'PENDING',
+                error_code = 'CRASH_RECOVERED',
+                error_message = 'Step was running when process terminated. Reset to PENDING for safe restart.',
+                updated_at = ?
+            WHERE step_id = ?
+          `).run(now, step.step_id)
+          recoveredSteps++
+        }
+      }
 
       return {
         recoveredQuests: runningQuests.length,
         suspendedQuests: questRes.changes,
-        recoveredSteps: runningSteps.length,
-        failedSteps: 0,
+        recoveredSteps,
+        failedSteps,
+        unknownCommitSteps,
       }
     })
 

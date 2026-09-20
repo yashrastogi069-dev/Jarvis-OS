@@ -322,4 +322,76 @@ describe("C6 — Intent Analysis & Ambiguity System", () => {
       expect(avgDuration).toBeLessThan(2.0) // under 2ms average per classification
     })
   })
+
+  // ==========================================================================
+  // 5. SECTION 12: HELD-OUT AMBIGUITY SANITY SUITE
+  // ==========================================================================
+  describe("Section 12 — Held-Out Ambiguity Sanity Suite", () => {
+    it("guarantees 0 ambiguous destructive executions on unseen test cases", () => {
+      const unseenAmbiguousDestructivePrompts = [
+        "erase that memory please",
+        "drop the task",
+        "delete this item",
+        "cancel the appointment",
+        "remove it from my list",
+        "send an email with the notes",
+        "delete that entry",
+        "forget about it",
+      ]
+
+      let ambiguousDestructiveExecutions = 0
+
+      for (const prompt of unseenAmbiguousDestructivePrompts) {
+        const result = analyzer.analyze(prompt)
+        if (!result.needsClarification) {
+          ambiguousDestructiveExecutions++
+        }
+        expect(result.needsClarification).toBe(true)
+        if (result.needsClarification) {
+          expect(result.clarification.prompt).toBeDefined()
+        }
+      }
+
+      // Invariant: ambiguous destructive execution = 0
+      expect(ambiguousDestructiveExecutions).toBe(0)
+    })
+
+    it("does not falsely trigger clarification on unambiguous requests", () => {
+      const unambiguousPrompts = [
+        { text: "delete task 104", expectedCategory: "ACTION" },
+        { text: "send email to support@github.com", expectedCategory: "ACTION" },
+        { text: "remind me to call Mom tomorrow at 5pm", expectedCategory: "ACTION" },
+        { text: "tell me a joke about computers", expectedCategory: "CHAT" },
+        { text: "search notes for vacation plans", expectedCategory: "READ" },
+      ]
+
+      for (const { text, expectedCategory } of unambiguousPrompts) {
+        const result = analyzer.analyze(text)
+        expect(result.needsClarification).toBe(false)
+        if (!result.needsClarification) {
+          expect(result.category).toBe(expectedCategory)
+          expect(result.mode).toBe(expectedCategory)
+        }
+      }
+    })
+
+    it("verifies canonical ExecutionMode reconciliation (Blocker C)", () => {
+      const testCases = [
+        { text: "hello there", expectedMode: "CHAT" },
+        { text: "list all my tasks", expectedMode: "READ" },
+        { text: "create task Buy grocs", expectedMode: "ACTION" },
+        { text: "search the web for TypeScript 5.5 and then write an obsidian note", expectedMode: "QUEST" },
+      ]
+
+      for (const { text, expectedMode } of testCases) {
+        const res = analyzer.analyze(text)
+        expect(res.needsClarification).toBe(false)
+        if (!res.needsClarification) {
+          expect(res.mode).toBe(expectedMode)
+          expect(res.category).toBe(expectedMode)
+          expect(res.intentKind).toBeDefined()
+        }
+      }
+    })
+  })
 })

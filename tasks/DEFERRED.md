@@ -145,5 +145,13 @@ This document tracks valuable engineering proposals that are non-essential for t
 - **Dependency**: Phase 7 / Skill Factory background jobs.
 - **Earliest revisit**: Phase 7.
 - **Trigger/evidence required**: Scheduled background daemon architecture established.
+---
+
+## D-015 — State-Dependent External Mutation Precondition Revalidation
+- **Description**: Revalidating preconditions (ETags, file content hashes, mtime leases) immediately prior to applying state-dependent destructive mutations or file overwrites to prevent TOCTOU (time-of-check to time-of-use) races between confirmation preview creation and user approval execution.
+- **Why deferred**: In Pre-C9 runtime, C4 evaluates confirmation policy rules, preview generation, and token binding. Connector-level precondition leasing and ETag checks require concrete file/external system connector integration interfaces scheduled for C19.
+- **Dependency**: C19 (Connector Migration & External State Leases).
+- **Earliest revisit**: Checkpoint C19.
+- **Trigger/evidence required**: Concurrent external modifications observed during confirmation dialog pauses in production.
 - **Status**: DEFERRED
 

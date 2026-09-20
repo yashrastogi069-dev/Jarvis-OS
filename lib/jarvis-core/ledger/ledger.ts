@@ -111,16 +111,13 @@ export class OperationLedger {
 
     const recoverTx = this.db.transaction((records: typeof rows) => {
       for (const row of records) {
-        const isExternal =
-          row.action_class === "EXTERNAL_CREATE" ||
-          row.action_class === "EXTERNAL_UPDATE" ||
-          row.action_class === "EXTERNAL_DELETE" ||
-          row.action_class === "EXTERNAL_SEND"
+        const isReadOnly = row.action_class === "READ_ONLY"
+        const isSafeToRetry = isReadOnly
 
-        const newStatus: OperationStatus = isExternal ? "UNKNOWN_COMMIT" : "FAILED_RETRYABLE"
-        const msg = isExternal
-          ? "Process terminated while external mutation was in progress (crash recovery to UNKNOWN_COMMIT)."
-          : "Process terminated while local operation was in progress (crash recovery to FAILED_RETRYABLE)."
+        const newStatus: OperationStatus = isSafeToRetry ? "FAILED_RETRYABLE" : "UNKNOWN_COMMIT"
+        const msg = isSafeToRetry
+          ? "Process terminated while read/idempotent operation was in progress (crash recovery to FAILED_RETRYABLE)."
+          : `Process terminated while mutation (${row.action_class}) was in progress without atomic commit verification (crash recovery to UNKNOWN_COMMIT).`
 
         updateStmt.run(newStatus, msg, now, row.operation_id)
       }
@@ -133,10 +130,11 @@ export class OperationLedger {
   /**
    * Attempt to claim an operation before execution.
    * Guarantees logical idempotency, concurrent execution conflict prevention,
-   * and UNKNOWN_COMMIT safety inside an atomic SQLite transaction.
+   * argument hash integrity checking, and UNKNOWN_COMMIT safety inside an atomic SQLite transaction.
    */
   public claimOperation(options: ClaimOperationOptions): OperationClaimResult {
     const {
+      operationId: providedOpId,
       capabilityId,
       actionClass,
       idempotencyClass,
@@ -144,32 +142,140 @@ export class OperationLedger {
       actor = "user",
       questId,
       stepId,
-      idempotencyWindowMs,
     } = options
 
     const inputHash = hashCanonicalInput(input)
-    const dedupeKey = computeDedupeKey({
-      capabilityId,
-      actionClass,
-      idempotencyClass,
-      input,
-      actor,
-    })
-
-    const isIdempotent =
-      idempotencyClass === "NATURALLY_IDEMPOTENT" ||
-      idempotencyClass === "READ_ONLY" ||
-      idempotencyClass === "LEDGER_REQUIRED" ||
-      idempotencyClass === "REMOTE_IDEMPOTENCY_SUPPORTED"
-
-    const windowMs =
-      idempotencyWindowMs !== undefined
-        ? idempotencyWindowMs
-        : isIdempotent
-          ? DEFAULT_IDEMPOTENT_WINDOW_MS
-          : 0
 
     const claimTx = this.db.transaction((): OperationClaimResult => {
+      // 1. If explicit runtime-owned operationId was provided:
+      if (providedOpId) {
+        const row = this.db
+          .prepare(`SELECT * FROM operations WHERE operation_id = ?`)
+          .get(providedOpId) as RawOperationRow | undefined
+
+        if (row) {
+          const existing = this.parseRow(row)
+
+          // Section 3.2: Integrity verification! If same OperationId + different argument hash -> CONFLICT
+          if (existing.inputHash !== inputHash) {
+            return {
+              status: "CONFLICT",
+              reason: `Invariant violation: Operation ${providedOpId} previously claimed with different canonical argument hash.`,
+              operationId: providedOpId,
+            }
+          }
+
+          // If in progress
+          if (existing.status === "RUNNING" || existing.status === "PENDING") {
+            return {
+              status: "CONFLICT",
+              reason: `Operation is already in progress (${existing.status}). Concurrent duplicate blocked.`,
+              operationId: providedOpId,
+            }
+          }
+
+          // If UNKNOWN_COMMIT -> Block automatic replay
+          if (existing.status === "UNKNOWN_COMMIT") {
+            return {
+              status: "UNKNOWN_COMMIT",
+              reason: "Previous attempt ended with uncertain state (UNKNOWN_COMMIT). Automatic replay blocked.",
+              operationId: providedOpId,
+            }
+          }
+
+          // If SUCCEEDED: return cached result
+          if (existing.status === "SUCCEEDED") {
+            return {
+              status: "CACHED",
+              record: existing,
+              resultPayload: existing.resultPayload ?? null,
+            }
+          }
+
+          // If FAILED_FINAL: block duplicate
+          if (existing.status === "FAILED_FINAL") {
+            return {
+              status: "FAILED_FINAL",
+              reason: existing.errorMessage ?? "Previous operation failed permanently.",
+              operationId: providedOpId,
+            }
+          }
+
+          // If FAILED_RETRYABLE: allow retry of the same logical operation!
+          if (existing.status === "FAILED_RETRYABLE") {
+            const now = Date.now()
+            this.db
+              .prepare(`UPDATE operations SET status = 'RUNNING', updated_at = ? WHERE operation_id = ?`)
+              .run(now, providedOpId)
+
+            return {
+              status: "CLAIMED",
+              operationId: providedOpId,
+              dedupeKey: existing.dedupeKey,
+            }
+          }
+        }
+
+        // OperationId provided, but not in DB yet -> claim it as a new operation!
+        const dedupeKey = asDedupeKey(`dk_${providedOpId}`)
+        const now = Date.now()
+        let sanitizedInputJson: string | null = null
+        try {
+          const safeInput = toJsonValue(input)
+          sanitizedInputJson = sanitizeSecrets(JSON.stringify(safeInput))
+        } catch {
+          sanitizedInputJson = null
+        }
+
+        this.db
+          .prepare(
+            `INSERT INTO operations (
+              operation_id, dedupe_key, capability_id, action_class, status,
+              input_hash, input_payload, created_at, updated_at, quest_id, step_id
+            ) VALUES (?, ?, ?, ?, 'RUNNING', ?, ?, ?, ?, ?, ?)`,
+          )
+          .run(
+            providedOpId,
+            dedupeKey,
+            capabilityId,
+            actionClass,
+            inputHash,
+            sanitizedInputJson,
+            now,
+            now,
+            questId ?? null,
+            stepId ?? null,
+          )
+
+        return {
+          status: "CLAIMED",
+          operationId: providedOpId,
+          dedupeKey,
+        }
+      }
+
+      // 2. If no operationId was provided, fallback to dedupeKey lookup for backward compatibility:
+      const dedupeKey = computeDedupeKey({
+        capabilityId,
+        actionClass,
+        idempotencyClass,
+        input,
+        actor,
+      })
+
+      const isIdempotent =
+        idempotencyClass === "NATURALLY_IDEMPOTENT" ||
+        idempotencyClass === "READ_ONLY" ||
+        idempotencyClass === "LEDGER_REQUIRED" ||
+        idempotencyClass === "REMOTE_IDEMPOTENCY_SUPPORTED"
+
+      const windowMs =
+        options.idempotencyWindowMs !== undefined
+          ? options.idempotencyWindowMs
+          : isIdempotent
+            ? DEFAULT_IDEMPOTENT_WINDOW_MS
+            : 0
+
       // Find latest record with this dedupe_key
       const row = this.db
         .prepare(
@@ -209,7 +315,6 @@ export class OperationLedger {
                 resultPayload: existing.resultPayload ?? null,
               }
             }
-            // Window expired -> allow new claim
           } else if (windowMs > 0 && ageMs <= windowMs) {
             return {
               status: "CACHED",
@@ -219,7 +324,7 @@ export class OperationLedger {
           }
         }
 
-        // 4. If FAILED_FINAL: block duplicate unless caller explicitly allows
+        // 4. If FAILED_FINAL: block duplicate
         if (existing.status === "FAILED_FINAL" && isIdempotent && ageMs <= windowMs) {
           return {
             status: "FAILED_FINAL",
@@ -227,11 +332,9 @@ export class OperationLedger {
             operationId: existing.operationId,
           }
         }
-
-        // 5. If FAILED_RETRYABLE: allow fresh claim to retry
       }
 
-      // Claim new operation
+      // No matching record or window expired -> claim new operation
       const operationId = asOperationId(`op_${Date.now()}_${crypto.randomBytes(8).toString("hex")}`)
       const now = Date.now()
 

@@ -13,7 +13,7 @@
 import crypto from "node:crypto"
 import type { CapabilityId, ActionClass, IdempotencyClass } from "../types"
 import { canonicalizeJson } from "../safety/canonical"
-import { asDedupeKey, type DedupeKey } from "./types"
+import { asDedupeKey, asOperationId, type DedupeKey, type OperationId } from "./types"
 
 export interface DedupeKeyOptions {
   readonly capabilityId: CapabilityId
@@ -52,3 +52,33 @@ export function computeDedupeKey(options: DedupeKeyOptions): DedupeKey {
 
   return asDedupeKey(`dk_${safeCap}_${hash}`)
 }
+
+/**
+ * Derive a stable, runtime-owned OperationId for a direct Action invocation.
+ * Formula: TurnId + logical action slot + CapabilityId
+ */
+export function deriveActionOperationId(
+  turnId: string,
+  slot: string | number,
+  capabilityId: CapabilityId | string,
+): OperationId {
+  const safeTurn = String(turnId).replace(/[^a-zA-Z0-9_-]/g, "_")
+  const safeCap = String(capabilityId).replace(/[^a-zA-Z0-9_-]/g, "_")
+  return asOperationId(`op_act_${safeTurn}_${slot}_${safeCap}`)
+}
+
+/**
+ * Derive a stable, runtime-owned OperationId for a Quest DAG step invocation.
+ * Formula: QuestId + PlanStepId + CapabilityId
+ */
+export function deriveQuestStepOperationId(
+  questId: string,
+  stepId: string,
+  capabilityId: CapabilityId | string,
+): OperationId {
+  const safeQuest = String(questId).replace(/[^a-zA-Z0-9_-]/g, "_")
+  const safeStep = String(stepId).replace(/[^a-zA-Z0-9_-]/g, "_")
+  const safeCap = String(capabilityId).replace(/[^a-zA-Z0-9_-]/g, "_")
+  return asOperationId(`op_qst_${safeQuest}_${safeStep}_${safeCap}`)
+}
+

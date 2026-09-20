@@ -55,6 +55,7 @@ export type OperationClaimResult =
   | { readonly status: "FAILED_FINAL"; readonly reason: string; readonly operationId: OperationId }
 
 export interface ClaimOperationOptions {
+  readonly operationId?: OperationId
   readonly capabilityId: CapabilityId
   readonly actionClass: ActionClass
   readonly idempotencyClass: IdempotencyClass

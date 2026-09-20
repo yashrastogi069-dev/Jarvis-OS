@@ -3,9 +3,9 @@
 **Author**: Antigravity Autonomous Agent  
 **Branch**: `jarvis-core-v2`  
 **Repository**: `https://github.com/yashrastogi069-dev/Jarvis-OS.git`  
-**Current Milestone**: Milestone 0 — Repository Truth & Baseline Reconciliation  
-**Current Checkpoint**: Checkpoint C0 (COMPLETE)  
-**Date**: 2026-09-19  
+**Current Milestone**: Milestone 1 / Pre-C9 Foundation Reconciliation  
+**Current Checkpoint**: Checkpoint C0–C8 (COMPLETE) & Pre-C9 Gate (COMPLETE)  
+**Date**: 2026-09-21  
 
 ---
 

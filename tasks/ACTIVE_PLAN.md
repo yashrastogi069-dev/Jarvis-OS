@@ -1,8 +1,8 @@
 # ACTIVE EXECUTION PLAN — JARVIS CORE V2
 
-## Current Milestone: Milestone 0 — Repository Truth, Substrate Hardening & Core Architecture Baseline
-## Current Checkpoint: Mega Goal C4–C8 (COMPLETE — C4, C5, C6, C7, C8 & Cross-Checkpoint Integration Gate Verified)
-## Next Up: C9 — Structured DAG Planner
+## Current Milestone: Milestone 0 & 1 — Trustworthy Runtime Foundation (C0–C8 Complete)
+## Current Gate: PRE-C9 FOUNDATION RECONCILIATION = COMPLETE
+## Next Up: C9 — Structured DAG Planner (READY / QUEUED)
 
 ---
 
@@ -106,10 +106,13 @@
   - Evaluated in shadow mode against `evals/corpora/routing_corpus_227.json`; achieved 100.0% tool recall, 0 false exclusions, 6.68 average tools exposed (85.7% token reduction), and fail-open safe fallback.
 - [x] **C8: Persisted Quest Engine (COMPLETE)**
   - Path: `lib/jarvis-core/quest/`
-  - SQLite tables `quests` and `quest_steps` tracking root goals, active subgoals, status, dependencies, execution history across sessions, and operation ledger linkage. Verified with 13 unit tests.
+  - SQLite tables `quests` and `quest_steps` tracking root goals, active subgoals, status, dependencies, execution history across sessions, and operation ledger linkage. Verified with 15 unit tests.
+- [x] **Pre-C9 Foundation Reconciliation Gate (COMPLETE)**
+  - Hardened contracts across C5/C6/C7/C8 before Structured DAG Planning.
+  - Reconciled operation identity (`operationId` runtime-owned, argument hash mismatch guard), local mutation crash recovery (`UNKNOWN_COMMIT` on boot), quest step ledger recovery, quest completion boundary (`AWAITING_VERIFICATION` transitioning to C12 `verifyAndCompleteQuest`), intent execution modes, and held-out destructive ambiguity test suite. All 175 jarvis-core unit tests pass (100% green).
 
 ### Phase 3: Planning, Execution & Verification (Checkpoints C9 – C13)
-- [ ] **C9: Structured DAG Planner**
+- [ ] **C9: Structured DAG Planner (READY / QUEUED)**
   - Path: `lib/jarvis-core/planner/`
   - Generates validated directed acyclic graph of steps with typed input references.
 - [ ] **C10: Plan Validator & Safety Checker**

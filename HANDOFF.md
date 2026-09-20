@@ -1,25 +1,41 @@
 # JARVIS — Handoff Document
 
-Status as of **2026-09-20**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, C6, C7, and C8** plus the **Cross-Checkpoint Integration Gate** of the **JARVIS CORE V2 MASTER PROTOCOL**.
+Status as of **2026-09-21**. Authoritative state of the codebase following Checkpoints **C0, C1, C2, C3, C4, C5, C6, C7, and C8**, the **Cross-Checkpoint Integration Gate**, and the **Pre-C9 Foundation Reconciliation Gate** of the **JARVIS CORE V2 MASTER PROTOCOL**.
 - **Active Git Branch**: `jarvis-core-v2` (tracking `origin/jarvis-core-v2` on `https://github.com/yashrastogi069-dev/Jarvis-OS.git`)
 - **Master Plan**: `tasks/ACTIVE_PLAN.md` (Checkpoints C0–C23)
-- **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008)
+- **Architectural Decisions**: `tasks/DECISIONS.md` (ADR-001 through ADR-008, including ADR-002, ADR-003, ADR-004 reconciled Pre-C9)
 - **Known Issues Ledger**: `tasks/KNOWN_ISSUES.md` (ISSUE-001 through ISSUE-006)
+- **Deferred Register**: `tasks/DEFERRED.md` (D-001 through D-015)
 - **Living Implementation Report**: `JARVIS_CORE_V2_IMPLEMENTATION_REPORT.md`
-- **End-to-End Execution Log**: `JARVIS_CORE_V2_MEGA_GOAL_C4_C8_LOG.md`
+- **End-to-End Execution Log**: `JARVIS_CORE_V2_MEGA_GOAL_C4_C8_LOG.md` (Historical execution log)
 - **Foundation Types**: `lib/jarvis-core/types.ts` & `tests/jarvis-core/types.test.ts` (14/14 tests green)
 - **Capability Registry**: `lib/jarvis-core/capabilities/` & `tests/jarvis-core/capabilities.test.ts` (12/12 tests green)
 - **Safe Execution Boundary**: `lib/jarvis-core/capabilities/safe-boundary.ts` & `tests/jarvis-core/result-boundary.test.ts` (39/39 tests green)
 - **Central Action Safety Policy**: `lib/jarvis-core/safety/` & `tests/jarvis-core/safety-policy.test.ts` (25/25 tests green)
-- **Persistent Operation Ledger**: `lib/jarvis-core/ledger/` & `tests/jarvis-core/operation-ledger.test.ts` (15/15 tests green)
-- **Intent Analysis & Ambiguity System**: `lib/jarvis-core/intent/` & `tests/jarvis-core/intent-analysis.test.ts` (13/13 tests green)
+- **Persistent Operation Ledger**: `lib/jarvis-core/ledger/` & `tests/jarvis-core/operation-ledger.test.ts` (22/22 tests green)
+- **Intent Analysis & Ambiguity System**: `lib/jarvis-core/intent/` & `tests/jarvis-core/intent-analysis.test.ts` (16/16 tests green)
 - **Capability Router & Shadow Evaluation**: `lib/jarvis-core/routing/` & `tests/jarvis-core/capability-router.test.ts` (23/23 tests green)
-- **Persisted Quest Engine**: `lib/jarvis-core/quest/` & `tests/jarvis-core/quest-engine.test.ts` (13/13 tests green)
+- **Persisted Quest Engine**: `lib/jarvis-core/quest/` & `tests/jarvis-core/quest-engine.test.ts` (15/15 tests green)
 - **Cross-Checkpoint Integration Gate**: `tests/jarvis-core/integration-c4-c8.test.ts` (9/9 tests green)
-- **Total Suite Health**: 9 test files, 163/163 passed (100% green); `pnpm typecheck` 0 errors; `pnpm build` clean.
+- **Total Suite Health**: 9 test files, 175/175 passed (100% green); `pnpm typecheck` 0 errors; `pnpm build` clean.
 - **Standing Rules**: `CLAUDE.md` and `tasks/lessons.md`.
 
-**Project:** a local-first personal AI operating system — "Jarvis." SQLite +
+---
+
+## NEXT AGENT START HERE
+
+> [!IMPORTANT]
+> **PRE-C9 FOUNDATION RECONCILIATION GATE IS COMPLETE.**
+> All foundational contracts (C5 Operation Ledger, C6 Intent Modes, C7 Router, C8 Quest Engine Lifecycle) have been verified, repaired, and tested.
+> **DO NOT BEGIN C9 AUTOMATICALLY.** Await explicit user instruction to begin Checkpoint C9 (Structured DAG Planner).
+>
+> When the user instructs you to start C9:
+> 1. Verify working branch is `jarvis-core-v2` (`git status -sb`).
+> 2. Run test verification (`pnpm vitest run tests/jarvis-core/`) to confirm baseline 175/175 tests pass.
+> 3. Read `lib/jarvis-core/types.ts`, `lib/jarvis-core/quest/types.ts`, and `lib/jarvis-core/ledger/types.ts` before writing planner code.
+> 4. Remember: The Quest Engine step completion transitions quests to `AWAITING_VERIFICATION`, preserving C12 Completion Verifier ownership. C9 planner must output step graphs with typed dependencies, runtime-owned step IDs (`PlanStepId`), and explicit capability targets.
+
+---
 sqlite-vec for memory, a multi-provider AI brain (no single-vendor lock-in),
 Ollama for embeddings, an MCP server so Claude Code can watch/operate the OS,
 and a from-scratch redesign into a real Iron-Man-style HUD: an open 3D stage

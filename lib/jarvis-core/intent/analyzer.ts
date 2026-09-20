@@ -47,7 +47,9 @@ export class IntentAnalyzer {
 
       return {
         needsClarification: true,
+        mode: cat,
         category: cat,
+        intentKind: "MUTATION_SINGLE",
         clarification,
         reason: clarification.reason,
         fastPath: true,
@@ -71,7 +73,9 @@ export class IntentAnalyzer {
     if (/\b(how\s+are\s+you|who\s+are\s+you|what\s+is\s+your\s+name|what\s+can\s+you\s+do|introduce\s+yourself)\b/i.test(lower)) {
       return {
         needsClarification: false,
+        mode: "CHAT",
         category: "CHAT",
+        intentKind: "CONVERSATION",
         confidence: 0.90,
         reason: "Conversational identity or status question.",
         fastPath: false,
@@ -84,7 +88,9 @@ export class IntentAnalyzer {
     if (sentenceCount >= 2 && hasConjunctions) {
       return {
         needsClarification: false,
+        mode: "QUEST",
         category: "QUEST",
+        intentKind: "GOAL_MULTI_STEP",
         confidence: 0.82,
         reason: "Multi-sentence request with additive conjunctions routed to QUEST.",
         fastPath: false,
@@ -100,7 +106,9 @@ export class IntentAnalyzer {
     ) {
       return {
         needsClarification: false,
+        mode: "READ",
         category: "READ",
+        intentKind: "READ_QUERY",
         confidence: 0.85,
         reason: "Interrogative query targeting capability domain classified as READ.",
         fastPath: false,
@@ -111,7 +119,9 @@ export class IntentAnalyzer {
     if (/\b(create|add|new|send|post|save|write|update|modify|set|schedule)\b/i.test(lower)) {
       return {
         needsClarification: false,
+        mode: "ACTION",
         category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
         confidence: 0.85,
         reason: "Imperative mutation keywords classified as ACTION.",
         fastPath: false,
@@ -121,7 +131,9 @@ export class IntentAnalyzer {
     // Default -> CHAT
     return {
       needsClarification: false,
+      mode: "CHAT",
       category: "CHAT",
+      intentKind: "CONVERSATION",
       confidence: 0.75,
       reason: "General conversational input without explicit tool indicators.",
       fastPath: false,

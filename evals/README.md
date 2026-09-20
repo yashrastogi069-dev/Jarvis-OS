@@ -35,7 +35,7 @@ Contains 60 rigorously defined tasks designed to evaluate agent orchestration ar
 
 ### 2.2 Routing & Pruning Corpus (`corpora/routing_corpus_227.json`)
 Contains 227 prompts across 12 capability domains:
-- 114 Single-Tool Prompts covering all registered capabilities.
+- 124 Single-Tool Prompts covering all registered capabilities.
 - 20 Multi-Tool Workflows.
 - 40 Adversarial Conversational / Concept Prompts (should trigger 0 tools).
 - 12 Ambiguous Requests requiring clarification.
