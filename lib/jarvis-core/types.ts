@@ -198,6 +198,33 @@ export type StepStatus =
   | "SUCCEEDED"                 // Alias for COMPLETED in initial C8 implementation
   | "SKIPPED"                   // Alias for CANCELLED/BLOCKED in initial C8 implementation
 
+/**
+ * Normalizes any step status (including legacy persisted aliases) into canonical Core V2 StepStatus.
+ */
+export function normalizeStepStatus(status: StepStatus | string): StepStatus {
+  if (status === "SUCCEEDED") return "COMPLETED"
+  if (status === "SKIPPED") return "CANCELLED"
+  return status as StepStatus
+}
+
+/**
+ * Normalizes any quest status (including legacy persisted aliases) into canonical Core V2 QuestStatus.
+ */
+export function normalizeQuestStatus(status: QuestStatus | string): QuestStatus {
+  if (status === "INITIALIZING") return "CREATED"
+  if (status === "SUCCEEDED") return "COMPLETED"
+  if (status === "SUSPENDED") return "BLOCKED"
+  return status as QuestStatus
+}
+
+export function isStepSuccessful(status: StepStatus | string): boolean {
+  return status === "COMPLETED" || status === "SUCCEEDED"
+}
+
+export function isQuestSuccessful(status: QuestStatus | string): boolean {
+  return status === "COMPLETED" || status === "SUCCEEDED"
+}
+
 export interface PlanStep {
   readonly id: PlanStepId
   readonly objective: string

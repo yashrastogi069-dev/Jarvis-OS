@@ -640,15 +640,19 @@ Checkpoint C8 implements the SQLite-persisted multi-step quest engine in `lib/ja
 2. **Lifecycle State Machine**: Explicit status transitions (`INITIALIZING` -> `RUNNING` -> `SUCCEEDED` / `FAILED` / `CANCELLED` / `SUSPENDED`) and step transitions (`PENDING` -> `RUNNING` -> `SUCCEEDED` / `FAILED` / `SKIPPED`).
 3. **Dependency DAG Enforcement**: Guaranteed step execution ordering; prerequisite dependencies must be `SUCCEEDED` before a step can start.
 4. **Operation Ledger Linkage**: Every mutating quest step explicitly links to its atomic C5 `OperationLedger` entry (`operation_id`), establishing end-to-end execution traceability.
-5. **Crash Recovery & Restart Survival**: Orphaned `RUNNING` quests are cleanly transitioned to `SUSPENDED` upon server boot, and unfinished steps reset to `PENDING` with crash audit records, preventing data corruption or duplicate side effects.
-6. **Payload Sanitization**: Credentials, PATs, and bearer tokens are automatically redacted before SQLite persistence.
+5. **Crash Recovery & Restart Survival**:
+   - *(Historical note)*: Initially reset unfinished steps to PENDING.
+   - **SUPERSEDED BY PRE-C9 FOUNDATION RECONCILIATION — commit b8064f1**: In-flight mutating quest steps now reconcile directly against the Operation Ledger on boot: steps with ledger `UNKNOWN_COMMIT` remain `UNKNOWN_COMMIT` (never reset to executable `PENDING`), preventing duplicate mutation execution upon reboot. Steps with ledger `SUCCEEDED` transition to `SUCCEEDED` with cached payloads.
+6. **Quest Completion Boundary**:
+   - **SUPERSEDED BY PRE-C9 FOUNDATION RECONCILIATION — commit b8064f1**: When all steps complete, quests transition to `AWAITING_VERIFICATION` rather than auto-completing to `SUCCEEDED`. Final resolution is governed exclusively by the C12 Completion Verifier via `verifyAndCompleteQuest`.
+7. **Payload Sanitization**: Credentials, PATs, and bearer tokens are automatically redacted before SQLite persistence.
 
 ### 2. Implementation Ledger
 - `lib/jarvis-core/quest/types.ts`: `QuestStatus`, `QuestStepStatus`, branded `QuestId`, `StepId`, `QuestRecord`, `QuestStepRecord`, `QuestWithSteps`, `CreateQuestParams`, `CreateStepParams`.
 - `lib/jarvis-core/quest/schema.ts`: SQLite table creation DDL (`quests`, `quest_steps`) and performance indices.
-- `lib/jarvis-core/quest/engine.ts`: `QuestEngine` engine managing creation, dynamic step appending, dependency checking, auto-completion, retry budgeting, cancellation, suspension/resumption, crash recovery, and payload secret redaction.
+- `lib/jarvis-core/quest/engine.ts`: `QuestEngine` engine managing creation, dynamic step appending, dependency checking, `AWAITING_VERIFICATION` step completion gateway, `verifyAndCompleteQuest`, retry budgeting, cancellation, suspension/resumption, ledger-reconciled crash recovery, and payload secret redaction.
 - `lib/jarvis-core/quest/index.ts`: Canonical module exports.
-- `tests/jarvis-core/quest-engine.test.ts`: 13 automated unit tests in isolated in-memory SQLite verifying the complete lifecycle and invariants.
+- `tests/jarvis-core/quest-engine.test.ts`: 15 automated unit tests in isolated in-memory SQLite verifying the complete lifecycle and invariants.
 
 ### 3. Verification Evidence
 - `pnpm typecheck` (`tsc --noEmit`): **0 errors** (code 0).
@@ -713,21 +717,22 @@ The Cross-Checkpoint Integration Gate (`tests/jarvis-core/integration-c4-c8.test
    - Intent tagged: `QUEST`.
    - Router exposes: `google` and `obsidian` domains.
    - Quest engine: Creates persistent quest and DAG steps with dependency constraints in SQLite.
-   - Ledger & Execution: Steps executed sequentially through operation ledger with dependency satisfaction; quest auto-completes to `SUCCEEDED` in SQLite.
+   - Ledger & Execution: Steps executed sequentially through operation ledger with dependency satisfaction.
+   - **SUPERSEDED BY PRE-C9 FOUNDATION RECONCILIATION — commit b8064f1**: Upon step completion, the quest transitions to `AWAITING_VERIFICATION` in SQLite (not direct auto-completion to `SUCCEEDED`). Final completion is executed via `verifyAndCompleteQuest`, honoring the C12 Completion Verifier authority boundary.
 
 ### 3. Crash & Restart Recovery Invariants Verified
 1. **Recovery 1 (Orphaned RUNNING Ledger Operations)**:
    - Unfinished external mutations (`EXTERNAL_SEND`) recover to `UNKNOWN_COMMIT` on boot, blocking automatic re-execution.
-   - Unfinished local mutations (`LOCAL_CREATE`) recover to `FAILED_RETRYABLE`.
+   - **SUPERSEDED BY PRE-C9 FOUNDATION RECONCILIATION — commit b8064f1**: Unfinished local mutations (`LOCAL_CREATE`) now also recover to `UNKNOWN_COMMIT` on boot (not `FAILED_RETRYABLE`), eliminating duplicate local writes if a crash occurred between the business write and ledger commit. Only `READ_ONLY` recovers to `FAILED_RETRYABLE`.
 2. **Recovery 2 (Orphaned RUNNING Quests & Steps)**:
    - Orphaned `RUNNING` quests cleanly transition to `SUSPENDED` with boot audit notice.
-   - Orphaned `RUNNING` steps safely reset to `PENDING` with `CRASH_RECOVERED` error code.
+   - **SUPERSEDED BY PRE-C9 FOUNDATION RECONCILIATION — commit b8064f1**: Orphaned `RUNNING` steps reconcile against the ledger: steps with ledger `UNKNOWN_COMMIT` remain `UNKNOWN_COMMIT` (never reset blindly to `PENDING`), preventing unverified re-execution on restart.
    - Quest cleanly resumes execution when instructed.
 
 ### 4. Verification Evidence
 - `tsc --noEmit`: **0 errors**
 - `vitest run tests/jarvis-core/integration-c4-c8.test.ts`: **9 passed (100% green)**
-- `vitest run tests/jarvis-core/`: **9 test files, 163 passed (100% green)**
+- `vitest run tests/jarvis-core/`: **9 test files, 175 passed (100% green)**
 - `pnpm build`: **Turbopack build succeeded, 28 dynamic API routes generated**.
 
 *End of Integration Gate Report.*

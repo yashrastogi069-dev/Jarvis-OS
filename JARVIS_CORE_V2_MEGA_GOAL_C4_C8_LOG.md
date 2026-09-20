@@ -23,8 +23,8 @@
 | **C5** | Persistent Operation Ledger & Idempotency | **COMPLETE** | SQLite operations table, `dedupeKey` calculation, claim-before-execute, restart persistence, local/external mutation handling. | `c43dd13` |
 | **C6** | Intent Analysis & Ambiguity System | **COMPLETE** | Fast-path classifier (CHAT/READ/MUTATION/GOAL), clarification requirements, destructive ambiguity defense (13 tests, 40 corpus prompts). | `d47ddb5` |
 | **C7** | Capability Router & Shadow Evaluation | **COMPLETE** | Strategy E layered confidence router, shadow evaluation against 227-corpus (100% recall, 6.7 avg tools, 23 tests). | `bddcb12` |
-| **C8** | Persisted Quest Engine | **COMPLETE** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage (13 tests). | Pending |
-| **Integration** | Cross-Checkpoint Integration Gate | **ACTIVE** | 7 end-to-end headless scenarios verifying full stack without planner. | TBD |
+| **C8** | Persisted Quest Engine | **COMPLETE** | SQLite `quests` and `quest_steps` schema, state machine transitions, crash/restart recovery, operation linkage (15 tests). | `3fe2cdc` |
+| **Integration** | Cross-Checkpoint Integration Gate | **COMPLETE** | 9 end-to-end headless scenarios and crash recovery harness verifying full stack without planner. | `859932b` |
 
 ---
 

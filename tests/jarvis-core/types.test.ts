@@ -13,6 +13,10 @@ import {
   asCapabilityId,
   asToolCallId,
   asOperationId,
+  normalizeStepStatus,
+  normalizeQuestStatus,
+  isStepSuccessful,
+  isQuestSuccessful,
   type TraceId,
   type TurnId,
   type QuestId,
@@ -383,5 +387,33 @@ describe("Checkpoint C1: Domain Types & Runtime Contracts", () => {
     expect(events.length).toBe(3)
     expect(events[0].type).toBe("turn_started")
     expect(events[2].type).toBe("turn_finished")
+  })
+
+  it("15. Proves canonical status vocabulary and normalization helpers (Part 1.4)", () => {
+    // Canonical StepStatus normalization
+    expect(normalizeStepStatus("SUCCEEDED")).toBe("COMPLETED")
+    expect(normalizeStepStatus("SKIPPED")).toBe("CANCELLED")
+    expect(normalizeStepStatus("PENDING")).toBe("PENDING")
+    expect(normalizeStepStatus("RUNNING")).toBe("RUNNING")
+    expect(normalizeStepStatus("FAILED_RETRYABLE")).toBe("FAILED_RETRYABLE")
+    expect(normalizeStepStatus("UNKNOWN_COMMIT")).toBe("UNKNOWN_COMMIT")
+
+    // Canonical QuestStatus normalization
+    expect(normalizeQuestStatus("INITIALIZING")).toBe("CREATED")
+    expect(normalizeQuestStatus("SUCCEEDED")).toBe("COMPLETED")
+    expect(normalizeQuestStatus("SUSPENDED")).toBe("BLOCKED")
+    expect(normalizeQuestStatus("AWAITING_VERIFICATION")).toBe("AWAITING_VERIFICATION")
+    expect(normalizeQuestStatus("COMPLETED")).toBe("COMPLETED")
+
+    // Success predicates
+    expect(isStepSuccessful("COMPLETED")).toBe(true)
+    expect(isStepSuccessful("SUCCEEDED")).toBe(true)
+    expect(isStepSuccessful("FAILED_FINAL")).toBe(false)
+    expect(isStepSuccessful("UNKNOWN_COMMIT")).toBe(false)
+
+    expect(isQuestSuccessful("COMPLETED")).toBe(true)
+    expect(isQuestSuccessful("SUCCEEDED")).toBe(true)
+    expect(isQuestSuccessful("FAILED")).toBe(false)
+    expect(isQuestSuccessful("AWAITING_VERIFICATION")).toBe(false)
   })
 })

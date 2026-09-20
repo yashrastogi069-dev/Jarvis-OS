@@ -821,4 +821,80 @@ describe("C5 — Persistent Operation Ledger & Logical Idempotency", () => {
       rebootDb.close()
     }, 15000)
   })
+
+  // ==========================================================================
+  // 12. DIRECT ACTION RETRY IDENTITY PROOF (PART 1.3)
+  // ==========================================================================
+  describe("Direct ACTION Retry Identity Proof (Part 1.3)", () => {
+    it("proves transport retry or provider failover preserves OperationId, new turns get new OperationId, and argument tampering causes CONFLICT", () => {
+      const runtimeTurnId = asTurnId("turn_runtime_owned_999")
+      const slot = 0
+      const capId = asCapabilityId("tasks.create")
+      const initialPayload = { title: "Buy groceries for dinner" }
+
+      // 1. Initial invocation (e.g. Primary provider Gemini attempted)
+      const opId1 = deriveActionOperationId(runtimeTurnId, slot, capId)
+      const claim1 = ledger.claimOperation({
+        operationId: opId1,
+        capabilityId: capId,
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: initialPayload,
+      })
+      expect(claim1.status).toBe("CLAIMED")
+
+      // Complete execution of the initial attempt
+      ledger.completeOperation({
+        operationId: opId1,
+        resultPayload: { taskId: 42, title: initialPayload.title },
+      })
+
+      // 2. Runtime / Provider retry within same TurnId, same slot, same CapabilityId
+      // Invariant: Transport retry or provider failover (e.g. Gemini -> Groq failover)
+      // must NOT create a new logical operation identity. Runtime owns TurnId.
+      const retryOpId = deriveActionOperationId(runtimeTurnId, slot, capId)
+      expect(retryOpId).toBe(opId1)
+
+      const retryClaim = ledger.claimOperation({
+        operationId: retryOpId,
+        capabilityId: capId,
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: initialPayload,
+      })
+      expect(retryClaim.status).toBe("CACHED")
+      if (retryClaim.status === "CACHED") {
+        expect(retryClaim.resultPayload).toEqual({ taskId: 42, title: initialPayload.title })
+      }
+
+      // 3. New user turn with identical capability and identical payload
+      // Invariant: New turn MUST produce a different OperationId and must NOT be falsely suppressed.
+      const newTurnId = asTurnId("turn_runtime_owned_1000")
+      const newTurnOpId = deriveActionOperationId(newTurnId, slot, capId)
+      expect(newTurnOpId).not.toBe(opId1)
+
+      const newTurnClaim = ledger.claimOperation({
+        operationId: newTurnOpId,
+        capabilityId: capId,
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: initialPayload,
+      })
+      expect(newTurnClaim.status).toBe("CLAIMED")
+
+      // 4. Same OperationId + changed arguments -> CONFLICT (INPUT_HASH_MISMATCH)
+      const tamperedClaim = ledger.claimOperation({
+        operationId: opId1,
+        capabilityId: capId,
+        actionClass: "LOCAL_CREATE",
+        idempotencyClass: "LEDGER_REQUIRED",
+        input: { title: "Tampered payload: delete everything" },
+      })
+      expect(tamperedClaim.status).toBe("CONFLICT")
+      if (tamperedClaim.status === "CONFLICT") {
+        expect(tamperedClaim.reason).toContain("different canonical argument hash")
+      }
+    })
+  })
 })
+

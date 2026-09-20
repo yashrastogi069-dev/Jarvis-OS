@@ -112,10 +112,10 @@
   - Reconciled operation identity (`operationId` runtime-owned, argument hash mismatch guard), local mutation crash recovery (`UNKNOWN_COMMIT` on boot), quest step ledger recovery, quest completion boundary (`AWAITING_VERIFICATION` transitioning to C12 `verifyAndCompleteQuest`), intent execution modes, and held-out destructive ambiguity test suite. All 175 jarvis-core unit tests pass (100% green).
 
 ### Phase 3: Planning, Execution & Verification (Checkpoints C9 – C13)
-- [ ] **C9: Structured DAG Planner (READY / QUEUED)**
+- [x] **C9: Structured DAG Planner (COMPLETE)**
   - Path: `lib/jarvis-core/planner/`
-  - Generates validated directed acyclic graph of steps with typed input references.
-- [ ] **C10: Plan Validator & Safety Checker**
+  - Generates validated directed acyclic graph of steps with typed input references, JSON pointer RFC 6901, and provider-independent adapter. Verified with 22 tests.
+- [ ] **C10: Plan Validator & Safety Checker (ACTIVE)**
   - Path: `lib/jarvis-core/planner/validator.ts`
   - Ensures acyclicity, capability existence, schema satisfaction, and policy compliance before any execution.
 - [ ] **C11: Deterministic DAG Executor**
