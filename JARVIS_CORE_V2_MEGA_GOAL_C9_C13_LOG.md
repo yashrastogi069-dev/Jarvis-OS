@@ -16,9 +16,9 @@
 | **Preflight** | Truth Pass & Micro-Corrections (Part 1.1–1.4) | **COMPLETE** | Stale doc callouts, action retry identity proof, status vocabulary normalization. | Included C9 |
 | **C9** | Structured DAG Planner | **COMPLETE** | `lib/jarvis-core/planner/`, typed step output references, JSON Pointer, conservative plan bounds, provider adapter (22 tests). | `5a74148` |
 | **C10** | Deterministic Plan Validator | **COMPLETE** | `lib/jarvis-core/planner/validator.ts`, cycle detection, registry & schema validation, trusted safety derivation (20 tests). | `7c0b321` |
-| **C11** | Deterministic DAG Executor | **COMPLETE** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery (10 tests). | Commit pending |
-| **C12** | Terminal Completion Verifier | **ACTIVE** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion. | TBD |
-| **C13** | Controlled Replanner | **QUEUED** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget. | TBD |
+| **C11** | Deterministic DAG Executor | **COMPLETE** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery (10 tests). | `121b402` |
+| **C12** | Terminal Completion Verifier | **COMPLETE** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion (5 tests). | Commit pending |
+| **C13** | Controlled Replanner | **ACTIVE** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget. | TBD |
 | **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **QUEUED** | 20 headless end-to-end scenarios validating complete orchestration stack. | TBD |
 
 ---
@@ -91,6 +91,23 @@
   - `tests/jarvis-core/executor.test.ts`: 10 comprehensive unit & stress tests validating linear chain execution, parallel reads, serialized mutations, JSON pointer reference errors, confirmation pause/resume, ledger caching, failure propagation, crash recovery, cancellation, and 50-run parallel stress test (0 race conditions).
 - **Verification Metrics**:
   - `pnpm vitest run tests/jarvis-core/executor.test.ts`: 10/10 passed (100% green).
-  - `pnpm vitest run tests/jarvis-core/`: 12 test files, 229/229 passed (100% green).
+  - `pnpm vitest run tests/jarvis-core/`: 13 test files, 234/234 passed (100% green).
+  - `pnpm typecheck`: 0 errors.
+  - `pnpm build`: Next.js production build succeeded with 0 errors.
+
+---
+
+## 6. Checkpoint C12 Report — Terminal Completion Verifier
+
+- **Objective**: Establish the sole terminal authority separating execution from verification, preventing premature completion, evaluating deterministic criteria against ledger evidence, and synchronizing with QuestEngine.
+- **Files Created / Modified**:
+  - `lib/jarvis-core/verifier/types.ts`: `TerminalQuestStatus`, `CriterionEvaluationResult`, `StepVerificationResult`, `PlanVerificationResult`, `VerifierOptions`.
+  - `lib/jarvis-core/verifier/criteria-evaluator.ts`: `CriteriaEvaluator` evaluating `CAPABILITY_SUCCEEDED`, `OUTPUT_PRESENT` (with RFC 6901 JSON pointer), `CONFIRMATION_ACCEPTED`, and `DEPENDENCY_RESOLVED` against persistent ledger records and verified outputs.
+  - `lib/jarvis-core/verifier/verifier.ts`: `TerminalCompletionVerifier` evaluating plan-wide criteria, performing goal resolution (`COMPLETED` vs `PARTIALLY_COMPLETED` vs `BLOCKED` vs `FAILED`), synthesizing human-readable summaries, and synchronizing SQLite quest records via `questEngine.verifyAndCompleteQuest()`.
+  - `lib/jarvis-core/verifier/index.ts`: Canonical exports.
+  - `tests/jarvis-core/verifier.test.ts`: 5 unit tests validating full verification success, partial completion (optional steps), anti-hallucination rejection (missing output property), definitive failure detection, and QuestEngine SQLite synchronization.
+- **Verification Metrics**:
+  - `pnpm vitest run tests/jarvis-core/verifier.test.ts`: 5/5 passed (100% green).
+  - `pnpm vitest run tests/jarvis-core/`: 13 test files, 234/234 passed (100% green).
   - `pnpm typecheck`: 0 errors.
   - `pnpm build`: Next.js production build succeeded with 0 errors.
