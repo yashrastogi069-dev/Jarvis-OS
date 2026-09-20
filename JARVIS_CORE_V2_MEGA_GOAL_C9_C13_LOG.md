@@ -14,9 +14,9 @@
 | Checkpoint | Focus Area | Status | Deliverables / Verification | Commit Hash |
 | :--- | :--- | :--- | :--- | :--- |
 | **Preflight** | Truth Pass & Micro-Corrections (Part 1.1–1.4) | **COMPLETE** | Stale doc callouts, action retry identity proof, status vocabulary normalization. | Included C9 |
-| **C9** | Structured DAG Planner | **COMPLETE** | `lib/jarvis-core/planner/`, typed step output references, JSON Pointer, conservative plan bounds, provider adapter (22 tests). | Pending |
-| **C10** | Deterministic Plan Validator | **ACTIVE** | `lib/jarvis-core/planner/validator.ts`, cycle detection, registry & schema validation, trusted safety derivation. | TBD |
-| **C11** | Deterministic DAG Executor | **QUEUED** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery. | TBD |
+| **C9** | Structured DAG Planner | **COMPLETE** | `lib/jarvis-core/planner/`, typed step output references, JSON Pointer, conservative plan bounds, provider adapter (22 tests). | `5a74148` |
+| **C10** | Deterministic Plan Validator | **COMPLETE** | `lib/jarvis-core/planner/validator.ts`, cycle detection, registry & schema validation, trusted safety derivation (20 tests). | Commit pending |
+| **C11** | Deterministic DAG Executor | **ACTIVE** | `lib/jarvis-core/executor/`, dependency resolution, parallel reads, ledger claim, confirmation pause/resume, crash recovery. | TBD |
 | **C12** | Terminal Completion Verifier | **QUEUED** | `lib/jarvis-core/verifier/`, criteria inspection, goal resolution (COMPLETED vs BLOCKED), anti-premature-completion. | TBD |
 | **C13** | Controlled Replanner | **QUEUED** | `lib/jarvis-core/planner/replanner.ts`, material trigger detection, patch semantics, immutable history, 2-attempt budget. | TBD |
 | **Integration** | C9–C13 Cross-Checkpoint Integration Gate | **QUEUED** | 20 headless end-to-end scenarios validating complete orchestration stack. | TBD |
@@ -60,3 +60,19 @@
   - `pnpm vitest run tests/jarvis-core/planner.test.ts`: 22/22 passed (100% green).
   - `pnpm vitest run tests/jarvis-core/`: 10 test files, 199/199 passed (100% green).
   - `pnpm typecheck`: 0 errors.
+
+---
+
+## 4. Checkpoint C10 Report — Deterministic Plan Validator
+
+- **Objective**: Deterministically validate execution plans against capability registry, input schemas, graph invariants, step output references, and derive trusted safety metadata (zero model authority).
+- **Files Created / Modified**:
+  - `lib/jarvis-core/planner/validator.ts`: `DeterministicPlanValidator` verifying DAG cycles (Kahn's), graph depth (<=5), fan-out (<=5), step counts (<=10), user-facing capability checks, static availability checks, literal argument schema validation, prototype pollution guards, step output reference validation (`$ref`), and deriving trusted runtime metadata (`actionClass`, `confirmationPolicy`, `idempotencyClass`, `requiresConfirmation`).
+  - `lib/jarvis-core/planner/index.ts`: Re-exported validator symbols and types.
+  - `lib/jarvis-core/capabilities/registry.ts`: Added `get(id)` convenience alias.
+  - `tests/jarvis-core/plan-validator.test.ts`: 20 unit tests validating valid plan acceptance, trusted safety override, internal engine rejection, unrouted capability rejection, schema validation, cycle rejections (direct, 2-node, 4-node), reference validation (future, self, undeclared dependency, prototype pollution), and graph bounds.
+- **Verification Metrics**:
+  - `pnpm vitest run tests/jarvis-core/plan-validator.test.ts`: 20/20 passed (100% green).
+  - `pnpm vitest run tests/jarvis-core/`: 11 test files, 219/219 passed (100% green).
+  - `pnpm typecheck`: 0 errors.
+  - `pnpm build`: Next.js production build succeeded with 0 errors.

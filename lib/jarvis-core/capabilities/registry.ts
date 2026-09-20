@@ -65,6 +65,13 @@ export class CapabilityRegistry {
   }
 
   /**
+   * Alias for getById.
+   */
+  public get(id: CapabilityId | string): CapabilityDefinition | undefined {
+    return this.getById(id)
+  }
+
+  /**
    * Look up capability by legacy V1 tool name (e.g. "createTask").
    */
   public getByLegacyName(name: string): CapabilityDefinition | undefined {
