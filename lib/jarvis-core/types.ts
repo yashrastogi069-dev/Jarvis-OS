@@ -332,10 +332,11 @@ export type CapabilityAvailability =
  * Note: The Executor is deterministic application code, NOT a model role.
  */
 export type ProviderRole =
-  | "CHAT"       // Fast conversational interaction and clarification
-  | "PLANNER"    // Structured DAG reasoning and goal decomposition
-  | "REPLANNER"  // Dynamic branch recovery and sub-graph replanning
-  | "FINALIZER"  // Grounded outcome synthesis from ledger and step results
+  | "CHAT"             // Fast conversational interaction and clarification
+  | "ACTION_RESOLVER"  // Model specialized in argument extraction for direct mutations
+  | "PLANNER"          // Structured DAG reasoning and goal decomposition
+  | "REPLANNER"        // Dynamic branch recovery and sub-graph replanning
+  | "FINALIZER"        // Grounded outcome synthesis from ledger and step results
 
 // ============================================================================
 // 13. RUNTIME ERROR TAXONOMY (Section P)
