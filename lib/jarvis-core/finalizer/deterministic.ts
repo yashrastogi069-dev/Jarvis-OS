@@ -85,7 +85,7 @@ export function synthesizeDeterministicResponse(facts: FinalizationFacts): Final
       lines.push(`⚠️ Plan partially completed${goalTitle}.`)
       lines.push(`\n**Step Summary:**`)
       for (const step of facts.steps) {
-        if (step.status === "SUCCEEDED" || step.status === "COMMITTED") {
+        if (step.status === "SUCCEEDED" || step.status === "COMPLETED") {
           lines.push(`- ✅ \`${step.capabilityId}\`: ${step.title}`)
         } else if (step.status === "FAILED") {
           lines.push(`- ❌ \`${step.capabilityId}\`: ${step.title} (Failed: ${step.error ?? "unknown error"})`)
@@ -148,7 +148,7 @@ function computeFactsSummary(facts: FinalizationFacts): {
 } {
   const totalSteps = facts.steps.length
   const succeededSteps = facts.steps.filter(
-    (s) => s.status === "SUCCEEDED" || s.status === "COMMITTED"
+    (s) => s.status === "SUCCEEDED" || s.status === "COMPLETED"
   ).length
   const failedSteps = facts.steps.filter((s) => s.status === "FAILED").length
   const committedOperations = facts.committedOperations.length

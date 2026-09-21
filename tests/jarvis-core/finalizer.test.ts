@@ -11,6 +11,7 @@ import {
   TurnDeadline,
 } from "../../lib/jarvis-core/providers"
 import { asOperationId, asPlanStepId, asCapabilityId } from "../../lib/jarvis-core/types"
+import { asDedupeKey } from "../../lib/jarvis-core/ledger/types"
 
 describe("JARVIS CORE V2 — C15: Grounded Finalizer & Response Generator", () => {
   describe("Secret and Credential Redaction", () => {
@@ -72,11 +73,12 @@ describe("JARVIS CORE V2 — C15: Grounded Finalizer & Response Generator", () =
         committedOperations: [
           {
             operationId: asOperationId("op-1"),
-            idempotencyKey: "tasks.create:k1",
+            dedupeKey: asDedupeKey("tasks.create:k1"),
             capabilityId: asCapabilityId("tasks.create"),
+            actionClass: "LOCAL_CREATE",
             status: "SUCCEEDED",
-            parameters: { title: "Buy milk" },
-            result: { id: 12 },
+            inputHash: "input_hash_123",
+            resultPayload: { id: 12 },
             createdAt: Date.now(),
             updatedAt: Date.now(),
           },

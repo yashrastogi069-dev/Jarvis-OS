@@ -15,7 +15,7 @@
  *    synthesizer guarantees a truthful response.
  */
 
-import type { OperationLedgerRecord } from "../ledger/types"
+import type { OperationRecord } from "../ledger/types"
 import type { StepStatus } from "../types"
 
 export type FinalizerExecutionMode = "DIRECT_ACTION" | "PLAN_DAG" | "CONVERSATIONAL"
@@ -53,7 +53,7 @@ export interface FinalizationFacts {
   readonly turnStatus: FinalizerTurnStatus
   readonly goal?: string
   readonly steps: ReadonlyArray<StepFact>
-  readonly committedOperations: ReadonlyArray<OperationLedgerRecord>
+  readonly committedOperations: ReadonlyArray<OperationRecord>
   readonly pendingConfirmation?: PendingConfirmationFact
   readonly error?: string
   readonly contextNotes?: ReadonlyArray<string>

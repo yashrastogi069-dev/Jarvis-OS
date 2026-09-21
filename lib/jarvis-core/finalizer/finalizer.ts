@@ -43,6 +43,11 @@ export class GroundedFinalizer {
       return synthesizeDeterministicResponse(facts)
     }
 
+    // Confirmation prompts must always be deterministic to guarantee exact parameters and safety token
+    if (facts.turnStatus === "CONFIRMATION_REQUIRED") {
+      return synthesizeDeterministicResponse(facts)
+    }
+
     // Check deadline; if already soft-expired or remaining time is too short (<1000ms),
     // immediately use deterministic fallback to avoid hard timeout
     if (options?.deadline?.isSoftExpired() || (options?.deadline && options.deadline.remainingMs() < 1000)) {
@@ -75,7 +80,7 @@ export class GroundedFinalizer {
         factsSummary: {
           totalSteps: facts.steps.length,
           succeededSteps: facts.steps.filter(
-            (s) => s.status === "SUCCEEDED" || s.status === "COMMITTED"
+            (s) => s.status === "SUCCEEDED" || s.status === "COMPLETED"
           ).length,
           failedSteps: facts.steps.filter((s) => s.status === "FAILED").length,
           committedOperations: facts.committedOperations.length,
@@ -125,7 +130,9 @@ export class GroundedFinalizer {
         : facts.committedOperations
             .map(
               (op) =>
-                `- Op ${op.operationId} [${op.capabilityId}]: Status ${op.status} | Entity: ${op.entityType ?? "n/a"} (${op.entityId ?? "n/a"})`
+                `- Op ${op.operationId} [${op.capabilityId}]: Status ${op.status}${
+                  op.resultPayload ? ` | Result: ${JSON.stringify(op.resultPayload)}` : ""
+                }`
             )
             .join("\n"),
       "",
