@@ -9,7 +9,7 @@
 import crypto from "node:crypto"
 import type Database from "better-sqlite3"
 import { getRawDb } from "../../db"
-import type { CapabilityId, JsonValue } from "../types"
+import type { CapabilityId, JsonValue, StepStatus } from "../types"
 import { asOperationId } from "../types"
 import { toJsonValue } from "../capabilities/json"
 import { sanitizeSecrets } from "../capabilities/normalizer"
@@ -806,6 +806,216 @@ export class QuestEngine {
     })
 
     return recoveryTx()
+  }
+
+  // ==========================================================================
+  // DURABLE EXECUTION PLAN & STEP LIFECYCLE (Repair Gate D)
+  // ==========================================================================
+
+  /**
+   * Persist a validated execution plan to the database.
+   */
+  public persistPlan(plan: any): void {
+    const planId = String(plan.id)
+    const questId = String(plan.questId)
+    const version = Number(plan.version ?? 1)
+    const planJson = JSON.stringify(plan)
+    const now = Date.now()
+
+    this.db.prepare(`
+      INSERT OR REPLACE INTO quest_plans (plan_id, quest_id, version, plan_json, status, created_at, superseded_at)
+      VALUES (?, ?, ?, ?, 'ACTIVE', ?, NULL)
+    `).run(planId, questId, version, planJson, now)
+
+    // Also ensure steps are saved to quest_steps if steps are present
+    if (Array.isArray(plan.steps)) {
+      this.savePlanSteps(questId as QuestId, plan.steps)
+    }
+  }
+
+  /**
+   * Retrieve the active validated execution plan for a quest from SQLite.
+   */
+  public getActivePlan<T = any>(questId: QuestId | string): T | null {
+    const row = this.db.prepare(`
+      SELECT plan_json FROM quest_plans
+      WHERE quest_id = ? AND status = 'ACTIVE' AND superseded_at IS NULL
+      ORDER BY version DESC LIMIT 1
+    `).get(String(questId)) as { plan_json: string } | undefined
+
+    if (!row?.plan_json) return null
+    try {
+      return JSON.parse(row.plan_json) as T
+    } catch {
+      return null
+    }
+  }
+
+  /**
+   * Supersede an old plan with a new plan version (e.g. from Controlled Replanner).
+   * Preserves historical executed plan audit trail without overwriting.
+   */
+  public supersedePlan(questId: QuestId | string, oldPlanId: string, newPlan: any): void {
+    const now = Date.now()
+    const supersedeTx = this.db.transaction(() => {
+      this.db.prepare(`
+        UPDATE quest_plans
+        SET status = 'SUPERSEDED', superseded_at = ?
+        WHERE plan_id = ? AND quest_id = ?
+      `).run(now, String(oldPlanId), String(questId))
+
+      const newPlanId = String(newPlan.id)
+      const version = Number(newPlan.version ?? 2)
+      const planJson = JSON.stringify(newPlan)
+
+      this.db.prepare(`
+        INSERT INTO quest_plans (plan_id, quest_id, version, plan_json, status, created_at, superseded_at)
+        VALUES (?, ?, ?, ?, 'ACTIVE', ?, NULL)
+      `).run(newPlanId, String(questId), version, planJson, now)
+
+      if (Array.isArray(newPlan.steps)) {
+        this.savePlanSteps(questId as QuestId, newPlan.steps)
+      }
+    })
+
+    supersedeTx()
+  }
+
+  /**
+   * Return full version history of execution plans for a quest.
+   */
+  public getPlanHistory(questId: QuestId | string): ReadonlyArray<{
+    planId: string
+    version: number
+    status: string
+    planJson: string
+    createdAt: number
+    supersededAt: number | null
+  }> {
+    const rows = this.db.prepare(`
+      SELECT plan_id, version, status, plan_json, created_at, superseded_at
+      FROM quest_plans
+      WHERE quest_id = ?
+      ORDER BY version ASC
+    `).all(String(questId)) as Array<{
+      plan_id: string
+      version: number
+      status: string
+      plan_json: string
+      created_at: number
+      superseded_at: number | null
+    }>
+
+    return rows.map((r) => ({
+      planId: r.plan_id,
+      version: r.version,
+      status: r.status,
+      planJson: r.plan_json,
+      createdAt: r.created_at,
+      supersededAt: r.superseded_at,
+    }))
+  }
+
+  /**
+   * Durably persist or update plan steps into SQLite quest_steps table.
+   */
+  public savePlanSteps(questId: QuestId | string, steps: ReadonlyArray<any>): void {
+    const now = Date.now()
+    const stmt = this.db.prepare(`
+      INSERT INTO quest_steps (
+        step_id, quest_id, step_index, title, capability_id, status,
+        operation_id, input_payload, result_payload, error_code, error_message,
+        dependencies, retry_count, max_retries, created_at, updated_at, completed_at
+      ) VALUES (
+        ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, 0, 2, ?, ?, NULL
+      )
+      ON CONFLICT(step_id) DO UPDATE SET
+        title = excluded.title,
+        capability_id = excluded.capability_id,
+        dependencies = excluded.dependencies,
+        updated_at = excluded.updated_at
+    `)
+
+    const saveTx = this.db.transaction(() => {
+      let index = 0
+      for (const step of steps) {
+        const stepId = String(step.id)
+        const title = step.objective || step.title || step.capabilityId
+        const capabilityId = String(step.capabilityId)
+        const deps = step.dependsOn ? JSON.stringify(step.dependsOn) : "[]"
+        const inputPayload = step.arguments ? serializeAndSanitize(step.arguments) : null
+
+        stmt.run(
+          stepId,
+          String(questId),
+          index++,
+          title,
+          capabilityId,
+          "PENDING",
+          null,
+          inputPayload,
+          null,
+          null,
+          null,
+          deps,
+          now,
+          now
+        )
+      }
+    })
+
+    saveTx()
+  }
+
+  /**
+   * Update step lifecycle state in SQLite.
+   */
+  public updateStepStatus(
+    questId: QuestId | string,
+    stepId: StepId | string,
+    status: StepStatus | string,
+    details?: {
+      operationId?: OperationId | string | null
+      inputPayload?: unknown
+      resultPayload?: unknown
+      errorCode?: string | null
+      errorMessage?: string | null
+    }
+  ): void {
+    const now = Date.now()
+    const opId = details?.operationId ? String(details.operationId) : null
+    const inputStr = details?.inputPayload !== undefined ? serializeAndSanitize(details.inputPayload) : null
+    const resultStr = details?.resultPayload !== undefined ? serializeAndSanitize(details.resultPayload) : null
+    const errCode = details?.errorCode ?? null
+    const errMsg = details?.errorMessage ?? null
+    const isTerminalSuccess = status === "COMPLETED" || status === "SUCCEEDED"
+
+    this.db.prepare(`
+      UPDATE quest_steps
+      SET status = ?,
+          operation_id = COALESCE(?, operation_id),
+          input_payload = COALESCE(?, input_payload),
+          result_payload = COALESCE(?, result_payload),
+          error_code = COALESCE(?, error_code),
+          error_message = COALESCE(?, error_message),
+          completed_at = CASE WHEN ? = 1 THEN ? ELSE completed_at END,
+          updated_at = ?
+      WHERE quest_id = ? AND step_id = ?
+    `).run(
+      status,
+      opId,
+      inputStr,
+      resultStr,
+      errCode,
+      errMsg,
+      isTerminalSuccess ? 1 : 0,
+      now,
+      now,
+      String(questId),
+      String(stepId)
+    )
   }
 
   // --- Private Helpers ---

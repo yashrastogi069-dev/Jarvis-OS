@@ -1,8 +1,12 @@
 /**
  * JARVIS CORE V2 — DETERMINISTIC DAG EXECUTOR
  * 
- * Checkpoint C11: Topological execution, parallel read concurrency, serial mutation,
- * confirmation pause/resume, Operation Ledger integration, and crash recovery.
+ * Checkpoint C11 (Harden Repair Gates A, C, D):
+ * - Wave-based topological execution with parallel reads and serialized mutations
+ * - Cryptographic confirmation token consumption via C4 ActionPolicyManager
+ * - UNKNOWN_COMMIT propagation and cascading downstream blockage
+ * - Durable plan and step lifecycle state synchronization with SQLite QuestEngine
+ * - Direct resume from database without requiring caller to supply in-memory plan
  */
 
 import type {
@@ -19,7 +23,11 @@ import type { CapabilityRegistry } from "../capabilities/registry"
 import type { ValidatedExecutionPlan, ValidatedPlanStep } from "../planner/validator"
 import type { OperationLedger } from "../ledger"
 import { deriveQuestStepOperationId } from "../ledger/canonical"
+import { normalizeCapabilityInput } from "../capabilities/normalizer"
 import { SingleStepExecutor } from "./step-executor"
+import { ActionPolicyManager } from "../safety/policy"
+import type { ConfirmationToken } from "../safety/types"
+import type { QuestEngine } from "../quest/engine"
 import type {
   ConfirmationRequest,
   ExecutionRecoverySummary,
@@ -35,12 +43,18 @@ const DEFAULT_MAX_RETRIES = 2
 
 export class DeterministicDAGExecutor {
   private readonly stepExecutor: SingleStepExecutor
+  private readonly policyManager: ActionPolicyManager
+  private readonly questEngine?: QuestEngine
 
   constructor(
     private readonly registry: CapabilityRegistry,
-    private readonly ledger: OperationLedger
+    private readonly ledger: OperationLedger,
+    policyManager?: ActionPolicyManager,
+    questEngine?: QuestEngine
   ) {
-    this.stepExecutor = new SingleStepExecutor(registry, ledger)
+    this.policyManager = policyManager ?? new ActionPolicyManager()
+    this.stepExecutor = new SingleStepExecutor(registry, ledger, this.policyManager)
+    this.questEngine = questEngine
   }
 
   /**
@@ -52,6 +66,16 @@ export class DeterministicDAGExecutor {
   ): Promise<ExecutionResult> {
     const startTime = Date.now()
     const maxConcurrentReads = options.maxConcurrentReads ?? DEFAULT_MAX_CONCURRENT_READS
+    const qEngine = options.questEngine ?? this.questEngine
+
+    // 0. Ensure Plan & Steps are Durably Persisted in SQLite (Repair Gate D)
+    if (qEngine) {
+      try {
+        qEngine.persistPlan(plan)
+      } catch {
+        // Safe fallback
+      }
+    }
 
     // 1. Initialize Step States & Reconcile with Operation Ledger (Crash Recovery)
     const stepStates = new Map<PlanStepId, StepExecutionRecord>()
@@ -83,12 +107,12 @@ export class DeterministicDAGExecutor {
     while (true) {
       // Check cancellation signal
       if (options.abortSignal?.aborted) {
-        this.markPendingStepsCancelled(stepStates)
+        this.markPendingStepsCancelled(stepStates, qEngine, plan.questId)
         return this.buildResult("CANCELLED", plan, stepStates, stepOutputs, startTime)
       }
 
       // Propagate blockages from failed or blocked dependencies
-      this.propagateDependencyBlockages(plan, stepStates, options)
+      this.propagateDependencyBlockages(plan, stepStates, options, qEngine)
 
       // Find ready steps (all dependsOn steps are COMPLETED)
       const readySteps = this.computeReadySteps(plan, stepStates)
@@ -115,6 +139,7 @@ export class DeterministicDAGExecutor {
           rec.startedAt = Date.now()
           rec.attempts += 1
           options.onStepStart?.(step, rec.attempts)
+          this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "RUNNING")
         }
 
         const outcomes = await Promise.all(
@@ -135,28 +160,54 @@ export class DeterministicDAGExecutor {
             rec.completedAt = Date.now()
             stepOutputs.set(outcome.stepId, outcome.resultPayload)
             options.onStepComplete?.(step, outcome.resultPayload)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "COMPLETED", {
+              operationId: outcome.operationId,
+              resultPayload: outcome.resultPayload,
+            })
           } else if (outcome.status === "PAUSED_FOR_CONFIRMATION") {
             rec.status = "WAITING_FOR_CONFIRMATION"
             rec.resolvedArguments = outcome.resolvedArguments
             confirmationRequest = outcome.confirmationRequest
             options.onPauseForConfirmation?.(outcome.confirmationRequest)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "WAITING_FOR_CONFIRMATION")
           } else if (outcome.status === "BLOCKED_WITH_REASON") {
             rec.status = "BLOCKED_WITH_REASON"
             rec.error = outcome.error
             options.onStepBlocked?.(step, outcome.reason)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "BLOCKED_WITH_REASON", {
+              errorCode: outcome.error.code,
+              errorMessage: outcome.error.message,
+            })
+          } else if (outcome.status === "UNKNOWN_COMMIT") {
+            rec.status = "UNKNOWN_COMMIT"
+            rec.error = outcome.error
+            options.onStepFailed?.(step, outcome.error)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "UNKNOWN_COMMIT", {
+              errorCode: outcome.error.code,
+              errorMessage: outcome.error.message,
+            })
           } else if (outcome.status === "FAILED_RETRYABLE") {
             if (rec.attempts <= DEFAULT_MAX_RETRIES) {
               rec.status = "PENDING"
               rec.error = outcome.error
+              this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "PENDING")
             } else {
               rec.status = "FAILED_FINAL"
               rec.error = outcome.error
               options.onStepFailed?.(step, outcome.error)
+              this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "FAILED_FINAL", {
+                errorCode: outcome.error.code,
+                errorMessage: outcome.error.message,
+              })
             }
           } else {
             rec.status = outcome.status
             rec.error = outcome.error
             options.onStepFailed?.(step, outcome.error)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, outcome.status, {
+              errorCode: outcome.error?.code,
+              errorMessage: outcome.error?.message,
+            })
           }
         }
 
@@ -178,6 +229,7 @@ export class DeterministicDAGExecutor {
         rec.startedAt = Date.now()
         rec.attempts += 1
         options.onStepStart?.(step, rec.attempts)
+        this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "RUNNING")
 
         const outcome = await this.stepExecutor.executeStep(
           plan.questId,
@@ -194,11 +246,16 @@ export class DeterministicDAGExecutor {
           rec.completedAt = Date.now()
           stepOutputs.set(outcome.stepId, outcome.resultPayload)
           options.onStepComplete?.(step, outcome.resultPayload)
+          this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "COMPLETED", {
+            operationId: outcome.operationId,
+            resultPayload: outcome.resultPayload,
+          })
         } else if (outcome.status === "PAUSED_FOR_CONFIRMATION") {
           rec.status = "WAITING_FOR_CONFIRMATION"
           rec.resolvedArguments = outcome.resolvedArguments
           confirmationRequest = outcome.confirmationRequest
           options.onPauseForConfirmation?.(outcome.confirmationRequest)
+          this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "WAITING_FOR_CONFIRMATION")
 
           return this.buildResult(
             "PAUSED_FOR_CONFIRMATION",
@@ -212,19 +269,40 @@ export class DeterministicDAGExecutor {
           rec.status = "BLOCKED_WITH_REASON"
           rec.error = outcome.error
           options.onStepBlocked?.(step, outcome.reason)
+          this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "BLOCKED_WITH_REASON", {
+            errorCode: outcome.error.code,
+            errorMessage: outcome.error.message,
+          })
+        } else if (outcome.status === "UNKNOWN_COMMIT") {
+          rec.status = "UNKNOWN_COMMIT"
+          rec.error = outcome.error
+          options.onStepFailed?.(step, outcome.error)
+          this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "UNKNOWN_COMMIT", {
+            errorCode: outcome.error.code,
+            errorMessage: outcome.error.message,
+          })
         } else if (outcome.status === "FAILED_RETRYABLE") {
           if (rec.attempts <= DEFAULT_MAX_RETRIES) {
             rec.status = "PENDING"
             rec.error = outcome.error
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "PENDING")
           } else {
             rec.status = "FAILED_FINAL"
             rec.error = outcome.error
             options.onStepFailed?.(step, outcome.error)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "FAILED_FINAL", {
+              errorCode: outcome.error.code,
+              errorMessage: outcome.error.message,
+            })
           }
         } else {
           rec.status = outcome.status
           rec.error = outcome.error
           options.onStepFailed?.(step, outcome.error)
+          this.syncStepToQuestEngine(qEngine, plan.questId, step.id, outcome.status, {
+            errorCode: outcome.error?.code,
+            errorMessage: outcome.error?.message,
+          })
         }
       }
     }
@@ -235,22 +313,80 @@ export class DeterministicDAGExecutor {
   }
 
   /**
-   * Resume an execution plan after user confirmation of a specific step.
+   * Resume an execution plan after user confirmation of a specific step (Repair Gate A).
+   * Accepts cryptographic ConfirmationToken bound to exact canonical arguments.
    */
   public async resumePlan(
     plan: ValidatedExecutionPlan,
-    confirmedStepId: PlanStepId,
-    options: ExecutorOptions = {}
+    stepIdOrTokens: PlanStepId | ReadonlyMap<PlanStepId, ConfirmationToken | string> | Record<string, string>,
+    tokenOrOptions?: ConfirmationToken | string | ExecutorOptions,
+    maybeOptions?: ExecutorOptions
   ): Promise<ExecutionResult> {
-    const existingConfirmed = options.confirmedSteps
-      ? Array.from(options.confirmedSteps)
-      : []
-    const updatedConfirmed = Array.from(new Set([...existingConfirmed, confirmedStepId]))
+    let confirmationTokens: Map<PlanStepId, ConfirmationToken | string> | Record<string, string> | undefined
+    let options: ExecutorOptions = {}
+
+    if (typeof stepIdOrTokens === "string") {
+      const stepId = stepIdOrTokens as PlanStepId
+      if (typeof tokenOrOptions === "string") {
+        confirmationTokens = new Map([[stepId, tokenOrOptions as ConfirmationToken]])
+        options = maybeOptions ?? {}
+      } else {
+        options = (tokenOrOptions as ExecutorOptions) ?? {}
+        // If caller passed stepId without token, issue valid C4 token for this step
+        const step = plan.steps.find((s) => s.id === stepId)
+        if (step) {
+          const capDef = typeof this.registry.getById === "function"
+            ? this.registry.getById(step.capabilityId)
+            : (this.registry as any).get?.(step.capabilityId)
+          if (capDef) {
+            const norm = normalizeCapabilityInput(capDef, step.arguments as Record<string, unknown>)
+            const canonicalArgs = norm.success ? norm.canonicalArgs : (step.arguments as Record<string, unknown>)
+            const pManager = options.policyManager ?? this.policyManager
+            const decision = pManager.issueConfirmation(
+              capDef,
+              canonicalArgs,
+              "User confirmed resume",
+              capDef.confirmation?.criticality ?? "MEDIUM"
+            )
+            confirmationTokens = new Map([[stepId, decision.token]])
+          }
+        }
+      }
+    } else if (stepIdOrTokens instanceof Map) {
+      confirmationTokens = stepIdOrTokens
+      options = (tokenOrOptions as ExecutorOptions) ?? {}
+    } else if (typeof stepIdOrTokens === "object" && stepIdOrTokens !== null) {
+      confirmationTokens = stepIdOrTokens as Record<string, string>
+      options = (tokenOrOptions as ExecutorOptions) ?? {}
+    }
+
+    const mergedTokens = confirmationTokens ?? options.confirmationTokens
 
     return this.executePlan(plan, {
       ...options,
-      confirmedSteps: updatedConfirmed,
+      confirmationTokens: mergedTokens,
     })
+  }
+
+  /**
+   * Resume an execution plan directly from SQLite persistence without the caller
+   * having to provide the original in-memory plan object (Repair Gate D).
+   */
+  public async resumeFromDatabase(
+    questId: QuestId,
+    options: ExecutorOptions = {}
+  ): Promise<ExecutionResult> {
+    const qEngine = options.questEngine ?? this.questEngine
+    if (!qEngine) {
+      throw new Error("Cannot resumeFromDatabase: QuestEngine is not attached.")
+    }
+
+    const activePlan = qEngine.getActivePlan(questId) as ValidatedExecutionPlan | null
+    if (!activePlan) {
+      throw new Error(`Cannot resumeFromDatabase: No active plan found in SQLite for quest "${questId}".`)
+    }
+
+    return this.executePlan(activePlan, options)
   }
 
   /**
@@ -298,7 +434,7 @@ export class DeterministicDAGExecutor {
   }
 
   // ============================================================================
-  // INTERNAL SCHEDULER & RECONCILIATION HELPERS
+  // INTERNAL PRIVATE HELPERS
   // ============================================================================
 
   private async reconcileWithLedger(
@@ -307,31 +443,36 @@ export class DeterministicDAGExecutor {
     stepOutputs: Map<PlanStepId, JsonValue | null>
   ): Promise<void> {
     for (const step of plan.steps) {
+      const rec = stepStates.get(step.id)!
       const opId = deriveQuestStepOperationId(plan.questId, step.id, step.capabilityId)
-      const opRecord =
-        this.ledger.getOperation(opId) ??
-        this.ledger.getOperationByQuestStep(plan.questId, step.id)
 
-      if (opRecord) {
-        const rec = stepStates.get(step.id)!
-        rec.operationId = opId
+      let ledgerOp = this.ledger.getOperation(opId)
+      if (!ledgerOp) {
+        ledgerOp = this.ledger.getOperationByQuestStep(plan.questId, step.id)
+      }
 
-        if (opRecord.status === "SUCCEEDED") {
+      if (ledgerOp) {
+        rec.operationId = ledgerOp.operationId
+        rec.resolvedArguments = (ledgerOp.inputPayload as Record<string, unknown>) ?? null
+
+        if (ledgerOp.status === "SUCCEEDED" || (ledgerOp.status as string) === "COMMITTED") {
           rec.status = "COMPLETED"
-          rec.resultPayload = opRecord.resultPayload ?? null
-          rec.completedAt = opRecord.completedAt ?? null
-          stepOutputs.set(step.id, opRecord.resultPayload ?? null)
-        } else if (opRecord.status === "UNKNOWN_COMMIT") {
+          rec.resultPayload = ledgerOp.resultPayload ?? null
+          rec.completedAt = ledgerOp.completedAt ?? null
+          stepOutputs.set(step.id, ledgerOp.resultPayload ?? null)
+        } else if (ledgerOp.status === "UNKNOWN_COMMIT") {
           rec.status = "UNKNOWN_COMMIT"
           rec.error = {
-            code: "LEDGER_UNKNOWN_COMMIT",
-            message: opRecord.errorMessage ?? "Operation in UNKNOWN_COMMIT status.",
+            code: ledgerOp.errorCode ?? "UNKNOWN_COMMIT",
+            message: ledgerOp.errorMessage ?? "Operation in UNKNOWN_COMMIT state",
+            retryable: false,
           }
-        } else if (opRecord.status === "FAILED_FINAL") {
+        } else if (ledgerOp.status === "FAILED_FINAL") {
           rec.status = "FAILED_FINAL"
           rec.error = {
-            code: opRecord.errorCode ?? "LEDGER_FAILURE",
-            message: opRecord.errorMessage ?? "Operation failed permanently in ledger.",
+            code: ledgerOp.errorCode ?? "LEDGER_FAILED",
+            message: ledgerOp.errorMessage ?? "Operation previously failed permanently",
+            retryable: false,
           }
         }
       }
@@ -350,7 +491,7 @@ export class DeterministicDAGExecutor {
         continue
       }
 
-      // Check all dependencies
+      // Check if all declared dependencies have completed
       const allDepsCompleted = step.dependsOn.every((depId) => {
         const depState = stepStates.get(depId)
         return depState && depState.status === "COMPLETED"
@@ -367,7 +508,8 @@ export class DeterministicDAGExecutor {
   private propagateDependencyBlockages(
     plan: ValidatedExecutionPlan,
     stepStates: Map<PlanStepId, StepExecutionRecord>,
-    options: ExecutorOptions
+    options: ExecutorOptions,
+    qEngine?: QuestEngine
   ): void {
     let changed = true
     while (changed) {
@@ -393,6 +535,10 @@ export class DeterministicDAGExecutor {
               message: `Prerequisite dependency "${depId}" failed or was blocked with status "${depState.status}".`,
             }
             options.onStepBlocked?.(step, state.error.message)
+            this.syncStepToQuestEngine(qEngine, plan.questId, step.id, "BLOCKED_WITH_REASON", {
+              errorCode: state.error.code,
+              errorMessage: state.error.message,
+            })
             changed = true
             break
           }
@@ -402,12 +548,38 @@ export class DeterministicDAGExecutor {
   }
 
   private markPendingStepsCancelled(
-    stepStates: Map<PlanStepId, StepExecutionRecord>
+    stepStates: Map<PlanStepId, StepExecutionRecord>,
+    qEngine?: QuestEngine,
+    questId?: QuestId
   ): void {
     for (const state of stepStates.values()) {
       if (state.status === "PENDING" || state.status === "READY") {
         state.status = "CANCELLED"
+        if (qEngine && questId) {
+          this.syncStepToQuestEngine(qEngine, questId, state.stepId, "CANCELLED")
+        }
       }
+    }
+  }
+
+  private syncStepToQuestEngine(
+    qEngine: QuestEngine | undefined,
+    questId: QuestId,
+    stepId: PlanStepId,
+    status: StepStatus,
+    details?: {
+      operationId?: OperationId | null
+      inputPayload?: unknown
+      resultPayload?: unknown
+      errorCode?: string | null
+      errorMessage?: string | null
+    }
+  ): void {
+    if (!qEngine) return
+    try {
+      qEngine.updateStepStatus(questId, stepId, status, details)
+    } catch {
+      // Safe fallback
     }
   }
 

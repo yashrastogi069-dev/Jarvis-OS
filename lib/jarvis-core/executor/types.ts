@@ -17,6 +17,7 @@ import type {
   TraceId,
 } from "../types"
 import type { ValidatedExecutionPlan, ValidatedPlanStep } from "../planner/validator"
+import type { ConfirmationToken } from "../safety/types"
 
 export type { ValidatedExecutionPlan, ValidatedPlanStep }
 
@@ -75,6 +76,8 @@ export interface ConfirmationRequest {
   readonly arguments: Record<string, unknown>
   readonly preview: ConfirmationPreview
   readonly requestedAt: number
+  readonly confirmationToken?: ConfirmationToken
+  readonly expiresAt?: number
 }
 
 // ============================================================================
@@ -85,7 +88,10 @@ export interface ExecutorOptions {
   readonly maxConcurrentReads?: number
   readonly actor?: string
   readonly confirmedSteps?: ReadonlySet<PlanStepId> | ReadonlyArray<PlanStepId>
+  readonly confirmationTokens?: ReadonlyMap<PlanStepId, ConfirmationToken | string> | Record<string, string>
   readonly abortSignal?: AbortSignal
+  readonly questEngine?: any
+  readonly policyManager?: any
   readonly onStepStart?: (step: ValidatedPlanStep, attempt: number) => void
   readonly onStepComplete?: (step: ValidatedPlanStep, result: JsonValue | null) => void
   readonly onStepFailed?: (step: ValidatedPlanStep, error: StepExecutionError) => void

@@ -16,6 +16,7 @@ import { ZodError } from "zod"
 import type { ActionClass } from "../types"
 import type { CapabilityError, CapabilityErrorCode, RetryHint } from "./result"
 import { CapabilityOperationalError } from "./result"
+import { toJsonValue } from "./json"
 
 // ============================================================================
 // 1. SECRET SANITIZATION (Section 17)
@@ -402,3 +403,139 @@ function parseHttpCodeFromMessage(msg: string): number | undefined {
   }
   return undefined
 }
+
+// ============================================================================
+// 3. CANONICAL INPUT NORMALIZATION (Repair Gate B)
+// ============================================================================
+
+export interface NormalizedInputSuccess {
+  readonly success: true
+  readonly canonicalArgs: Record<string, any>
+}
+
+export interface NormalizedInputFailure {
+  readonly success: false
+  readonly error: {
+    readonly code: "INVALID_INPUT"
+    readonly message: string
+    readonly details?: unknown
+  }
+}
+
+export type NormalizedInputResult = NormalizedInputSuccess | NormalizedInputFailure
+
+/**
+ * Deterministically validate, coerce, and serialize capability input arguments
+ * against the capability's Zod schema into a single canonical JSON-safe representation.
+ * 
+ * Ensures preview arguments === ledger-hashed arguments === handler arguments.
+ */
+export function normalizeCapabilityInput(
+  capability: { readonly id: string; readonly inputSchema?: unknown },
+  rawInput: unknown
+): NormalizedInputResult {
+  const schema = capability.inputSchema as { safeParse?: (input: unknown) => { success: boolean; data?: any; error?: ZodError } } | undefined
+
+  if (schema && typeof schema.safeParse === "function") {
+    const rawObj = (typeof rawInput === "object" && rawInput !== null)
+      ? { ...(rawInput as Record<string, unknown>) }
+      : {}
+
+    // Pre-normalize common capability input aliases
+    // Calendar aliases: title -> summary, startTime/startDate -> startISO, endTime/endDate -> endISO
+    if (capability.id.includes("calendar")) {
+      if ("title" in rawObj && !("summary" in rawObj)) {
+        rawObj.summary = rawObj.title
+      }
+      if ("startTime" in rawObj && !("startISO" in rawObj)) {
+        rawObj.startISO = rawObj.startTime
+      }
+      if ("startDate" in rawObj && !("startISO" in rawObj)) {
+        rawObj.startISO = rawObj.startDate
+      }
+      if ("endTime" in rawObj && !("endISO" in rawObj)) {
+        rawObj.endISO = rawObj.endTime
+      }
+      if ("endDate" in rawObj && !("endISO" in rawObj)) {
+        rawObj.endISO = rawObj.endDate
+      }
+    }
+
+    // GitHub aliases: owner + repo -> owner/repo, issue_number -> issueNumber
+    if (capability.id.startsWith("github.")) {
+      if ("owner" in rawObj && "repo" in rawObj && typeof rawObj.repo === "string" && !rawObj.repo.includes("/")) {
+        rawObj.repo = `${rawObj.owner}/${rawObj.repo}`
+        delete rawObj.owner
+      }
+      if ("issue_number" in rawObj && !("issueNumber" in rawObj)) {
+        rawObj.issueNumber = rawObj.issue_number
+        delete rawObj.issue_number
+      }
+    }
+
+    // Task / Memory / Wake Word aliases: task_id/taskId -> id, etc.
+    if ("task_id" in rawObj && !("id" in rawObj)) rawObj.id = rawObj.task_id
+    if ("taskId" in rawObj && !("id" in rawObj)) rawObj.id = rawObj.taskId
+    if ("memory_id" in rawObj && !("id" in rawObj)) rawObj.id = rawObj.memory_id
+    if ("memoryId" in rawObj && !("id" in rawObj)) rawObj.id = rawObj.memoryId
+    if ("wake_word_id" in rawObj && !("id" in rawObj)) rawObj.id = rawObj.wake_word_id
+    if ("wakeWordId" in rawObj && !("id" in rawObj)) rawObj.id = rawObj.wakeWordId
+
+    let parseResult = schema.safeParse(rawObj)
+    if (!parseResult.success && rawObj.confirmed === undefined) {
+      const retryWithConfirmed = schema.safeParse({ ...rawObj, confirmed: false })
+      if (retryWithConfirmed.success) {
+        rawObj.confirmed = false
+        parseResult = retryWithConfirmed
+      }
+    }
+
+    if (!parseResult.success && parseResult.error) {
+      const issueSummary = parseResult.error.issues
+        .map((i) => `${i.path.join(".") || "root"}: ${i.message}`)
+        .join("; ")
+      return {
+        success: false,
+        error: {
+          code: "INVALID_INPUT",
+          message: sanitizeSecrets(`Input validation failed for ${capability.id}: ${issueSummary}`),
+          details: parseResult.error.format(),
+        },
+      }
+    }
+
+    try {
+      const safeData = toJsonValue(parseResult.data ?? {}) as Record<string, any>
+      return {
+        success: true,
+        canonicalArgs: typeof safeData === "object" && safeData !== null && !Array.isArray(safeData) ? safeData : { value: safeData },
+      }
+    } catch (err: any) {
+      return {
+        success: false,
+        error: {
+          code: "INVALID_INPUT",
+          message: `Failed to serialize input for ${capability.id}: ${err?.message ?? "Circular reference"}`,
+        },
+      }
+    }
+  }
+
+  // Fallback if capability has no Zod schema
+  try {
+    const safeData = toJsonValue(rawInput ?? {}) as Record<string, any>
+    return {
+      success: true,
+      canonicalArgs: typeof safeData === "object" && safeData !== null && !Array.isArray(safeData) ? safeData : {},
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      error: {
+        code: "INVALID_INPUT",
+        message: `Failed to serialize input for ${capability.id}: ${err?.message ?? "Circular reference"}`,
+      },
+    }
+  }
+}
+

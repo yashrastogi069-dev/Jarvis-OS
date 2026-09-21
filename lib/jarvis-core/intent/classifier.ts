@@ -116,26 +116,28 @@ export class DeterministicFastPathClassifier {
 
     // Calendar Read
     if (
-      /\b(show\s+(my\s+)?calendar|what's\s+on\s+my\s+calendar|list\s+calendar\s+events|check\s+(my\s+)?(schedule|calendar)|upcoming\s+(meetings|events))\b/i.test(lower) ||
-      /^(my\s+)?(calendar|schedule|meetings)[?.]*$/i.test(lower)
+      /\b(show\s+(my\s+)?(apple\s+|google\s+|icloud\s+)?calendar|what's\s+on\s+my\s+(apple\s+|google\s+|icloud\s+)?calendar|list\s+(apple\s+|google\s+|icloud\s+)?calendar\s+events|check\s+(my\s+)?(schedule|(apple\s+|google\s+|icloud\s+)?calendar)|upcoming\s+(meetings|events))\b/i.test(lower) ||
+      /^(my\s+)?(apple\s+|google\s+|icloud\s+)?(calendar|schedule|meetings)[?.]*$/i.test(lower)
     ) {
+      const isApple = /\b(apple|icloud|mac)\b/i.test(lower)
       return {
         needsClarification: false,
         mode: "READ",
         category: "READ",
         intentKind: "READ_QUERY",
         confidence: 0.95,
-        targetDomain: "google",
-        targetCapability: "google.calendar.events.list" as CapabilityId,
-        reason: "Query matches calendar viewing pattern.",
+        targetDomain: isApple ? "apple" : "google",
+        targetCapability: (isApple ? "apple.calendar.events.list" : "google.calendar.events.list") as CapabilityId,
+        reason: isApple ? "Query matches Apple calendar viewing pattern." : "Query matches Google calendar viewing pattern.",
         fastPath: true,
       }
     }
 
     // Email Read
     if (
-      /\b(check|read|get|view|search|show|list)\b.+\b(emails?|inbox|gmail|messages?)\b/i.test(lower) ||
-      /\b(unread|recent)\s+(emails?|inbox|gmail)\b/i.test(lower)
+      !/\btelegram\b/i.test(lower) &&
+      (/\b(check|read|get|view|search|show|list)\b.+\b(emails?|inbox|gmail|messages?)\b/i.test(lower) ||
+      /\b(unread|recent)\s+(emails?|inbox|gmail)\b/i.test(lower))
     ) {
       return {
         needsClarification: false,
@@ -186,10 +188,50 @@ export class DeterministicFastPathClassifier {
       }
     }
 
-    // GitHub Read
-    if (
-      /\b(open\s+prs?|my\s+pull\s+requests|open\s+pull\s+requests|github\s+notifications|my\s+open\s+issues|recent\s+commits)\b/i.test(lower)
-    ) {
+    // GitHub Read (Separated by resource)
+    if (/\b(github\s+notifications|my\s+notifications|unread\s+notifications)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "READ",
+        category: "READ",
+        intentKind: "READ_QUERY",
+        confidence: 0.96,
+        targetDomain: "github",
+        targetCapability: "github.notifications.list" as CapabilityId,
+        reason: "Query matches GitHub notifications pattern.",
+        fastPath: true,
+      }
+    }
+
+    if (/\b(open\s+prs?|my\s+pull\s+requests|open\s+pull\s+requests|list\s+prs?|check\s+prs?)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "READ",
+        category: "READ",
+        intentKind: "READ_QUERY",
+        confidence: 0.96,
+        targetDomain: "github",
+        targetCapability: "github.prs.list" as CapabilityId,
+        reason: "Query matches GitHub pull request inspection pattern.",
+        fastPath: true,
+      }
+    }
+
+    if (/\b(my\s+open\s+issues|open\s+issues|github\s+issues|list\s+issues)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "READ",
+        category: "READ",
+        intentKind: "READ_QUERY",
+        confidence: 0.96,
+        targetDomain: "github",
+        targetCapability: "github.issues.list" as CapabilityId,
+        reason: "Query matches GitHub issues inspection pattern.",
+        fastPath: true,
+      }
+    }
+
+    if (/\b(recent\s+commits|git\s+commits|github\s+commits|list\s+commits)\b/i.test(lower)) {
       return {
         needsClarification: false,
         mode: "READ",
@@ -197,8 +239,38 @@ export class DeterministicFastPathClassifier {
         intentKind: "READ_QUERY",
         confidence: 0.95,
         targetDomain: "github",
-        targetCapability: "github.prs.list" as CapabilityId,
-        reason: "Query matches GitHub read/inspection pattern.",
+        targetCapability: "github.commits.list" as CapabilityId,
+        reason: "Query matches GitHub commits inspection pattern.",
+        fastPath: true,
+      }
+    }
+
+    // Telegram Read
+    if (/\b(telegram\s+(messages|updates)|check\s+telegram|get\s+telegram\s+messages|read\s+telegram)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "READ",
+        category: "READ",
+        intentKind: "READ_QUERY",
+        confidence: 0.95,
+        targetDomain: "telegram",
+        targetCapability: "telegram.messages.get" as CapabilityId,
+        reason: "Query matches Telegram message inspection pattern.",
+        fastPath: true,
+      }
+    }
+
+    // Wake Words Read
+    if (/\b(list\s+wake\s+words|show\s+wake\s+words|get\s+wake\s+words)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "READ",
+        category: "READ",
+        intentKind: "READ_QUERY",
+        confidence: 0.96,
+        targetDomain: "wake_words",
+        targetCapability: "wake_words.list" as CapabilityId,
+        reason: "Query matches wake word listing pattern.",
         fastPath: true,
       }
     }
@@ -306,17 +378,109 @@ export class DeterministicFastPathClassifier {
 
     // Calendar Create Event
     if (
-      /\b(create\s+(a\s+)?calendar\s+event|schedule\s+(a\s+)?(meeting|event))\b/i.test(lower)
+      /\b(create\s+(an?\s+)?(apple\s+|google\s+|icloud\s+)?calendar\s+event|schedule\s+(an?\s+)?(apple\s+|google\s+|icloud\s+)?(meeting|event))\b/i.test(lower)
     ) {
+      const isApple = /\b(apple|icloud|mac)\b/i.test(lower)
       return {
         needsClarification: false,
         mode: "ACTION",
         category: "ACTION",
         intentKind: "MUTATION_SINGLE",
-        confidence: 0.93,
-        targetDomain: "google",
-        targetCapability: "google.calendar.event.create" as CapabilityId,
-        reason: "Query matches calendar event creation pattern.",
+        confidence: 0.94,
+        targetDomain: isApple ? "apple" : "google",
+        targetCapability: (isApple ? "apple.calendar.event.create" : "google.calendar.event.create") as CapabilityId,
+        reason: isApple ? "Query matches Apple calendar event creation pattern." : "Query matches Google calendar event creation pattern.",
+        fastPath: true,
+      }
+    }
+
+    // Calendar Delete Event
+    if (
+      /\b(delete\s+(an?\s+)?(apple\s+|google\s+|icloud\s+)?(calendar\s+event|meeting)|cancel\s+(an?\s+)?(apple\s+|google\s+|icloud\s+)?(calendar\s+event|meeting)|remove\s+(an?\s+)?(apple\s+|google\s+|icloud\s+)?(calendar\s+event|meeting))\b/i.test(lower)
+    ) {
+      const isApple = /\b(apple|icloud|mac)\b/i.test(lower)
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.94,
+        targetDomain: isApple ? "apple" : "google",
+        targetCapability: (isApple ? "apple.calendar.event.delete" : "google.calendar.event.delete") as CapabilityId,
+        reason: isApple ? "Query matches Apple calendar event deletion pattern." : "Query matches Google calendar event deletion pattern.",
+        fastPath: true,
+      }
+    }
+
+    // GitHub Issue Create / Comment
+    if (/\b(create\s+(a\s+)?(github\s+)?issue|open\s+(a\s+)?(github\s+)?issue|new\s+github\s+issue)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.95,
+        targetDomain: "github",
+        targetCapability: "github.issue.create" as CapabilityId,
+        reason: "Query matches GitHub issue creation pattern.",
+        fastPath: true,
+      }
+    }
+
+    if (/\b(comment\s+on\s+(github\s+)?issue|add\s+comment\s+to\s+issue)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.95,
+        targetDomain: "github",
+        targetCapability: "github.issue.comment" as CapabilityId,
+        reason: "Query matches GitHub issue commenting pattern.",
+        fastPath: true,
+      }
+    }
+
+    // Telegram Message Send
+    if (/\b(send\s+(a\s+)?telegram\s+message|telegram\s+send|send\s+on\s+telegram|message\s+on\s+telegram)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.95,
+        targetDomain: "telegram",
+        targetCapability: "telegram.message.send" as CapabilityId,
+        reason: "Query matches Telegram message sending pattern.",
+        fastPath: true,
+      }
+    }
+
+    // Obsidian Note Create / Append
+    if (/\b(append\s+to\s+(daily\s+)?note|add\s+to\s+daily\s+note|append\s+daily\s+note)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.95,
+        targetDomain: "obsidian",
+        targetCapability: "obsidian.note.append" as CapabilityId,
+        reason: "Query matches Obsidian note append pattern.",
+        fastPath: true,
+      }
+    }
+
+    if (/\b(create\s+(a\s+)?note|new\s+note|save\s+note|write\s+note)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.94,
+        targetDomain: "obsidian",
+        targetCapability: "obsidian.note.create" as CapabilityId,
+        reason: "Query matches Obsidian note creation pattern.",
         fastPath: true,
       }
     }
@@ -336,8 +500,23 @@ export class DeterministicFastPathClassifier {
       }
     }
 
-    // Wake Word Add / Remove
-    if (/\b(add\s+wake\s+word|remove\s+wake\s+word)\b/i.test(lower)) {
+    // Wake Word Remove
+    if (/\b(remove\s+wake\s+word|delete\s+wake\s+word)\b/i.test(lower)) {
+      return {
+        needsClarification: false,
+        mode: "ACTION",
+        category: "ACTION",
+        intentKind: "MUTATION_SINGLE",
+        confidence: 0.96,
+        targetDomain: "wake_words",
+        targetCapability: "wake_words.remove" as CapabilityId,
+        reason: "Query matches wake word removal pattern.",
+        fastPath: true,
+      }
+    }
+
+    // Wake Word Add
+    if (/\b(add\s+wake\s+word|new\s+wake\s+word)\b/i.test(lower)) {
       return {
         needsClarification: false,
         mode: "ACTION",
@@ -346,7 +525,7 @@ export class DeterministicFastPathClassifier {
         confidence: 0.96,
         targetDomain: "wake_words",
         targetCapability: "wake_words.add" as CapabilityId,
-        reason: "Query matches wake word configuration pattern.",
+        reason: "Query matches wake word addition pattern.",
         fastPath: true,
       }
     }

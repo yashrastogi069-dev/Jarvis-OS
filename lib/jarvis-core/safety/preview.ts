@@ -73,10 +73,12 @@ function generateBasePreview(
   }
 
   if (capId === "google.mail.message.reply") {
+    const replyingTo = validatedArgs.id ?? validatedArgs.threadId ?? validatedArgs.messageId ?? ""
     return {
       targetDomain: "google",
-      summary: `Reply to email ${validatedArgs.threadId ?? validatedArgs.messageId ?? ""}`,
+      summary: `Reply to email ${replyingTo}`,
       details: {
+        replyingTo,
         to: validatedArgs.to ?? "(original sender)",
         bodyPreview: truncate(validatedArgs.body, 150),
       },
@@ -98,13 +100,13 @@ function generateBasePreview(
 
   // 6. GitHub Issue Create / Comment
   if (capId === "github.issue.create") {
-    const repo = `${validatedArgs.owner ?? ""}/${validatedArgs.repo ?? ""}`
+    const repo = validatedArgs.repo ?? (validatedArgs.owner ? `${validatedArgs.owner}/${validatedArgs.repo ?? ""}` : "")
     return {
       targetDomain: "github",
       summary: `Create GitHub issue in ${repo}`,
       details: {
         repository: repo,
-        title: validatedArgs.title,
+        title: validatedArgs.title ?? "",
         bodyPreview: truncate(validatedArgs.body, 150),
       },
       warning: "This issue will be created publicly or in your configured repository.",
@@ -112,13 +114,14 @@ function generateBasePreview(
   }
 
   if (capId === "github.issue.comment") {
-    const repo = `${validatedArgs.owner ?? ""}/${validatedArgs.repo ?? ""}`
+    const repo = validatedArgs.repo ?? (validatedArgs.owner ? `${validatedArgs.owner}/${validatedArgs.repo ?? ""}` : "")
+    const issueNumber = validatedArgs.issueNumber ?? validatedArgs.issue_number
     return {
       targetDomain: "github",
-      summary: `Comment on GitHub issue #${validatedArgs.issue_number} in ${repo}`,
+      summary: `Comment on GitHub issue #${issueNumber} in ${repo}`,
       details: {
         repository: repo,
-        issueNumber: validatedArgs.issue_number,
+        issueNumber,
         commentPreview: truncate(validatedArgs.body, 150),
       },
       warning: "This comment will be published to the GitHub issue.",
@@ -127,13 +130,15 @@ function generateBasePreview(
 
   // 7. Google Calendar Create / Update / Delete
   if (capId === "google.calendar.event.create") {
+    const start = validatedArgs.startISO ?? validatedArgs.startTime ?? ""
+    const end = validatedArgs.endISO ?? validatedArgs.endTime ?? ""
     return {
       targetDomain: "google",
-      summary: `Create calendar event "${validatedArgs.summary}"`,
+      summary: `Create calendar event "${validatedArgs.summary ?? ""}"`,
       details: {
-        title: validatedArgs.summary,
-        start: validatedArgs.startTime,
-        end: validatedArgs.endTime,
+        title: validatedArgs.summary ?? "",
+        start,
+        end,
         location: validatedArgs.location ?? null,
       },
     }
@@ -146,6 +151,9 @@ function generateBasePreview(
       details: {
         eventId: validatedArgs.eventId,
         title: validatedArgs.summary ?? "(unchanged)",
+        start: validatedArgs.startISO ?? "(unchanged)",
+        end: validatedArgs.endISO ?? "(unchanged)",
+        location: validatedArgs.location ?? null,
       },
     }
   }
@@ -161,33 +169,42 @@ function generateBasePreview(
 
   // 8. Apple Calendar Create / Update / Delete
   if (capId === "apple.calendar.event.create") {
+    const summary = validatedArgs.summary ?? validatedArgs.title ?? ""
+    const start = validatedArgs.startISO ?? validatedArgs.startDate ?? ""
+    const end = validatedArgs.endISO ?? validatedArgs.endDate ?? ""
     return {
       targetDomain: "apple",
-      summary: `Create Apple Calendar event "${validatedArgs.title}"`,
+      summary: `Create Apple Calendar event "${summary}"`,
       details: {
-        title: validatedArgs.title,
-        start: validatedArgs.startDate,
-        end: validatedArgs.endDate,
+        title: summary,
+        start,
+        end,
+        location: validatedArgs.location ?? null,
       },
     }
   }
 
   if (capId === "apple.calendar.event.update") {
+    const uid = validatedArgs.uid ?? validatedArgs.eventId ?? ""
     return {
       targetDomain: "apple",
-      summary: `Update Apple Calendar event ${validatedArgs.eventId}`,
+      summary: `Update Apple Calendar event ${uid}`,
       details: {
-        eventId: validatedArgs.eventId,
-        title: validatedArgs.title ?? "(unchanged)",
+        uid,
+        title: validatedArgs.summary ?? validatedArgs.title ?? "(unchanged)",
+        start: validatedArgs.startISO ?? "(unchanged)",
+        end: validatedArgs.endISO ?? "(unchanged)",
+        location: validatedArgs.location ?? null,
       },
     }
   }
 
   if (capId === "apple.calendar.event.delete") {
+    const uid = validatedArgs.uid ?? validatedArgs.eventId ?? ""
     return {
       targetDomain: "apple",
-      summary: `Delete Apple Calendar event ${validatedArgs.eventId}`,
-      details: { eventId: validatedArgs.eventId },
+      summary: `Delete Apple Calendar event ${uid}`,
+      details: { uid },
       warning: "This event will be deleted from your Apple iCloud Calendar.",
     }
   }

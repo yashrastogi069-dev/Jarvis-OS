@@ -1,8 +1,12 @@
 /**
  * JARVIS CORE V2 — SINGLE STEP EXECUTOR
  * 
- * Checkpoint C11: Argument resolution, confirmation boundary, ledger claiming,
- * safe boundary execution, and ledger commit/failure tracking.
+ * Checkpoint C11 (Harden Repair Gate A, B, C):
+ * - Step output reference resolution ($ref) via RFC 6901
+ * - Canonical input schema normalization before policy, preview, hash, or execution (Repair Gate B)
+ * - Central Action Policy with cryptographic ConfirmationToken validation (Repair Gate A)
+ * - Operation Ledger claiming with canonical hashed arguments
+ * - Safe boundary capability execution with UNKNOWN_COMMIT preservation (Repair Gate C)
  */
 
 import type {
@@ -16,10 +20,13 @@ import type {
 import type { CapabilityRegistry } from "../capabilities/registry"
 import type { CapabilityDefinition } from "../capabilities/types"
 import { executeCapabilitySafely } from "../capabilities/safe-boundary"
+import { normalizeCapabilityInput } from "../capabilities/normalizer"
 import { resolveStepReferences } from "../planner/references"
 import type { ValidatedPlanStep } from "../planner/validator"
 import type { OperationLedger } from "../ledger"
 import { deriveQuestStepOperationId } from "../ledger/canonical"
+import { actionPolicyManager, ActionPolicyManager } from "../safety/policy"
+import type { ConfirmationToken } from "../safety/types"
 import type {
   ConfirmationPreview,
   ConfirmationRequest,
@@ -58,10 +65,15 @@ export type StepExecutionOutcome =
     }
 
 export class SingleStepExecutor {
+  private readonly policyManager: ActionPolicyManager
+
   constructor(
     private readonly registry: CapabilityRegistry,
-    private readonly ledger: OperationLedger
-  ) {}
+    private readonly ledger: OperationLedger,
+    policyManager?: ActionPolicyManager
+  ) {
+    this.policyManager = policyManager ?? actionPolicyManager
+  }
 
   /**
    * Deterministically execute a single validated plan step.
@@ -118,37 +130,101 @@ export class SingleStepExecutor {
       }
     }
 
-    // 3. Confirmation Policy Check (Zero Model Authority)
-    const isConfirmed = this.checkIfStepConfirmed(step.id, options)
-    if (step.trustedMetadata.requiresConfirmation && !isConfirmed) {
-      const preview: ConfirmationPreview = {
-        summary: `Execute ${capDef.title} (${step.capabilityId}) with action class ${step.trustedMetadata.actionClass}.`,
-        actionClass: step.trustedMetadata.actionClass,
-        capabilityId: step.capabilityId,
-        arguments: resolvedArgs,
-        criticality: capDef.confirmation.criticality,
-        reason: capDef.confirmation.reason,
-        rawPreview: resolvedArgs,
+    // 3. Canonical Schema Normalization (Repair Gate B)
+    // Ensures preview arguments === ledger-hashed arguments === handler arguments
+    const normResult = normalizeCapabilityInput(capDef, resolvedArgs)
+    if (!normResult.success) {
+      return {
+        status: "BLOCKED_WITH_REASON",
+        stepId: step.id,
+        reason: normResult.error.message,
+        error: {
+          code: normResult.error.code,
+          message: normResult.error.message,
+          retryable: false,
+          details: normResult.error.details,
+        },
+        resolvedArguments: resolvedArgs,
       }
+    }
+    const canonicalArgs = normResult.canonicalArgs
 
+    // 4. Central Action Policy & Confirmation Boundary (Repair Gate A)
+    // A step ID or confirmedSteps array is NOT authorization.
+    // Execution requires trusted C4 authorization token bound to exact canonical arguments.
+    const suppliedToken = this.getSuppliedConfirmationToken(step.id, options)
+    const policyDecision = this.policyManager.evaluatePolicy(
+      capDef,
+      canonicalArgs,
+      suppliedToken ? { confirmationToken: suppliedToken } : undefined
+    )
+
+    let isConfirmedAuthorized = false
+
+    if (policyDecision.type === "REQUIRE_CONFIRMATION") {
       const confirmationRequest: ConfirmationRequest = {
         stepId: step.id,
         capabilityId: step.capabilityId,
         actionClass: step.trustedMetadata.actionClass,
-        arguments: resolvedArgs,
-        preview,
+        arguments: canonicalArgs,
+        preview: {
+          summary: policyDecision.preview.summary,
+          actionClass: step.trustedMetadata.actionClass,
+          capabilityId: step.capabilityId,
+          arguments: canonicalArgs,
+          criticality: policyDecision.criticality ?? capDef.confirmation?.criticality ?? "MEDIUM",
+          reason: policyDecision.reason,
+          rawPreview: policyDecision.preview,
+        },
         requestedAt: Date.now(),
+        confirmationToken: policyDecision.token,
+        expiresAt: policyDecision.expiresAt,
       }
 
       return {
         status: "PAUSED_FOR_CONFIRMATION",
         stepId: step.id,
         confirmationRequest,
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
       }
     }
 
-    // 4. Derive OperationId & Claim in Persistent Operation Ledger
+    if (policyDecision.type === "BLOCK") {
+      const reason = policyDecision.reason || "Action blocked by safety policy."
+      return {
+        status: "BLOCKED_WITH_REASON",
+        stepId: step.id,
+        reason,
+        error: {
+          code: "POLICY_BLOCKED",
+          message: reason,
+          retryable: false,
+          details: { fixAction: policyDecision.fixAction },
+        },
+        resolvedArguments: canonicalArgs,
+      }
+    }
+
+    if (policyDecision.type === "REQUIRE_CLARIFICATION") {
+      return {
+        status: "BLOCKED_WITH_REASON",
+        stepId: step.id,
+        reason: policyDecision.prompt,
+        error: {
+          code: "REQUIRE_CLARIFICATION",
+          message: policyDecision.prompt,
+          retryable: false,
+          details: { missingFields: policyDecision.missingFields },
+        },
+        resolvedArguments: canonicalArgs,
+      }
+    }
+
+    if (policyDecision.type === "ALLOW") {
+      isConfirmedAuthorized = Boolean(suppliedToken)
+    }
+
+    // 5. Derive OperationId & Claim in Persistent Operation Ledger
     const operationId = deriveQuestStepOperationId(questId, step.id, step.capabilityId)
 
     const claimResult = this.ledger.claimOperation({
@@ -156,7 +232,7 @@ export class SingleStepExecutor {
       capabilityId: step.capabilityId,
       actionClass: step.trustedMetadata.actionClass,
       idempotencyClass: step.trustedMetadata.idempotencyClass,
-      input: resolvedArgs,
+      input: canonicalArgs,
       actor: options.actor ?? "user",
       questId,
       stepId: step.id,
@@ -169,7 +245,7 @@ export class SingleStepExecutor {
         stepId: step.id,
         operationId,
         resultPayload: claimResult.resultPayload,
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
         wasCached: true,
       }
     }
@@ -185,7 +261,7 @@ export class SingleStepExecutor {
           message: claimResult.reason,
           retryable: false,
         },
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
       }
     }
 
@@ -200,7 +276,7 @@ export class SingleStepExecutor {
           message: claimResult.reason,
           retryable: false,
         },
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
       }
     }
 
@@ -214,22 +290,22 @@ export class SingleStepExecutor {
           message: claimResult.reason,
           retryable: false,
         },
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
       }
     }
 
-    // 5. Capability Execution via Safe Isolation Boundary
-    // If confirmation was granted by user, inject confirmed: true for legacy connector schemas
-    const executionInput = isConfirmed
-      ? { ...resolvedArgs, confirmed: true }
-      : resolvedArgs
+    // 6. Capability Execution via Safe Isolation Boundary
+    // If confirmation was granted via trusted C4 token, pass confirmed: true for legacy schemas
+    const executionInput = isConfirmedAuthorized
+      ? { ...canonicalArgs, confirmed: true }
+      : canonicalArgs
 
     const execResult = await executeCapabilitySafely(capDef, executionInput, {
       attempt: 1,
       signal: options.abortSignal,
     })
 
-    // 6. Commit / Fail in Operation Ledger
+    // 7. Commit / Fail in Operation Ledger (Repair Gate C)
     if (execResult.success) {
       this.ledger.completeOperation({
         operationId,
@@ -241,20 +317,26 @@ export class SingleStepExecutor {
         stepId: step.id,
         operationId,
         resultPayload: execResult.data,
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
         wasCached: false,
       }
     } else {
-      const isRetryable = execResult.error.retryHint === "SAFE_TO_RETRY"
+      const isUnknownCommit =
+        execResult.error.code === "UNKNOWN_COMMIT" ||
+        execResult.error.retryHint === "REQUIRES_POLICY"
+
+      const isRetryable = !isUnknownCommit && execResult.error.retryHint === "SAFE_TO_RETRY"
+
       this.ledger.failOperation({
         operationId,
         errorCode: execResult.error.code,
         errorMessage: execResult.error.message,
         isRetryable,
+        isUnknownCommit,
       })
 
       return {
-        status: isRetryable ? "FAILED_RETRYABLE" : "FAILED_FINAL",
+        status: isUnknownCommit ? "UNKNOWN_COMMIT" : (isRetryable ? "FAILED_RETRYABLE" : "FAILED_FINAL"),
         stepId: step.id,
         operationId,
         error: {
@@ -263,19 +345,21 @@ export class SingleStepExecutor {
           retryable: isRetryable,
           details: execResult.error.details,
         },
-        resolvedArguments: resolvedArgs,
+        resolvedArguments: canonicalArgs,
       }
     }
   }
 
-  private checkIfStepConfirmed(stepId: PlanStepId, options: ExecutorOptions): boolean {
-    if (!options.confirmedSteps) return false
-    if (options.confirmedSteps instanceof Set) {
-      return options.confirmedSteps.has(stepId)
+  private getSuppliedConfirmationToken(stepId: PlanStepId, options: ExecutorOptions): string | undefined {
+    if (options.confirmationTokens) {
+      if (options.confirmationTokens instanceof Map) {
+        const token = options.confirmationTokens.get(stepId)
+        if (token) return token
+      } else if (typeof options.confirmationTokens === "object") {
+        const token = (options.confirmationTokens as Record<string, string>)[stepId]
+        if (token) return token
+      }
     }
-    if (Array.isArray(options.confirmedSteps)) {
-      return options.confirmedSteps.includes(stepId)
-    }
-    return false
+    return undefined
   }
 }

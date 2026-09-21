@@ -141,7 +141,21 @@ export interface CapabilityRoutingMetadata {
 }
 
 // ============================================================================
-// 6. CANONICAL CAPABILITY DEFINITION
+// 6. ABORTABILITY & COOPERATIVE CANCELLATION METADATA
+// ============================================================================
+
+/**
+ * Cooperative timeout and cancellation semantics.
+ * - COOPERATIVE: Async network/long-running operations that check signal.aborted.
+ * - SYNCHRONOUS_NON_ABORTABLE: Fast local synchronous SQLite or in-memory operations that cannot
+ *   be safely interrupted mid-statement without database lock corruption.
+ */
+export type CapabilityAbortability =
+  | "COOPERATIVE"
+  | "SYNCHRONOUS_NON_ABORTABLE"
+
+// ============================================================================
+// 7. CANONICAL CAPABILITY DEFINITION
 // ============================================================================
 
 export interface CapabilityDefinition<TInput = any, TOutput = any> {
@@ -159,6 +173,7 @@ export interface CapabilityDefinition<TInput = any, TOutput = any> {
   readonly availability: CapabilityAvailabilityMetadata
   readonly routing: CapabilityRoutingMetadata
   readonly userFacing: boolean
+  readonly abortability?: CapabilityAbortability
 }
 
 // ============================================================================

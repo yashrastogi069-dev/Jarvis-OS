@@ -483,8 +483,9 @@ describe("JARVIS CORE V2 — Cross-Checkpoint Integration Gate (C9 → C13)", ()
     expect(deleteHandler).not.toHaveBeenCalled()
 
     // Phase 2: Resume with explicit user confirmation for step_delete
+    const token = pausedResult.confirmationRequest?.confirmationToken!
     const resumedResult = await executor.executePlan(plan, {
-      confirmedSteps: [asPlanStepId("step_delete")],
+      confirmationTokens: new Map([[asPlanStepId("step_delete"), token]]),
     })
 
     expect(resumedResult.status).toBe("AWAITING_VERIFICATION")
@@ -549,8 +550,11 @@ describe("JARVIS CORE V2 — Cross-Checkpoint Integration Gate (C9 → C13)", ()
     })
 
     // Execute with confirmation for step_3 (EXTERNAL_SEND)
+    const paused = await executor.executePlan(plan)
+    expect(paused.status).toBe("PAUSED_FOR_CONFIRMATION")
+    const token = paused.confirmationRequest?.confirmationToken!
     const result = await executor.executePlan(plan, {
-      confirmedSteps: [asPlanStepId("step_3")],
+      confirmationTokens: new Map([[asPlanStepId("step_3"), token]]),
     })
 
     expect(result.status).toBe("AWAITING_VERIFICATION")
@@ -925,8 +929,11 @@ describe("JARVIS CORE V2 — Cross-Checkpoint Integration Gate (C9 → C13)", ()
       ],
     })
 
+    const paused = await executor.executePlan(plan)
+    expect(paused.status).toBe("PAUSED_FOR_CONFIRMATION")
+    const token = paused.confirmationRequest?.confirmationToken!
     const result = await executor.executePlan(plan, {
-      confirmedSteps: [asPlanStepId("step_notify")],
+      confirmationTokens: new Map([[asPlanStepId("step_notify"), token]]),
     })
 
     expect(result.status).toBe("AWAITING_VERIFICATION")
