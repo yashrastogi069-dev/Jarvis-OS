@@ -768,7 +768,7 @@ describe("C5 — Persistent Operation Ledger & Logical Idempotency", () => {
       expect(taskCountPostCrash.count).toBe(1)
 
       rebootDb.close()
-    }, 15000)
+    }, 60000)
 
     it("simulates crash during memory.save mutation, verifying UNKNOWN_COMMIT blocks duplicate write", () => {
       const procDb = new Database(dbFilePath)

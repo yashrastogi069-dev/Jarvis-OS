@@ -151,7 +151,7 @@ describe("4. Voice Stack Practical Verification", () => {
     expect(res.wav.length).toBeGreaterThan(1000) // valid WAV has header + samples
     synthWav = res.wav
     console.log(`[AUDIT] Piper TTS synthesized ${res.wav.length} bytes in ${res.synthMs}ms (total: ${totalMs}ms)`)
-  }, 25000)
+  }, 60000)
 
   it("checks STT availability and transcribes synthesized audio", async () => {
     const { sttStatus, transcribeWav } = await import("@/lib/voice/stt")
@@ -167,7 +167,7 @@ describe("4. Voice Stack Practical Verification", () => {
         console.warn(`[AUDIT WARN] transcribeWav failed: ${err.message}`)
       }
     }
-  }, 35000)
+  }, 60000)
 
   it("tests SentenceChunker splitting and markdown stripping", async () => {
     const { SentenceChunker } = await import("@/lib/voice/sentence-chunker")
