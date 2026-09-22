@@ -21,11 +21,18 @@ import { obsidianTools } from "@/lib/connectors/obsidian"
 import { getObsidianSettings } from "@/lib/settings"
 
 // Helper to extract schema and execute from AI SDK tool
-function fromConnectorTool(t: any): { description: string; inputSchema: any; execute: (args: any) => Promise<any> } {
+function fromConnectorTool(t: any): { description: string; inputSchema: any; execute: (args: any, context?: any) => Promise<any> } {
   return {
     description: t.description,
     inputSchema: t.inputSchema,
-    execute: (args: any) => t.execute(args),
+    execute: async (args: any, context?: any) => {
+      if (context?.signal?.aborted) {
+        const err: any = new Error("Connector operation cancelled by signal")
+        err.code = "CANCELLED"
+        throw err
+      }
+      return t.execute(args)
+    },
   }
 }
 

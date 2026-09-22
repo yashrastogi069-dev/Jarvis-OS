@@ -65,6 +65,7 @@ export class CapabilityRegistry {
     if (direct) return direct
     if (id === "research.web_search") return this.capabilitiesById.get("research.search")
     if (id === "research.fetch_page") return this.capabilitiesById.get("research.fetch")
+    if (id === "telegram.messages.list") return this.capabilitiesById.get("telegram.messages.get")
     return undefined
   }
 

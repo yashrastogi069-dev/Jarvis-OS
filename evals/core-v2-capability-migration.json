@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T11:19:08.533Z",
+  "generatedAt": "2026-09-22T11:23:47.241Z",
   "totalCapabilities": 47,
   "totalUnregisteredCandidates": 4,
   "breakdown": {
@@ -383,8 +383,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -401,8 +401,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -419,8 +419,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -437,8 +437,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -491,8 +491,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -509,8 +509,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -581,8 +581,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -599,8 +599,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -617,8 +617,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -671,8 +671,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -689,8 +689,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -779,8 +779,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -797,8 +797,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
@@ -815,8 +815,8 @@
       "idempotencyStrategy": "READ_ONLY",
       "unknownCommitPossible": false,
       "migrationCheckpoint": "C18",
-      "migrationStatus": "PENDING",
-      "testCoverage": "tests/jarvis-core/capability-migration.test.ts (planned)",
+      "migrationStatus": "MIGRATED",
+      "testCoverage": "tests/jarvis-core/capability-migration-c18.test.ts",
       "liveSmokeStatus": "OFFLINE_DETERMINISTIC"
     },
     {
