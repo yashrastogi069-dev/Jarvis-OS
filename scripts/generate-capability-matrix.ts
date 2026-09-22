@@ -68,8 +68,11 @@ const entries: MigrationMatrixEntry[] = ALL_CAPABILITIES.map((cap) => {
     idempotencyStrategy: cap.idempotency.idempotencyClass,
     unknownCommitPossible: unknownCommit,
     migrationCheckpoint: checkpoint,
-    migrationStatus: "PENDING",
-    testCoverage: "tests/jarvis-core/capability-migration.test.ts (planned)",
+    migrationStatus: checkpoint === "C17" ? "MIGRATED" : "PENDING",
+    testCoverage:
+      checkpoint === "C17"
+        ? "tests/jarvis-core/capability-migration-c17.test.ts"
+        : "tests/jarvis-core/capability-migration.test.ts (planned)",
     liveSmokeStatus: "OFFLINE_DETERMINISTIC",
   }
 })

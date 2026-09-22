@@ -61,7 +61,11 @@ export class CapabilityRegistry {
    * Look up capability by canonical namespaced CapabilityId (e.g. "tasks.create").
    */
   public getById(id: CapabilityId | string): CapabilityDefinition | undefined {
-    return this.capabilitiesById.get(id)
+    const direct = this.capabilitiesById.get(id)
+    if (direct) return direct
+    if (id === "research.web_search") return this.capabilitiesById.get("research.search")
+    if (id === "research.fetch_page") return this.capabilitiesById.get("research.fetch")
+    return undefined
   }
 
   /**

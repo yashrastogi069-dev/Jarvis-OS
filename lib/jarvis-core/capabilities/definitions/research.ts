@@ -24,7 +24,14 @@ export const researchCapabilities: ReadonlyArray<CapabilityDefinition> = [
     inputSchema: z.object({
       query: z.string().describe("The search query, phrased as you would type it into Google."),
     }),
-    handler: async ({ query }) => webSearch(query),
+    handler: async ({ query }, context) => {
+      if (context?.signal?.aborted) {
+        const err: any = new Error("Web search cancelled by signal")
+        err.code = "CANCELLED"
+        throw err
+      }
+      return webSearch(query)
+    },
     actionClass: "READ_ONLY",
     confirmation: { defaultPolicy: "NONE", criticality: "LOW" },
     idempotency: { idempotencyClass: "READ_ONLY" },
@@ -57,7 +64,14 @@ export const researchCapabilities: ReadonlyArray<CapabilityDefinition> = [
     inputSchema: z.object({
       url: z.string().describe("The absolute URL to fetch, including https://."),
     }),
-    handler: async ({ url }) => fetchPage(url),
+    handler: async ({ url }, context) => {
+      if (context?.signal?.aborted) {
+        const err: any = new Error("Fetch page cancelled by signal")
+        err.code = "CANCELLED"
+        throw err
+      }
+      return fetchPage(url)
+    },
     actionClass: "READ_ONLY",
     confirmation: { defaultPolicy: "NONE", criticality: "LOW" },
     idempotency: { idempotencyClass: "READ_ONLY" },
