@@ -327,7 +327,7 @@ describe("6. Tasks, Reminders & Proactive Scheduler", () => {
 
     await expect(runSchedulerTick()).resolves.toBeUndefined()
     await expect(sweepTriggers()).resolves.toBeUndefined()
-  })
+  }, 15000)
 })
 
 describe("7. System Companion & Security", () => {

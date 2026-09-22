@@ -17,6 +17,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import fs from "node:fs"
 import path from "node:path"
+import os from "node:os"
 import Database from "better-sqlite3"
 
 import {
@@ -41,6 +42,7 @@ import { ValidatedExecutionPlan } from "../../lib/jarvis-core/executor/types"
 import type { CapabilityDefinition } from "../../lib/jarvis-core/capabilities/types"
 
 describe("JARVIS CORE V2 — Pre-Phase-4 Runtime Contract Repair Gates", () => {
+  let tempDir: string
   let tempDbPath: string
   let db: Database.Database
   let policyManager: ActionPolicyManager
@@ -48,7 +50,8 @@ describe("JARVIS CORE V2 — Pre-Phase-4 Runtime Contract Repair Gates", () => {
   let questEngine: QuestEngine
 
   beforeEach(() => {
-    tempDbPath = path.join(process.cwd(), `temp_repair_gates_${Date.now()}_${Math.random().toString(36).slice(2)}.db`)
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "jarvis-repair-gates-"))
+    tempDbPath = path.join(tempDir, "repair_gates.db")
     db = new Database(tempDbPath)
     ledger = new OperationLedger(db)
     questEngine = new QuestEngine(db)
@@ -59,9 +62,9 @@ describe("JARVIS CORE V2 — Pre-Phase-4 Runtime Contract Repair Gates", () => {
     try {
       db.close()
     } catch {}
-    if (fs.existsSync(tempDbPath)) {
+    if (tempDir && fs.existsSync(tempDir)) {
       try {
-        fs.unlinkSync(tempDbPath)
+        fs.rmSync(tempDir, { recursive: true, force: true })
       } catch {}
     }
   })

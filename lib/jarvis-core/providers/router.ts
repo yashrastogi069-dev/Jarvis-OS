@@ -101,6 +101,15 @@ export class ProviderRoleRouter {
   }
 
   /**
+   * Resolves the primary ModelAdapter configured for a given ProviderRole.
+   */
+  public resolveForRole(role: ProviderRole): ModelAdapter {
+    const config = this.getResolvedRoleConfig(role)
+    const { primaryAdapter } = this.resolveAdaptersForRole(config)
+    return primaryAdapter
+  }
+
+  /**
    * Get current health status for a provider.
    */
   public getProviderHealth(providerId: string): ProviderHealthStatus {

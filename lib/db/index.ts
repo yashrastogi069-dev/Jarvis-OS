@@ -15,7 +15,10 @@ import * as schema from "./schema"
 export const EMBEDDING_DIM = 768
 
 const DB_DIR = path.join(process.cwd(), "data")
-const DB_PATH = process.env.AGENTIC_OS_DB_PATH ?? path.join(DB_DIR, "agentic-os.db")
+
+export function getDbPath(): string {
+  return process.env.AGENTIC_OS_DB_PATH ?? path.join(DB_DIR, "agentic-os.db")
+}
 
 /**
  * Bump SCHEMA_VERSION whenever tables are added — the cached connection
@@ -25,6 +28,7 @@ const SCHEMA_VERSION = 6
 
 type GlobalWithDb = typeof globalThis & {
   __agenticOsDb?: Database.Database
+  __agenticOsDbPath?: string
   __agenticOsDrizzle?: BetterSQLite3Database<typeof schema>
   __agenticOsVecAvailable?: boolean
   __agenticOsSchemaVersion?: number
@@ -40,10 +44,14 @@ function ensureColumn(db: Database.Database, table: string, column: string, type
   }
 }
 
-function initDb(): Database.Database {
-  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true })
-  const db = new Database(DB_PATH)
-  db.pragma("journal_mode = WAL")
+function initDb(targetPath = getDbPath()): Database.Database {
+  if (targetPath !== ":memory:") {
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true })
+  }
+  const db = new Database(targetPath)
+  if (targetPath !== ":memory:") {
+    db.pragma("journal_mode = WAL")
+  }
 
   let vecAvailable = false
   try {
@@ -208,8 +216,18 @@ function initDb(): Database.Database {
 }
 
 export function getRawDb(): Database.Database {
-  if (!g.__agenticOsDb) {
-    g.__agenticOsDb = initDb()
+  const currentPath = getDbPath()
+  if (!g.__agenticOsDb || g.__agenticOsDbPath !== currentPath) {
+    if (g.__agenticOsDb) {
+      try {
+        g.__agenticOsDb.close()
+      } catch {
+        // already closed
+      }
+    }
+    g.__agenticOsDb = initDb(currentPath)
+    g.__agenticOsDbPath = currentPath
+    g.__agenticOsDrizzle = undefined
     g.__agenticOsSchemaVersion = SCHEMA_VERSION
   } else if (g.__agenticOsSchemaVersion !== SCHEMA_VERSION) {
     // Schema changed since this connection was cached (HMR) — close and re-init
@@ -219,11 +237,25 @@ export function getRawDb(): Database.Database {
     } catch {
       // already closed
     }
-    g.__agenticOsDb = initDb()
+    g.__agenticOsDb = initDb(currentPath)
+    g.__agenticOsDbPath = currentPath
     g.__agenticOsDrizzle = undefined
     g.__agenticOsSchemaVersion = SCHEMA_VERSION
   }
   return g.__agenticOsDb
+}
+
+export function closeRawDb(): void {
+  if (g.__agenticOsDb) {
+    try {
+      g.__agenticOsDb.close()
+    } catch {
+      // already closed
+    }
+    g.__agenticOsDb = undefined
+    g.__agenticOsDbPath = undefined
+    g.__agenticOsDrizzle = undefined
+  }
 }
 
 export function getDb(): BetterSQLite3Database<typeof schema> {

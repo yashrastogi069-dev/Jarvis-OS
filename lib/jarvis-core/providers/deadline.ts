@@ -108,6 +108,13 @@ export class TurnDeadline {
   }
 
   /**
+   * Return an AbortSignal tied to this turn deadline.
+   */
+  public getSignal(parentSignal?: AbortSignal): AbortSignal {
+    return this.createChildSignal(parentSignal)
+  }
+
+  /**
    * Create an AbortSignal that automatically triggers when the hard deadline expires,
    * or when the optional parent signal aborts.
    */

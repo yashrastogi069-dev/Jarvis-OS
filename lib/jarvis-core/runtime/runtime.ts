@@ -29,6 +29,7 @@ import { actionPolicyManager } from "../safety/policy"
 import { DeterministicFastPathClassifier } from "../intent/classifier"
 import type { ResolvedIntent } from "../intent/types"
 import { DirectActionRuntime } from "../action/runtime"
+import { RouterActionArgumentModel } from "../action/model-adapter"
 import { ProviderRoleRouter } from "../providers/router"
 import { TurnDeadline } from "../providers/deadline"
 import { GroundedFinalizer } from "../finalizer/finalizer"
@@ -203,6 +204,7 @@ export class JarvisCoreRuntime {
           title: `Execute ${capId}`,
         })
 
+        const modelAdapter = new RouterActionArgumentModel(this.router, deadline)
         const outcome = await this.actionRuntime.executeAction(
           input.userMessage,
           capId,
@@ -210,6 +212,8 @@ export class JarvisCoreRuntime {
           0,
           {
             confirmationToken: input.confirmationToken,
+            modelAdapter,
+            signal: deadline.getSignal(),
           }
         )
 

@@ -186,6 +186,11 @@ export function getActiveProviderId(): ProviderId {
   return resolveModel().id
 }
 
+/** Get raw provider definition for Core V2 adapter integration. */
+export function getProviderDefinition(id: ProviderId): ProviderDef | undefined {
+  return PROVIDERS.find((p) => p.id === id)
+}
+
 /**
  * Put a provider on cooldown after a failure and advance the chain.
  * 429 / quota / rate-limit -> 45s (prevents 10-minute system freeze on transient burst limits);

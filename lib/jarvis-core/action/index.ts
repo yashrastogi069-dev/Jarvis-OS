@@ -7,3 +7,4 @@
 export * from "./types"
 export * from "./resolver"
 export * from "./runtime"
+export * from "./model-adapter"

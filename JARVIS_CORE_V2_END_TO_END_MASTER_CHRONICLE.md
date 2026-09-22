@@ -806,31 +806,29 @@ Every constraint established for this engineering cycle was strictly respected:
 
 ## 12. STAGE 10: PHASE 5 CAPABILITY MIGRATION ROADMAP (C17+)
 
-With the Core V2 runtime substrate (C0 through C16) fully implemented and verified, the next phase of the Jarvis Core V2 roadmap is **Phase 5: Capability Migration & Hardening**:
+With the Core V2 runtime substrate (C0 through C16) fully implemented and verified, the canonical remaining roadmap for Jarvis Core V2 proceeds through Phase 5: Capability Migration & Hardening:
 
-### Checkpoint C17: Tasks, Memory & Research Capability Migration
-- **Tasks Domain**: Migrate `tasks.create`, `tasks.list`, `tasks.complete`, `tasks.snooze`, `tasks.update`, `tasks.delete` to canonical Core V2 contracts with explicit idempotency keys and soft-delete/ledger consistency.
-- **Memory Domain**: Migrate `memory.save`, `memory.recall`, `memory.list`, `memory.delete` with sqlite-vec embedding verification, semantic deduplication windows, and privacy scrubbing.
-- **Research Domain**: Migrate `research.web_search`, `research.fetch_page` with rate-limit backoff, citation grounding, and offline deterministic mock fallbacks.
-- **Skill Candidate Formalization**: Formally wrap or deprecate the 4 candidates in `lib/skills.ts` (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`).
-
-### Checkpoint C18: Connectors Migration
-- **Google Domain**: Calendar event CRUD, Gmail search/read/send/reply with OAuth refresh resilience and schema-aligned previews.
-- **Apple Domain**: Apple Calendar CalDAV event CRUD with UID deduplication.
-- **GitHub Domain**: Notifications, PRs, issues, commits, comments with PAT validation and rate-limit handling.
-- **Obsidian Domain**: Vault note search, read, append, create with collision guards and safe overwrite warnings.
-- **Telegram Domain**: Bot messaging with explicit confirmation protection.
-
-### Checkpoint C19: System Capabilities Migration
-- **Feed Domain**: Event timeline retrieval with date filtering.
-- **Wake Words Domain**: Add, list, remove wake words with uniqueness constraints.
-- **Preferences Domain**: Idempotent key-value upsert with schema validation.
-
-### Checkpoints C20–C23: Production Shadow Gate, Canary Cutover & Decommissioning
-- **C20**: Production Shadow Gate running 100% shadow comparison between V1 and V2 on live `/api/chat` traffic without user impact.
-- **C21**: Canary Cutover routing 10% $\to$ 50% $\to$ 100% traffic to Core V2 behind `JARVIS_CORE_VERSION=v2`.
-- **C22**: Post-Cutover Soak & Latency SLA Verification (confirming p50 $\le 10$s across all user tiers).
-- **C23**: Decommissioning and deletion of legacy V1 files in `lib/`.
+### Canonical Remaining Roadmap (C17–C23)
+- **C17 — Tasks / Memory / Research Migration**:
+  - **Tasks Domain**: Migrate `tasks.create`, `tasks.list`, `tasks.complete`, `tasks.snooze`, `tasks.update`, `tasks.delete` to canonical Core V2 contracts with explicit operation IDs, ledger deduplication, and strict adherence to V1 product semantics (task soft-delete is explicitly rejected; V1 database deletions and updates are preserved without invented state transitions).
+  - **Memory Domain**: Migrate `memory.save`, `memory.recall`, `memory.list`, `memory.delete` with sqlite-vec embedding verification, privacy scrubbing, and zero semantic execution suppression (arbitrary semantic execution suppression thresholds are rejected).
+  - **Research Domain**: Migrate `research.web_search`, `research.fetch_page` with rate-limit backoff, citation grounding, deterministic offline mock test harness, and strict rejection of fake mock web search in production.
+  - **Local Capabilities Audit**: Audit and formalize remaining local capabilities: Skills (`skills.list`, `skills.run`, `skills.build`), Wake Words (`wake_words.list`, `wake_words.add`, `wake_words.remove`), Preferences (`preferences.get`, `preferences.set`), and Feed (`feed.get_timeline`). The 4 internal candidates in `lib/skills.ts` (`deploySkillToGithub`, `deleteSkill`, `proposeRefinement`, `discoverSkillCandidates`) are formally audited and retained as internal/deferred candidates.
+- **C18 — Read-Only Connector Migration**:
+  - Migrate 14 read-only external connector capabilities across Google (5), GitHub (4), Apple (2), Obsidian (2), and Telegram (1).
+  - Enforce AbortSignal propagation, structured auth/config failure normalization (`UNCONFIGURED`, `AUTH_REQUIRED`, `RATE_LIMITED`, `TIMEOUT`), and zero write side effects.
+- **C19 — External Mutation Migration**:
+  - Migrate 13 external mutation capabilities across Google (5), Apple (3), GitHub (2), Telegram (1), and Obsidian (2).
+  - Enforce mandatory execution path, state-sensitive precondition checks, Obsidian path traversal safety (`../`), and UNKNOWN_COMMIT fault injection tests.
+  - Architectural Guarantee: External mutations guarantee runtime-owned logical deduplication and replay protection; `UNKNOWN_COMMIT` is reported for external operations whose remote commit cannot be verified.
+- **C20 — Comprehensive V1 vs V2 Evaluation**:
+  - Full offline and fixture-based evaluation across all 47 capabilities comparing V1 vs V2 execution, performance, error reporting, and safety invariants (NOT live production shadow).
+- **C21 — Production Canary**:
+  - Controlled production canary routing 10% → 50% → 100% traffic behind `JARVIS_CORE_VERSION=v2`.
+- **C22 — V2 Default**:
+  - Core V2 promoted to default runtime; soak period and performance SLA verification.
+- **C23 — Legacy V1 Removal**:
+  - Safe decommission and deletion of legacy V1 files in `lib/`.
 
 ---
 *End of Master Chronicle. Document compiled autonomously by Antigravity on September 21, 2026. All source files, commits, test runs, and verification metrics verified directly against repository state.*
