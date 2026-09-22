@@ -13,6 +13,7 @@
 
 import { asCapabilityId } from "../../types"
 import type { CapabilityDefinition } from "../types"
+import { CapabilityOperationalError } from "../result"
 import { githubTools } from "@/lib/connectors/github"
 import { googleTools, getGoogleSettings, isGoogleConnected } from "@/lib/connectors/google"
 import { appleTools, getAppleSettings } from "@/lib/connectors/apple"
@@ -687,6 +688,32 @@ const obRead = fromConnectorTool((obsidianTools as any).readNote)
 const obAppend = fromConnectorTool((obsidianTools as any).appendNote)
 const obCreate = fromConnectorTool((obsidianTools as any).createNote)
 
+function assertSafeVaultPath(path: string): void {
+  if (!path || typeof path !== "string") {
+    throw new CapabilityOperationalError({
+      code: "INVALID_INPUT",
+      message: "Invalid note path.",
+      retryHint: "DO_NOT_RETRY",
+    })
+  }
+  const normalized = path.replace(/\\/g, "/")
+  if (
+    normalized.includes("../") ||
+    normalized.startsWith("../") ||
+    normalized.endsWith("/..") ||
+    normalized === ".." ||
+    normalized.startsWith("/") ||
+    /^[a-zA-Z]:/.test(normalized)
+  ) {
+    throw new CapabilityOperationalError({
+      code: "PERMISSION_DENIED",
+      message: `Security Violation: Directory traversal detected in path "${path}". Access outside vault is forbidden.`,
+      retryHint: "DO_NOT_RETRY",
+      fixAction: "Use relative paths within the Obsidian vault.",
+    })
+  }
+}
+
 export const obsidianCapabilities: ReadonlyArray<CapabilityDefinition> = [
   {
     id: asCapabilityId("obsidian.notes.search"),
@@ -717,7 +744,10 @@ export const obsidianCapabilities: ReadonlyArray<CapabilityDefinition> = [
     title: "Read Obsidian Note",
     description: obRead.description,
     inputSchema: obRead.inputSchema,
-    handler: obRead.execute,
+    handler: async ({ path }: any, context) => {
+      assertSafeVaultPath(path)
+      return obRead.execute({ path }, context)
+    },
     actionClass: "READ_ONLY",
     confirmation: { defaultPolicy: "NONE", criticality: "LOW" },
     idempotency: { idempotencyClass: "READ_ONLY" },
@@ -739,7 +769,10 @@ export const obsidianCapabilities: ReadonlyArray<CapabilityDefinition> = [
     title: "Append to Obsidian Note",
     description: obAppend.description,
     inputSchema: obAppend.inputSchema,
-    handler: obAppend.execute,
+    handler: async ({ path, content }: any, context) => {
+      assertSafeVaultPath(path)
+      return obAppend.execute({ path, content }, context)
+    },
     actionClass: "EXTERNAL_UPDATE",
     confirmation: { defaultPolicy: "NONE", criticality: "MEDIUM" },
     idempotency: {
@@ -764,7 +797,10 @@ export const obsidianCapabilities: ReadonlyArray<CapabilityDefinition> = [
     title: "Create Obsidian Note",
     description: obCreate.description,
     inputSchema: obCreate.inputSchema,
-    handler: obCreate.execute,
+    handler: async ({ path, content }: any, context) => {
+      assertSafeVaultPath(path)
+      return obCreate.execute({ path, content }, context)
+    },
     actionClass: "EXTERNAL_CREATE",
     confirmation: {
       defaultPolicy: "REQUIRED",

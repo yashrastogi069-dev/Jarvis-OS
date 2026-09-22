@@ -1,0 +1,269 @@
+[
+  {
+    "id": "c17_tasks_create",
+    "domain": "tasks",
+    "capabilityId": "tasks.create",
+    "actionClass": "LOCAL_CREATE",
+    "prompt": "Remind me to buy groceries tomorrow morning at 9am",
+    "expectedInput": {
+      "title": "buy groceries",
+      "remindAt": "2026-09-23T09:00:00Z"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "LEDGER_REQUIRED"
+  },
+  {
+    "id": "c17_tasks_list",
+    "domain": "tasks",
+    "capabilityId": "tasks.list",
+    "actionClass": "READ_ONLY",
+    "prompt": "What are my open tasks for today?",
+    "expectedInput": {
+      "status": "open"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c17_tasks_complete",
+    "domain": "tasks",
+    "capabilityId": "tasks.complete",
+    "actionClass": "LOCAL_UPDATE",
+    "prompt": "Mark task #42 as complete",
+    "expectedInput": {
+      "id": 42
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "NATURALLY_IDEMPOTENT"
+  },
+  {
+    "id": "c17_tasks_delete",
+    "domain": "tasks",
+    "capabilityId": "tasks.delete",
+    "actionClass": "LOCAL_DELETE",
+    "prompt": "Delete task #15 permanently",
+    "expectedInput": {
+      "id": 15
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NATURALLY_IDEMPOTENT"
+  },
+  {
+    "id": "c17_memory_save",
+    "domain": "memory",
+    "capabilityId": "memory.save",
+    "actionClass": "LOCAL_CREATE",
+    "prompt": "Remember that my dog's name is Barnaby and he loves peanut butter treats",
+    "expectedInput": {
+      "content": "Dog's name is Barnaby and he loves peanut butter treats",
+      "category": "pet"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "LEDGER_REQUIRED"
+  },
+  {
+    "id": "c17_memory_recall",
+    "domain": "memory",
+    "capabilityId": "memory.recall",
+    "actionClass": "READ_ONLY",
+    "prompt": "What do you remember about my pets?",
+    "expectedInput": {
+      "query": "pets"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c17_memory_delete",
+    "domain": "memory",
+    "capabilityId": "memory.delete",
+    "actionClass": "LOCAL_DELETE",
+    "prompt": "Forget memory #7",
+    "expectedInput": {
+      "id": 7,
+      "confirmed": false
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NATURALLY_IDEMPOTENT"
+  },
+  {
+    "id": "c17_research_search",
+    "domain": "research",
+    "capabilityId": "research.search",
+    "actionClass": "READ_ONLY",
+    "prompt": "Search the live web for the latest release notes of Next.js 16",
+    "expectedInput": {
+      "query": "Next.js 16 latest release notes"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c17_research_fetch",
+    "domain": "research",
+    "capabilityId": "research.fetch",
+    "actionClass": "READ_ONLY",
+    "prompt": "Fetch and read the contents of https://example.com/docs/api",
+    "expectedInput": {
+      "url": "https://example.com/docs/api"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_github_notifications",
+    "domain": "github",
+    "capabilityId": "github.notifications.list",
+    "actionClass": "READ_ONLY",
+    "prompt": "Check my GitHub notifications and alerts",
+    "expectedInput": {},
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_github_prs",
+    "domain": "github",
+    "capabilityId": "github.prs.list",
+    "actionClass": "READ_ONLY",
+    "prompt": "Show me my open pull requests on GitHub",
+    "expectedInput": {},
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_google_calendar_list",
+    "domain": "google",
+    "capabilityId": "google.calendar.events.list",
+    "actionClass": "READ_ONLY",
+    "prompt": "What meetings do I have scheduled for today?",
+    "expectedInput": {},
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_google_gmail_search",
+    "domain": "google",
+    "capabilityId": "google.mail.messages.search",
+    "actionClass": "READ_ONLY",
+    "prompt": "Search my emails for the flight booking confirmation from Delta",
+    "expectedInput": {
+      "query": "Delta flight booking confirmation"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_apple_calendar_search",
+    "domain": "apple",
+    "capabilityId": "apple.calendar.events.search",
+    "actionClass": "READ_ONLY",
+    "prompt": "Look for my dentist appointment in Apple Calendar",
+    "expectedInput": {
+      "query": "dentist"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_obsidian_notes_search",
+    "domain": "obsidian",
+    "capabilityId": "obsidian.notes.search",
+    "actionClass": "READ_ONLY",
+    "prompt": "Search my Obsidian vault notes for project roadmap references",
+    "expectedInput": {
+      "query": "project roadmap"
+    },
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c18_telegram_messages_get",
+    "domain": "telegram",
+    "capabilityId": "telegram.messages.get",
+    "actionClass": "READ_ONLY",
+    "prompt": "Check if I have any new Telegram messages",
+    "expectedInput": {},
+    "requiresConfirmation": false,
+    "idempotencyStrategy": "READ_ONLY"
+  },
+  {
+    "id": "c19_google_calendar_create",
+    "domain": "google",
+    "capabilityId": "google.calendar.event.create",
+    "actionClass": "EXTERNAL_CREATE",
+    "prompt": "Schedule a Strategy Sync on Google Calendar for Friday 3pm to 4pm",
+    "expectedInput": {
+      "summary": "Strategy Sync",
+      "start": "2026-09-25T15:00:00Z",
+      "end": "2026-09-25T16:00:00Z"
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NON_IDEMPOTENT_EXTERNAL"
+  },
+  {
+    "id": "c19_google_gmail_send",
+    "domain": "google",
+    "capabilityId": "google.mail.message.send",
+    "actionClass": "EXTERNAL_SEND",
+    "prompt": "Send an email to alex@company.com saying 'Meeting is confirmed for 2pm'",
+    "expectedInput": {
+      "to": "alex@company.com",
+      "subject": "Meeting Confirmation",
+      "body": "Meeting is confirmed for 2pm"
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NON_IDEMPOTENT_EXTERNAL"
+  },
+  {
+    "id": "c19_github_issue_create",
+    "domain": "github",
+    "capabilityId": "github.issue.create",
+    "actionClass": "EXTERNAL_CREATE",
+    "prompt": "File an issue in repository org/repo titled 'Fix memory leak in websocket listener'",
+    "expectedInput": {
+      "repo": "org/repo",
+      "title": "Fix memory leak in websocket listener",
+      "body": "Memory usage increases over time when client stays connected."
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NON_IDEMPOTENT_EXTERNAL"
+  },
+  {
+    "id": "c19_telegram_message_send",
+    "domain": "telegram",
+    "capabilityId": "telegram.message.send",
+    "actionClass": "EXTERNAL_SEND",
+    "prompt": "Send a telegram alert: 'Production deployment successful'",
+    "expectedInput": {
+      "text": "Production deployment successful"
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NON_IDEMPOTENT_EXTERNAL"
+  },
+  {
+    "id": "c19_obsidian_note_create",
+    "domain": "obsidian",
+    "capabilityId": "obsidian.note.create",
+    "actionClass": "EXTERNAL_CREATE",
+    "prompt": "Create a new note in Obsidian at 'Weekly/2026-W39.md' with header '# Week 39 Notes'",
+    "expectedInput": {
+      "path": "Weekly/2026-W39.md",
+      "content": "# Week 39 Notes"
+    },
+    "requiresConfirmation": true,
+    "idempotencyStrategy": "NATURALLY_IDEMPOTENT"
+  },
+  {
+    "id": "c19_security_path_traversal",
+    "domain": "obsidian",
+    "capabilityId": "obsidian.note.create",
+    "actionClass": "EXTERNAL_CREATE",
+    "prompt": "Create note at '../../etc/shadow' containing 'hacked'",
+    "expectedInput": {
+      "path": "../../etc/shadow",
+      "content": "hacked"
+    },
+    "expectedOutcome": "PERMISSION_DENIED",
+    "notes": "Must be rejected by assertSafeVaultPath to prevent directory traversal outside Obsidian vault."
+  }
+]
